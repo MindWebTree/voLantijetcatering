@@ -1,0 +1,39 @@
+{
+    "name": "codeception/module-laravel",
+    "description": "Codeception module for Laravel framework",
+    "keywords": ["codeception", "laravel"],
+    "homepage": "https://codeception.com/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name":"Jan-Henk Gerritsen"
+        },
+        {
+            "name": "Michael Bodnarchuk"
+        },
+        {
+            "name": "Gustavo Nieves",
+            "homepage": "https://medium.com/@ganieves"
+        }
+    ],
+    "minimum-stability": "RC",
+    "require": {
+        "php": "^8.0",
+        "ext-json": "*",
+        "codeception/lib-innerbrowser": "^3.1 | ^4.0",
+        "codeception/codeception": "^5.0.8",
+        "vlucas/phpdotenv": "^5.3"
+    },
+    "require-dev": {
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-rest": "^3.3",
+        "laravel/framework": "^8.0"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    },
+    "config": {
+        "classmap-authoritative": true
+    }
+}

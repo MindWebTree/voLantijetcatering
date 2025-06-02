@@ -1,0 +1,67 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [8.0, 8.1, 8.2]
+        laravel: [8]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          extensions: ctype, iconv, intl, json, mbstring, pdo, pdo_sqlite
+          coverage: none
+
+      - name: Checkout Laravel 8 Sample
+        if: matrix.laravel == 8
+        uses: actions/checkout@v3
+        with:
+          repository: codeception/laravel-module-tests
+          path: framework-tests
+          ref: main
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.php }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+        working-directory: framework-tests
+
+      - name: Install Laravel Sample
+        run: |
+          composer remove codeception/module-laravel --dev --no-update
+          composer install --no-progress
+        working-directory: framework-tests
+
+      - name: Prepare the test environment and run test suite
+        run: |
+          cp .env.testing .env
+          php artisan config:cache
+          touch database/database.sqlite
+          php artisan migrate --seed --env=testing --force
+        working-directory: framework-tests
+
+      - name: Run test suite
+        run: php vendor/bin/codecept run Functional -c framework-tests

@@ -1,0 +1,6 @@
+.content-container .content .page-header .page-title h1 {
+    margin-bottom: 0;
+    vertical-align: middle;
+    display: inline-block;
+    line-height: normal
+}
