@@ -1,0 +1,178 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        />
+
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo text-center">
+                <img
+                    class="w-25"
+                    src="../../../../../../../../../public/themes/volantijetcatering/assets/images/logo-dark-text.png"
+                    alt=""
+                />
+            </div>
+
+            <div class="thankyou__order mt-3 p-3">
+                <div class="row">
+                    <div class="col-7">
+                        <h3>Thank you for your order!</h3>
+                        <p class="mt-4">Order No: <strong>240050</strong></p>
+                    </div>
+                    <div class="col-5 text-right">
+                        <p class="m-0">Need Help?</p>
+                        <p>
+                            Call us <a href="0123456789">(0123456789)</a> or
+                            <a href="#">Email us</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order_detail_heading text-center my-3">
+                <h5>Order Details</h5>
+            </div>
+
+            <div class="order_billing_details">
+                <div class="detail">
+                    <p class="m-0">Order No: 240050</p>
+                    <p>Order Date & Time : 11/07/2023</p>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-4">
+                        <h6 class="my-2">Ship to : JoAnn Austin</h6>
+                        <h6 class="my-4">Ship Address</h6>
+                        <p class="m-0">JoAnn Austin3220 Reades Way</p>
+                        <p class="m-0">Williamsburg 23185Virginia United States</p>
+                        <p>806-786-8555</p>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="my-2">Bill to : JoAnn Austin</h6>
+                        <h6 class="my-4">Bill Address</h6>
+                        <strong>Phoenix Sky Harbor PHX</strong>
+                        <p>3400 E Sky Harbor Blvd, Phoenix, AZ 85034, United States</p>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="m-0">Payment Method : Credit</h6>
+                        <h6 class="">Card|************9305</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order__details mt-5">
+                <div class="row">
+                    <div class="col-1 p-2">
+                        <img class="w-100" src="../../../../../../../../../public/themes/volantijetcatering/assets/images/Food-Icon-4.png" alt="">
+                    </div>
+                    <div class="col-5">
+                        <p>Sandwich (Bacon)</p>
+                    </div>
+                    <div class="col-4">
+                        <p>Price: $3,999.00</p>
+                        <p>Qty :1</p>
+                    </div>
+                    <div class="col-2">
+                        <p>$3,999.00</p>
+                        <p>saving -($199.95)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order_notes_with_total mt-5">
+                <div class="row">
+                    <div class="col-7">
+                        <h5>ORDER NOTES:</h5>
+                        <p>Our products are made to order and are expertly handcrafted in pure solid wood. Your satisfaction is our goal and we assure you that, just like hundreds of our customers, you will find the wait to be well worth it!</p>
+                        <h6>Regards,</h6>
+                        <h6>VolantiJetCatering</h6>
+                    </div>
+                    <div class="col-5 text-right">
+                        <p>SubTotal : $3,999.00</p>
+                        <p>Offer Discount : -$199.95</p>
+                        <strong>Order Total : $4,463.98</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            width: 100%;
+            max-width: 400px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        h3 {
+            color: #cc0000;
+            margin-top: 20px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .text-info {
+            color: #007bff;
+        }
+
+        span.order-id {
+            color: blue;
+            font-weight: bold;
+        }
+
+        span.order-date {
+            color: navy;
+        }
+
+        span.status {
+            color: #cc0000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container order_view_status">
+        <img src="https://images.squarespace-cdn.com/content/v1/6171dbc44e102724f1ce58cf/eda39336-24c7-499b-9336-c9cee87db776/VolantiStickers-11.jpg?format=1500w" alt="Volantijet Catering" />
+        <h3>Order Canceled</h3>
+        <p>Dear {{ $order->customer_first_name }},</p>
+        <p>We regret to inform you that your order #<span class="order-id">{{ $order->increment_id }}</span>, dated <span class="order-date">{{ $order->created_at }}</span>, has been canceled.</p>
+        <p>Please contact our customer service for more information or assistance.</p>
+        <p>Status: <span class="status">{{ $order->status }}</span></p>
+    </div>
+</body>
+</html>
+

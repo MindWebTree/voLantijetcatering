@@ -1,0 +1,143 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <button onclick="getSuccessOutput();">CLICK</button>
+        <div id="output"></div>
+
+        <script>
+            $(Document).ready(()=>{
+                getSuccessOutput();
+            })
+            function getSuccessOutput() {
+                $.ajax({
+                    url: "https://z0p411vwsa.execute-api.ap-south-1.amazonaws.com/dev/live-quiz-streams",
+                    method: "POST",
+                    success: function (response) {
+                        $("#output").html(response);
+                    },
+                    error: function () {
+                        $("#output").html("Bummer: there was an error!");
+                    },
+                });
+                return false;
+            }
+        </script>
+        <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <button onclick="getSuccessOutputs();">CLICK</button>
+        <div id="output"></div>
+
+        <script>
+            // $(Document).ready(()=>{
+            //     getSuccessOutput();
+            // })
+            function getSuccessOutputs() {
+                $.ajax({
+                    url: "https://z0p411vwsa.execute-api.ap-south-1.amazonaws.com/dev/live-quiz",
+                    method: "PATCH",
+                    data: JSON.stringify({
+                        ExamID: "1000107",
+                        TitleExamID: "1000107",
+                        updateValues: { Status: 3, hasAudienceReport: false },
+                    }),
+                    success: function (response) {
+                        $("#output").html(response);
+                    },
+                    error: function () {
+                        $("#output").html("Bummer: there was an error!");
+                    },
+                });
+                return false;
+            }
+        </script>
+        <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>
+
+<!-- <html>
+    <head>
+        <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body>
+        <button onclick="getSuccessOutput();">CLICK</button>
+        <div id="output"></div>
+
+        <script>
+            // $(Document).ready(()=>{
+            //     getSuccessOutput();
+            // })
+            function getSuccessOutput() {
+                $.ajax({
+                    url: "https://z0p411vwsa.execute-api.ap-south-1.amazonaws.com/dev/live-quiz?ExamID=1000109&TitleExamID=1000109",
+                    method: "GET",
+        //             headers: {
+        //     'Access-Control-Allow-Origin': '*',
+        // },
+                    // contentType: "application/json",
+                    // data: JSON.stringify({
+                    //     ExamID: "1000109",
+                    //     TitleExamID: "1000109",
+                    //     updateValues: { Status: 5, hasAudienceReport: true },
+                    // }),
+                    success: function (response) {
+                        $("#output").html(response);
+                    },
+                    error: function () {
+                        $("#output").html("Bummer: there was an error!");
+                    },
+                });
+                return false;
+            }
+        </script>
+    </body>
+</html> -->
+
+<!-- PATCH -->
+
+
+
+
+<!-- @foreach($categories as $category)
+@if($category->parent_id)
+    @php
+        $parentCategory = $categories->where('id', $category->parent_id)->first();
+    @endphp
+    <option value="{{ $category->id }}">{{ $parentCategory->name }} > {{ $category->name }}</option>
+@else
+    <option value="{{ $category->id }}">{{ $category->name }}</option>
+@endif
+@endforeach -->
+
+
+
+<!-- $category = new Category();
+        $category->name = $name;
+        $category->parent_id = $parentId;
+        $category->save(); -->

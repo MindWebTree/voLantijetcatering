@@ -1,0 +1,523 @@
+<template>
+    <div class="mobile-screen-header-col-1">
+        <div v-if="hamburger" class="nav-container scrollable">
+            <div class="wrapper" v-if="this.rootCategories">
+                <div class="greeting drawer-section fw6">
+                    <!-- <i class="material-icons">perm_identity</i> -->
+                    <span style="font-size: 17px">
+                        <slot name="greetings"></slot>
+
+                        <i
+                            @click="closeDrawer()"
+                            class="material-icons float-right text-dark" style="margin-top: 6px;"
+                        >
+                            cancel
+                        </i>
+                    </span>
+                </div>
+
+                <ul
+                    type="none"
+                    class="velocity-content"
+                    v-if="headerContent.length > 0"
+                >
+                    <li :key="index" v-for="(content, index) in headerContent">
+                        <a
+                            class="unset"
+                            v-text="content.title"
+                            :href="`${$root.baseUrl}/${content.page_link}`"
+                        >
+                        </a>
+                    </li>
+                </ul>
+
+                <ul
+                    type="none"
+                    class="category-wrapper"
+                    v-if="rootCategoriesCollection.length > 0"
+                >
+                    <li
+                        v-for="(category, index) in rootCategoriesCollection"
+                        :key="index"
+                    >
+                        <a
+                            class="unset"
+                            :href="`${$root.baseUrl}/${category.slug}`"
+                        >
+                            <div class="category-logo">
+                                <img
+                                    class="category-icon"
+                                    v-if="category.category_icon_url"
+                                    :src="category.category_icon_url"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                />
+                            </div>
+
+                            <span v-text="category.name"></span>
+                        </a>
+
+                        <i
+                            class="rango-arrow-right"
+                            @click="toggleSubcategories(index, $event)"
+                            v-if="category.children.length > 0"
+                        ></i>
+                    </li>
+                </ul>
+
+                <slot name="customer-navigation"></slot>
+
+                <ul type="none" class="meta-wrapper">
+                    <!-- <li>
+                        <template v-if="locale">
+                            <div class="language-logo-wrapper">
+                                <img
+                                    class="language-logo"
+                                    :src="locale.image_url"
+                                    alt=""
+                                    v-if="locale.image_url"
+                                />
+
+                                <img
+                                    class="language-logo"
+                                    :src="`${$root.baseUrl}/themes/velocity/assets/images/flags/default-locale-image.png`"
+                                    alt=""
+                                    v-else
+                                />
+                            </div> -->
+
+                            <!-- <span v-text="locale.name">{{ locale.image_url }}</span> -->
+                        <!-- </template>
+
+                        <i
+                            class="rango-arrow-right"
+                            @click="toggleMetaInfo('languages')"
+                        >
+                        </i>
+                    </li> -->
+
+                    <!-- <li>
+                        <span v-text="currency.code"></span>
+
+                        <i
+                            class="rango-arrow-right"
+                            @click="toggleMetaInfo('currencies')"
+                        >
+                        </i>
+                    </li> -->
+                    <!-- <img src="./../themes/volantijetcatering/assets/images/profile-user.png" alt=""> -->
+                    <slot name="extra-navigation"></slot>
+                </ul>
+            </div>
+
+            <div class="wrapper" v-else-if="subCategory">
+                <div class="drawer-section">
+                    <i
+                        class="rango-arrow-left fs24 text-down-4"
+                        @click="toggleSubcategories('root')"
+                    ></i>
+
+                    <h4 class="display-inbl" v-text="subCategory.name"></h4>
+
+                    <i
+                        class="material-icons float-right text-dark"
+                        @click="closeDrawer()"
+                    >
+                        cancel
+                    </i>
+                </div>
+
+                <ul type="none">
+                    <li
+                        :key="index"
+                        v-for="(
+                            nestedSubCategory, index
+                        ) in subCategory.children"
+                    >
+                        <a
+                            class="unset"
+                            :href="`${$root.baseUrl}/${subCategory.slug}/${nestedSubCategory.slug}`"
+                        >
+                            <div class="category-logo">
+                                <img
+                                    class="category-icon"
+                                    v-if="nestedSubCategory.category_icon_url"
+                                    :src="nestedSubCategory.category_icon_url"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                />
+                            </div>
+
+                            <span v-text="nestedSubCategory.name"></span>
+                        </a>
+
+                        <ul
+                            type="none"
+                            class="nested-category"
+                            v-if="
+                                nestedSubCategory.children &&
+                                nestedSubCategory.children.length > 0
+                            "
+                        >
+                            <li
+                                :key="`index-${index}`"
+                                v-for="(
+                                    thirdLevelCategory, index
+                                ) in nestedSubCategory.children"
+                            >
+                                <a
+                                    class="unset"
+                                    :href="`${$root.baseUrl}/${subCategory.slug}/${nestedSubCategory.slug}/${thirdLevelCategory.slug}`"
+                                >
+                                    <div class="category-logo">
+                                        <img
+                                            class="category-icon"
+                                            v-if="
+                                                thirdLevelCategory.category_icon_url
+                                            "
+                                            :src="
+                                                thirdLevelCategory.category_icon_url
+                                            "
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        />
+                                    </div>
+
+                                    <span
+                                        v-text="thirdLevelCategory.name"
+                                    ></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="wrapper" v-else-if="languages">
+                <div class="drawer-section">
+                    <i
+                        class="rango-arrow-left fs24 text-down-4"
+                        @click="toggleMetaInfo('languages')"
+                    ></i>
+
+                    <h4
+                        class="display-inbl"
+                        v-text="__('responsive.header.languages')"
+                    ></h4>
+
+                    <i
+                        class="material-icons float-right text-dark"
+                        @click="closeDrawer()"
+                    >
+                        cancel
+                    </i>
+                </div>
+
+                <ul type="none">
+                    <li v-for="(locale, index) in allLocales" :key="index">
+                        <a class="unset" :href="`?locale=${locale.code}`">
+                            <div class="category-logo">
+                                <img
+                                    class="category-icon"
+                                    :src="locale.image_url"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                    v-if="locale.image_url"
+                                />
+
+                                <img
+                                    class="category-icon"
+                                    :src="`${$root.baseUrl}/themes/velocity/assets/images/flags/default-locale-image.png`"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                    v-else
+                                />
+                            </div>
+
+                            <span v-text="locale.name"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="wrapper" v-else-if="currencies">
+                <div class="drawer-section">
+                    <i
+                        class="rango-arrow-left fs24 text-down-4"
+                        @click="toggleMetaInfo('currencies')"
+                    ></i>
+
+                    <h4
+                        class="display-inbl"
+                        v-text="__('shop.general.currencies')"
+                    ></h4>
+
+                    <i
+                        class="material-icons float-right text-dark"
+                        @click="closeDrawer()"
+                    >
+                        cancel
+                    </i>
+                </div>
+
+                <ul type="none">
+                    <li v-for="(currency, index) in allCurrencies" :key="index">
+                        <a class="unset" :href="`?currency=${currency.code}`">
+                            <span v-text="currency.code"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row header-col-12 header-align col-12 mobile-small-icon">
+            <div class="hamburger-wrapper" @click="toggleHamburger">
+                <i class="rango-toggle hamburger"></i>
+            </div>
+            <div class="right-vc-header header-centered">
+                <slot name="logo"></slot>
+            </div>
+
+
+ 
+            <div
+                id="small-mini"
+                :class="
+                    cartCount >= 1
+                        ? 'right-vc-header header-centered'
+                        : 'right-vc-header header-centered'
+                "
+            >
+                <slot name="search-icon"></slot>
+
+                <a href="/onepage/checkout" class="unset">
+                    <i class="material-icons text-down-3 mobile-bag-icon">
+                        <img src="/themes/volantijetcatering/assets/images/shopping-bag.png" />
+                    </i>
+
+                    <div class="badge-wrapper">
+                        <span
+                            class="badge bg-dark"
+                            v-text="displayCartCount"
+                            v-if="cartCount != 0"
+                        ></span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- <div class="right-vc-header mobile-screen-header-col-3 header-centered col-9">
+               
+                <slot name="logo"></slot>
+    
+    
+    
+                <a :href="cartRoute" class="unset">
+                    
+                    <i class="material-icons text-down-3 mobile-bag-icon"><img
+                            src="/themes/velocity/assets/images/shopping-bag-icon.png"></i>
+    
+                    <div class="badge-wrapper">
+                        <span class="badge" v-text="updatedCartItemsCount"></span>
+                    </div>
+    
+                </a>
+            </div> -->
+            
+            
+
+
+        </div>
+
+        <!-- sandeep add code -->
+        <div class="search-products d-none">
+                <slot name="searchbar"></slot>
+                </div>
+
+    </div>
+
+
+
+  
+
+</template>
+
+<script type="text/javascript">
+export default {
+    props: [
+        "isCustomer",
+        "heading",
+        "headerContent",
+        "categoryCount",
+        "cartItemsCount",
+        "cartRoute",
+        "locale",
+        "allLocales",
+        "currency",
+        "allCurrencies",
+    ],
+
+    data: function () {
+        return {
+            compareCount: 0,
+            wishlistCount: 0,
+            languages: false,
+            hamburger: false,
+            currencies: false,
+            subCategory: null,
+            isSearchbar: false,
+            rootCategories: true,
+            rootCategoriesCollection: this.$root.sharedRootCategories,
+            updatedCartItemsCount: this.cartItemsCount,
+            cartCount: 0,
+        };
+    },
+
+        computed: {
+        displayCartCount() {
+            if (this.cartCount >= 99) {
+                return '99+';
+            }
+            return this.cartCount;
+        }
+    },
+
+
+    watch: {
+        hamburger: function (value) {
+            document.body.classList.remove("open-hamburger");
+
+            if (value) {
+                document.body.classList.add("open-hamburger");
+            }
+        },
+
+        "$root.headerItemsCount": function () {
+            this.updateHeaderItemsCount();
+        },
+
+        "$root.miniCartKey": function () {
+            this.getMiniCartDetails();
+        },
+
+        "$root.sharedRootCategories": function (categories) {
+            this.formatCategories(categories);
+        },
+    },
+
+    created: function () {
+        this.getMiniCartDetails();
+
+        this.updateHeaderItemsCount();
+    },
+
+    methods: {
+        openSearchBar: function () {
+            this.isSearchbar = !this.isSearchbar;
+
+            let footer = document.getElementByClassName("footer");
+            let homeContent = document.getElementById(
+                "home-right-bar-container"
+            );
+
+            footer[0].style.opacity = "1";
+            homeContent[0].style.opacity = "1";
+
+            if (this.is) {
+                footer[0].style.opacity = ".3";
+                homeContent[0].style.opacity = ".3";
+            }
+        },
+
+        toggleHamburger: function () {
+            this.hamburger = !this.hamburger;
+        },
+
+        closeDrawer: function () {
+            $(".nav-container").hide();
+
+            this.toggleHamburger();
+            this.rootCategories = true;
+        },
+
+        toggleSubcategories: function (index, event) {
+            if (index == "root") {
+                this.rootCategories = true;
+                this.subCategory = false;
+            } else {
+                event.preventDefault();
+
+                let categories = this.$root.sharedRootCategories;
+                this.rootCategories = false;
+                this.subCategory = categories[index];
+            }
+        },
+
+        toggleMetaInfo: function (metaKey) {
+            this.rootCategories = !this.rootCategories;
+
+            this[metaKey] = !this[metaKey];
+        },
+
+        updateHeaderItemsCount: function () {
+            if (this.isCustomer != "true") {
+                let comparedItems = this.getStorageValue("compared_product");
+
+                if (comparedItems) {
+                    this.compareCount = comparedItems.length;
+                }
+            } else {
+                this.$http
+                    .get(`${this.$root.baseUrl}/items-count`)
+                    .then((response) => {
+                        this.compareCount = response.data.compareProductsCount;
+                        this.wishlistCount =
+                            response.data.wishlistedProductsCount;
+                    })
+                    .catch((exception) => {
+                        console.log(this.__("error.something_went_wrong"));
+                    });
+            }
+        },
+
+        getMiniCartDetails: function () {
+            this.$http
+                .get(`${this.$root.baseUrl}/mini-cart`)
+                .then((response) => {
+                    console.log(response);
+                    if (response.data.status) {
+                        this.updatedCartItemsCount =
+                            response.data.mini_cart.cart_items.length;
+                        this.cartCount = 0;
+
+                        for (const [
+                            idx,
+                            item,
+                        ] of response.data.mini_cart.cart_items.entries()) {
+                            this.cartCount += parseInt(item.quantity);
+                        }
+                    } else {
+                        this.cartCount = 0;
+                    }
+                })
+                .catch((exception) => {
+                    console.log(this.__("error.something_went_wrong"));
+                });
+        },
+
+        formatCategories: function (categories) {
+            let slicedCategories = categories;
+            let categoryCount = this.categoryCount ? this.categoryCount : 9;
+
+            if (slicedCategories && slicedCategories.length > categoryCount) {
+                slicedCategories = categories.slice(0, categoryCount);
+            }
+
+            this.rootCategoriesCollection = slicedCategories;
+        },
+    },
+};
+</script>

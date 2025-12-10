@@ -1,0 +1,237 @@
+{
+  "_vue.common-4d244399.js": {
+    "file": "assets/vue.common-4d244399.js"
+  },
+  "packages/Webkul/Admin/publishable/assets/css/admin.css": {
+    "file": "assets/admin-6d52a656.css",
+    "isEntry": true,
+    "src": "packages/Webkul/Admin/publishable/assets/css/admin.css"
+  },
+  "packages/Webkul/Admin/publishable/assets/images/Accordion-Dark-Arrow-Up.svg": {
+    "file": "assets/Accordion-Dark-Arrow-Up-8b8f9f81.svg",
+    "src": "packages/Webkul/Admin/publishable/assets/images/Accordion-Dark-Arrow-Up.svg"
+  },
+  "packages/Webkul/Admin/publishable/assets/images/Checkbox-Checked.svg": {
+    "file": "assets/Checkbox-Checked-340e1127.svg",
+    "src": "packages/Webkul/Admin/publishable/assets/images/Checkbox-Checked.svg"
+  },
+  "packages/Webkul/Admin/publishable/assets/images/Icon-Calendar.svg": {
+    "file": "assets/Icon-Calendar-bc2685cb.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/icon-calendar.svg"
+  },
+  "packages/Webkul/Admin/publishable/assets/images/Icon-remove.svg": {
+    "file": "assets/Icon-remove-32d29b4e.svg",
+    "src": "packages/Webkul/Admin/publishable/assets/images/Icon-remove.svg"
+  },
+  "packages/Webkul/Admin/publishable/assets/images/dark-chevron-left.svg": {
+    "file": "assets/dark-chevron-left-3b40c29a.svg",
+    "src": "packages/Webkul/Admin/publishable/assets/images/dark-chevron-left.svg"
+  },
+  "packages/Webkul/Admin/publishable/assets/images/dark-chevron-right.svg": {
+    "file": "assets/dark-chevron-right-113be50d.svg",
+    "src": "packages/Webkul/Admin/publishable/assets/images/dark-chevron-right.svg"
+  },
+  "packages/Webkul/Admin/publishable/assets/images/hamburger.svg": {
+    "file": "assets/hamburger-9b9f7edd.svg",
+    "src": "packages/Webkul/Admin/publishable/assets/images/hamburger.svg"
+  },
+  "packages/Webkul/Admin/publishable/assets/js/admin.js": {
+    "file": "assets/admin-bffecf57.js",
+    "imports": [
+      "_vue.common-4d244399.js"
+    ],
+    "isEntry": true,
+    "src": "packages/Webkul/Admin/publishable/assets/js/admin.js"
+  },
+  "packages/Webkul/Shop/publishable/assets/css/shop.css": {
+    "file": "assets/shop-3c94dd03.css",
+    "isEntry": true,
+    "src": "packages/Webkul/Shop/publishable/assets/css/shop.css"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/Expand-Light-On.svg": {
+    "file": "assets/Expand-Light-On-f9d70618.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/Expand-Light-On.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/Expand-Light.svg": {
+    "file": "assets/Expand-Light-fa44dbc6.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/Expand-Light.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/address.svg": {
+    "file": "assets/address-ae7163f7.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/address.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/arrow-down.svg": {
+    "file": "assets/arrow-down-01f05a80.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/arrow-down.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/arrow-up.svg": {
+    "file": "assets/arrow-up-ba1b8b79.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/arrow-up.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/checkbox-checked.svg": {
+    "file": "assets/checkbox-checked-183c4716.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/checkbox-checked.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/checkbox.svg": {
+    "file": "assets/checkbox-63f71cfa.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/checkbox.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/compare_arrows.png": {
+    "file": "assets/compare_arrows-da09a549.png",
+    "src": "packages/Webkul/Shop/publishable/assets/images/compare_arrows.png"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/complete.svg": {
+    "file": "assets/complete-816a53dc.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/complete.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/cross-icon-adj.svg": {
+    "file": "assets/cross-icon-adj-fc1bc2d6.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/cross-icon-adj.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/facebook.svg": {
+    "file": "assets/facebook-afabfeee.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/facebook.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/finish.svg": {
+    "file": "assets/finish-569b3d46.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/finish.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/google-plus.svg": {
+    "file": "assets/google-plus-b8fbeb96.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/google-plus.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/icon-cart.svg": {
+    "file": "assets/icon-cart-4ed6753f.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/icon-cart.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/icon-dropdown.svg": {
+    "file": "assets/icon-dropdown-6d5228f7.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/icon-dropdown.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/instagram.svg": {
+    "file": "assets/instagram-c958fcf5.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/instagram.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/linkedin.svg": {
+    "file": "assets/linkedin-29000e15.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/linkedin.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/payment.svg": {
+    "file": "assets/payment-7042a037.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/payment.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/shipping.svg": {
+    "file": "assets/shipping-467e0118.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/shipping.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/twitter.svg": {
+    "file": "assets/twitter-07e61a16.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/twitter.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/wishlist-added.svg": {
+    "file": "assets/wishlist-added-319856c9.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/wishlist-added.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/images/wishlist.svg": {
+    "file": "assets/wishlist-5db8090c.svg",
+    "src": "packages/Webkul/Shop/publishable/assets/images/wishlist.svg"
+  },
+  "packages/Webkul/Shop/publishable/assets/js/shop.js": {
+    "file": "assets/shop-860b351c.js",
+    "imports": [
+      "_vue.common-4d244399.js"
+    ],
+    "isEntry": true,
+    "src": "packages/Webkul/Shop/publishable/assets/js/shop.js"
+  },
+  "packages/Webkul/Shop/publishable/assets/js/vue-global.js": {
+    "file": "assets/vue-global-b775af89.js",
+    "imports": [
+      "_vue.common-4d244399.js"
+    ],
+    "isEntry": true,
+    "src": "packages/Webkul/Shop/publishable/assets/js/vue-global.js"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/css/velocity.css": {
+    "file": "assets/velocity-b33f627c.css",
+    "isEntry": true,
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/css/velocity.css"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.eot": {
+    "file": "assets/rango-83972310.eot",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.eot"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.svg": {
+    "file": "assets/rango-ba5fdc4b.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.ttf": {
+    "file": "assets/rango-9fe35991.ttf",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.ttf"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.woff": {
+    "file": "assets/rango-c52cfc09.woff",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/fonts/font-rango/rango.woff"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/Arrow-Down-Light.svg": {
+    "file": "assets/Arrow-Down-Light-8b1edcdf.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/Arrow-Down-Light.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-Arrow-Right.svg": {
+    "file": "assets/Icon-Arrow-Right-bdc257fb.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-Arrow-Right.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-Velocity-Active.svg": {
+    "file": "assets/Icon-Velocity-Active-e8087742.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-Velocity-Active.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-Velocity.svg": {
+    "file": "assets/Icon-Velocity-2fa72314.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-Velocity.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-remove.svg": {
+    "file": "assets/Icon-remove-c6fd4cc0.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/Icon-remove.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/controls.svg": {
+    "file": "assets/controls-298a1b8f.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/controls.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/icon-calendar.svg": {
+    "file": "assets/Icon-Calendar-bc2685cb.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/icon-calendar.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/icon-camera.svg": {
+    "file": "assets/icon-camera-6864753d.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/icon-camera.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/icon-crossed.svg": {
+    "file": "assets/icon-crossed-04f1dd9f.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/icon-crossed.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/icon-eye.svg": {
+    "file": "assets/icon-eye-0847e5e9.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/icon-eye.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/icon-search.svg": {
+    "file": "assets/icon-search-6713172a.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/icon-search.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/placeholder-icon.svg": {
+    "file": "assets/placeholder-icon-57baeec7.svg",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/placeholder-icon.svg"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/static/broken-clock.png": {
+    "file": "assets/broken-clock-7b17f40d.png",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/static/broken-clock.png"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/images/static/v-icon.png": {
+    "file": "assets/v-icon-f81f2efe.png",
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/images/static/v-icon.png"
+  },
+  "packages/Webkul/volantijetcatering/publishable/assets/js/velocity.js": {
+    "file": "assets/velocity-125db5fb.js",
+    "isEntry": true,
+    "src": "packages/Webkul/volantijetcatering/publishable/assets/js/velocity.js"
+  }
+}
