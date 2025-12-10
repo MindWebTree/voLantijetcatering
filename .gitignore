@@ -4,7 +4,6 @@
 .vscode
 .env
 .codegpt
-/vendor
 /tests
 /storage
 node_modules
