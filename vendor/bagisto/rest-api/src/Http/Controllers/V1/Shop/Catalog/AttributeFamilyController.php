@@ -9,24 +9,30 @@ class AttributeFamilyController extends CatalogController
 {
     /**
      * Is resource authorized.
+     *
+     * @return bool
      */
-    public function isAuthorized(): bool
+    public function isAuthorized()
     {
         return false;
     }
 
     /**
      * Repository class name.
+     *
+     * @return string
      */
-    public function repository(): string
+    public function repository()
     {
         return AttributeFamilyRepository::class;
     }
 
     /**
      * Resource class name.
+     *
+     * @return string
      */
-    public function resource(): string
+    public function resource()
     {
         return AttributeFamilyResource::class;
     }

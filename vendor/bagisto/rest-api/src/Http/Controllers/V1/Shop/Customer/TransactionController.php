@@ -10,16 +10,20 @@ class TransactionController extends CustomerController
 {
     /**
      * Repository class name.
+     *
+     * @return string
      */
-    public function repository(): string
+    public function repository()
     {
         return OrderTransactionRepository::class;
     }
 
     /**
      * Resource class name.
+     *
+     * @return string
      */
-    public function resource(): string
+    public function resource()
     {
         return OrderTransactionResource::class;
     }
@@ -27,6 +31,7 @@ class TransactionController extends CustomerController
     /**
      * Returns a listing of the order transactions.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function allResources(Request $request)
@@ -62,10 +67,11 @@ class TransactionController extends CustomerController
     /**
      * Returns an individual invoice.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getResource(Request $request, $id)
+    public function getResource(Request $request, int $id)
     {
         $resourceClassName = $this->resource();
 

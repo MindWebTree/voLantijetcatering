@@ -18,7 +18,7 @@ class ProductCustomerGroupPrice
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -30,7 +30,7 @@ class ProductCustomerGroupPrice
      *     example=150
      * )
      *
-     * @var int
+     * @var integer
      */
     private $qty;
 
@@ -56,7 +56,7 @@ class ProductCustomerGroupPrice
      * @var float
      */
     private $value;
-
+    
     /**
      * @OA\Property(
      *     title="Product ID",
@@ -65,10 +65,10 @@ class ProductCustomerGroupPrice
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $product_id;
-
+    
     /**
      * @OA\Property(
      *     title="Customer Group ID",
@@ -77,10 +77,10 @@ class ProductCustomerGroupPrice
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $customer_group_id;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

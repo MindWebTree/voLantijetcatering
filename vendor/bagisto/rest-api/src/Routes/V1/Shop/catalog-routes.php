@@ -10,56 +10,53 @@ use Webkul\RestApi\Http\Controllers\V1\Shop\Catalog\ProductReviewController;
 /**
  * Product routes.
  */
-Route::controller(ProductController::class)->prefix('products')->group(function () {
-    Route::get('', 'allResources');
+Route::get('products', [ProductController::class, 'allResources']);
 
-    Route::get('/{id}', 'getResource');
+Route::get('products/{id}', [ProductController::class, 'getResource']);
 
-    Route::get('{id}/additional-information', 'additionalInformation');
+Route::get('products/{id}/additional-information', [ProductController::class, 'additionalInformation']);
 
-    Route::get('{id}/configurable-config', 'configurableConfig');
-});
+Route::get('products/{id}/configurable-config', [ProductController::class, 'configurableConfig']);
 
+/** 
+ * Product authenticated routes.
+ */
 Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function () {
+    /**
+     * Wishlist routes.
+     */
+    Route::get('products/{product_id}/is-wishlisted', [ProductController::class, 'isWishlisted']);
+
     /**
      * Review routes.
      */
-    Route::controller(ProductReviewController::class)->prefix('products')->group(function () {
-        Route::post('{product_id}/reviews', 'store');
-    });
+    Route::post('products/{product_id}/reviews', [ProductReviewController::class, 'store']);
 });
 
 /**
  * Category routes.
  */
-Route::controller(CategoryController::class)->prefix('categories')->group(function () {
-    Route::get('', 'allResources');
+Route::get('categories', [CategoryController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
+Route::get('categories/{id}', [CategoryController::class, 'getResource']);
 
-});
-
-/**
- * descendant category routes.
- */
-Route::controller(CategoryController::class)->prefix('descendant-categories')->group(function () {
-    Route::get('', 'descendantCategories');
-});
+Route::get('descendant-categories', [CategoryController::class, 'descendantCategories']);
 
 /**
  * Attribute routes.
  */
-Route::controller(AttributeController::class)->prefix('attributes')->group(function () {
-    Route::get('', 'allResources');
+Route::get('attributes', [AttributeController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
-});
+Route::get('attributes/{id}', [AttributeController::class, 'getResource']);
 
 /**
  * Attribute family routes.
  */
-Route::controller(AttributeFamilyController::class)->prefix('attribute-families')->group(function () {
-    Route::get('', 'allResources');
+Route::get('attribute-families', [AttributeFamilyController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
-});
+Route::get('attribute-families/{id}', [AttributeFamilyController::class, 'getResource']);
+
+
+
+// sandeep add route for search page
+Route::get('search', [ProductController::class, 'search_products']);

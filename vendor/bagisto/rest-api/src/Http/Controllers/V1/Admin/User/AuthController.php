@@ -4,13 +4,12 @@ namespace Webkul\RestApi\Http\Controllers\V1\Admin\User;
 
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use Webkul\RestApi\Http\Resources\V1\Admin\Settings\UserResource;
+use Webkul\RestApi\Http\Resources\V1\Admin\Setting\UserResource;
 use Webkul\User\Repositories\AdminRepository;
 
 class AuthController extends UserController
@@ -19,8 +18,12 @@ class AuthController extends UserController
 
     /**
      * Login user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Webkul\User\Repositories\AdminRepository  $adminRepository
+     * @return \Illuminate\Http\Response
      */
-    public function login(Request $request, AdminRepository $adminRepository): Response
+    public function login(Request $request, AdminRepository $adminRepository)
     {
         $request->validate([
             'email'    => 'required|email',
@@ -28,18 +31,18 @@ class AuthController extends UserController
         ]);
 
         if (! EnsureFrontendRequestsAreStateful::fromFrontend($request)) {
-            $request->validate(['device_name' => 'required']);
+            $request->validate([
+                'device_name' => 'required',
+            ]);
 
             $admin = $adminRepository->where('email', $request->email)->first();
 
-            if (
-                ! $admin
-                || ! Hash::check($request->password, $admin->password)
-            ) {
+            if (! $admin || ! Hash::check($request->password, $admin->password)) {
                 throw ValidationException::withMessages([
-                    'email' => trans('rest-api::app.admin.account.error.credential-error'),
+                    'email' => ['The provided credentials are incorrect.'],
                 ]);
             }
+
             /**
              * Preventing multiple token creation.
              */
@@ -47,7 +50,7 @@ class AuthController extends UserController
 
             return response([
                 'data'    => new UserResource($admin),
-                'message' => trans('rest-api::app.admin.account.logged-in-success'),
+                'message' => 'Logged in successfully.',
                 'token'   => $admin->createToken($request->device_name, ['role:admin'])->plainTextToken,
             ]);
         }
@@ -57,19 +60,22 @@ class AuthController extends UserController
 
             return response([
                 'data'    => new UserResource($this->resolveAdminUser($request)),
-                'message' => trans('rest-api::app.admin.account.logged-in-success'),
+                'message' => 'Logged in successfully.',
             ]);
         }
 
         return response([
-            'message' => trans('rest-api::app.admin.account.error.invalid'),
+            'message' => 'Invalid Email or Password',
         ], 401);
     }
 
     /**
      * Logout user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request): Response
+    public function logout(Request $request)
     {
         $admin = $this->resolveAdminUser($request);
 
@@ -78,16 +84,21 @@ class AuthController extends UserController
             : auth()->guard('admin')->logout();
 
         return response([
-            'message' => trans('rest-api::app.admin.account.logged-out-success'),
+            'message' => 'Logged out successfully.',
         ]);
     }
 
     /**
      * Send forgot password link.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function forgotPassword(Request $request): Response
+    public function forgotPassword(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email' => 'required|email',
+        ]);
 
         $response = Password::broker('admins')->sendResetLink($request->only('email'));
 

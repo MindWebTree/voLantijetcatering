@@ -4,13 +4,14 @@
 
 ### 1. Requirements:
 
-* **Bagisto**: v2.2.x
+* **Bagisto**: v1.4.5
 
 ### 2. Installation:
 
-#### Install the stable version of Bagisto Rest API from your console using the below command:
+##### To install Bagisto REST API from your console:
+
 ~~~
-composer require bagisto/rest-api
+composer require bagisto/rest-api dev-master
 ~~~
 
 ##### Add below options in the .env file (i.e. http://localhost/public your domain):
@@ -25,13 +26,13 @@ SANCTUM_STATEFUL_DOMAINS=http://localhost/public
 php artisan bagisto-rest-api:install
 ~~~
 
-##### To check the Admin end API documentation:
+#### To check the Admin end API documentation:
 
 ~~~
 http://localhost/public/api/admin/documentation
 ~~~
 
-##### To check the Shop end API documentation:
+#### To check the Shop end API documentation:
 
 ~~~
 http://localhost/public/api/shop/documentation

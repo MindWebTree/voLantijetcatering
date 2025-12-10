@@ -18,7 +18,7 @@ class Transaction
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -66,6 +66,7 @@ class Transaction
      */
     private $payment_method;
 
+
     /**
      * @OA\Property(
      *     title="Transaction Related Info",
@@ -85,7 +86,7 @@ class Transaction
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $invoice_id;
 
@@ -97,10 +98,10 @@ class Transaction
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $order_id;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

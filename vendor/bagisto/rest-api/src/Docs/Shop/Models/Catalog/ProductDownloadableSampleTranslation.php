@@ -18,7 +18,7 @@ class ProductDownloadableSampleTranslation
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 
@@ -43,7 +43,6 @@ class ProductDownloadableSampleTranslation
      * @var string
      */
     protected $title;
-
     /**
      * @OA\Property(
      *     title="Product Downloadable Sample ID",
@@ -52,7 +51,7 @@ class ProductDownloadableSampleTranslation
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $product_downloadable_sample_id;
 }

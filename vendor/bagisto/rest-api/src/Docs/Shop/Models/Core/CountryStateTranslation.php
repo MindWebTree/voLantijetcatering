@@ -18,7 +18,7 @@ class CountryStateTranslation
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 
@@ -52,7 +52,7 @@ class CountryStateTranslation
      *     example=106
      * )
      *
-     * @var int
+     * @var integer
      */
     public $country_state_id;
 }

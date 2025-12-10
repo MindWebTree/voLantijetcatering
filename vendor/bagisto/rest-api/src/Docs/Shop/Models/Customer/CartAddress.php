@@ -18,7 +18,7 @@ class CartAddress
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -74,20 +74,17 @@ class CartAddress
      *     example={
      *          "819, Farnum Road"
      *     },
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(
      *              property="address1",
      *              type="array",
-     *
      *              @OA\Items(
-     *
      *                  @OA\Property(type="string")
      *              )
      *          )
      *     )
      * )
+     *
      */
     private $address1;
 
@@ -154,7 +151,7 @@ class CartAddress
      *     example=21797
      * )
      *
-     * @var int
+     * @var integer
      */
     private $postcode;
 

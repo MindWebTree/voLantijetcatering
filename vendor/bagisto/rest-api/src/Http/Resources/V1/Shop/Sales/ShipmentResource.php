@@ -2,8 +2,8 @@
 
 namespace Webkul\RestApi\Http\Resources\V1\Shop\Sales;
 
-use Webkul\RestApi\Http\Resources\V1\Admin\Sales\ShipmentResource as BaseShipmentResource;
+use Webkul\RestApi\Http\Resources\V1\Admin\Sale\ShipmentResource as SaleShipmentResource;
 
-class ShipmentResource extends BaseShipmentResource
+class ShipmentResource extends SaleShipmentResource
 {
 }

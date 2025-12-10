@@ -18,7 +18,7 @@ class CartPayment
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 

@@ -18,7 +18,7 @@ class CatalogRule
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -78,7 +78,7 @@ class CatalogRule
      *     enum={0,1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $status;
 
@@ -90,7 +90,7 @@ class CatalogRule
      *     enum={1, 2}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $condition_type;
 
@@ -104,9 +104,7 @@ class CatalogRule
      *         "attribute": "product|price",
      *         "attribute_type": "price"
      *     }},
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(property="value", type="string", example="1"),
      *          @OA\Property(property="operator", type="string", example="<="),
      *          @OA\Property(property="attribute", type="string", example="product|price"),
@@ -126,7 +124,7 @@ class CatalogRule
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $end_other_rules;
 
@@ -160,10 +158,10 @@ class CatalogRule
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $sort_order;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

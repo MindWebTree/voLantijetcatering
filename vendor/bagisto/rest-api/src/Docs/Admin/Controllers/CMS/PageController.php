@@ -1,125 +1,105 @@
 <?php
 
-namespace Webkul\RestApi\Docs\Admin\Controllers\CMS;
+namespace Webkul\RestApi\Docs\Admin\Controllers\Cms;
 
 class PageController
 {
-    /**
-     * @OA\Get(
-     *      path="/api/v1/admin/cms",
-     *      operationId="getCmsPages",
-     *      tags={"Cms-Pages"},
-     *      summary="Get admin CMS page list",
+	/**
+	 * @OA\Get(
+	 *      path="/api/v1/admin/cms",
+	 *      operationId="getCmsPages",
+	 *      tags={"Cms-Pages"},
+	 *      summary="Get admin CMS page list",
      *      description="Returns CMS page list, if you want to retrieve all CMS pages at once pass pagination=0 otherwise ignore this parameter",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="CMS Page id",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="sort",
      *          description="Sort column",
      *          example="id",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="string"
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="order",
      *          description="Sort order",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="string",
      *              enum={"desc", "asc"}
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="page",
      *          description="Page number",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="limit",
      *          description="Limit",
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(ref="#/components/schemas/CmsPage")
      *              ),
-     *
      *              @OA\Property(
      *                  property="meta",
      *                  ref="#/components/schemas/Pagination"
      *              )
      *          )
      *      )
-     * )
-     */
-    public function list()
-    {
-    }
+	 * )
+	 */
+	public function list()
+	{
+	}
 
-    /**
-     * @OA\Get(
-     *      path="/api/v1/admin/cms/{id}",
-     *      operationId="getCMSPage",
-     *      tags={"Cms-Pages"},
-     *      summary="Get admin CMS page detail",
+	/**
+	 * @OA\Get(
+	 *      path="/api/v1/admin/cms/{id}",
+	 *      operationId="getCMSPage",
+	 *      tags={"Cms-Pages"},
+	 *      summary="Get admin CMS page detail",
      *      description="Returns CMS page detail",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="CMS Page id",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="data",
      *                  type="object",
@@ -127,11 +107,11 @@ class PageController
      *              )
      *          )
      *      )
-     * )
-     */
-    public function get()
-    {
-    }
+	 * )
+	 */
+	public function get()
+	{
+	}
 
     /**
      * @OA\Post(
@@ -141,14 +121,10 @@ class PageController
      *      summary="Store the CMS page",
      *      description="Store the CMS page",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *
      *              @OA\Schema(
-     *
      *                  @OA\Property(
      *                      property="url_key",
      *                      type="string",
@@ -165,10 +141,8 @@ class PageController
      *                      property="channels",
      *                      description="CMS page's channels",
      *                      type="array",
-     *
      *                      @OA\Items(type="integer", example=1)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="html_content",
      *                      format="text",
@@ -198,18 +172,14 @@ class PageController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(property="message", type="string", example="CMS Page created successfully."),
      *              @OA\Property(property="data", type="object", ref="#/components/schemas/CmsPage")
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -228,27 +198,20 @@ class PageController
      *      summary="Update CMS page",
      *      description="Update CMS page",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="CMS Page id",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
-     *              mediaType="application/json",
-     *
+	 *              mediaType="application/json",
      *              @OA\Schema(
-     *
      *                  @OA\Property(
-     *                      property="en",
      *                      description="Provide locale code as key to this index i.e. 'en'",
      *                      type="object",
      *                          @OA\Property(
@@ -285,7 +248,7 @@ class PageController
      *                          @OA\Property(
      *                              property="meta_description",
      *                              type="string",
-     *                              description="CMS page's meta description",
+     *                              description="CMS page's meta descripton",
      *                              example="faq-info"
      *                          )
      *                  ),
@@ -293,20 +256,16 @@ class PageController
      *                      property="channels",
      *                      description="CMS page's channels",
      *                      type="array",
-     *
      *                      @OA\Items(type="integer", example=1)
      *                  ),
      *                  required={"channels"}
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -318,7 +277,6 @@ class PageController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -337,24 +295,19 @@ class PageController
      *      summary="Delete CMS page by id",
      *      description="Delete CMS page by id",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="CMS Page id",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -376,31 +329,24 @@ class PageController
      *      summary="Mass delete cms pages",
      *      description="Mass delete cms pages",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
-     *              mediaType="application/json",
-     *
+	 *              mediaType="application/json",
      *              @OA\Schema(
-     *
      *                  @OA\Property(
-     *                      property="indices",
+     *                      property="indexes",
      *                      description="CMS Page's Ids `CommaSeperated`",
      *                      type="string",
-     *                      example={1,2}
+     *                      example="1,2"
      *                  ),
-     *                  required={"indices"}
+     *                  required={"indexes"}
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",

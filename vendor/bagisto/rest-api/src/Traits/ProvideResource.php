@@ -23,7 +23,7 @@ trait ProvideResource
     {
         return '';
     }
-
+    
     /**
      * Resource class name.
      *
@@ -40,7 +40,7 @@ trait ProvideResource
      * @return object
      */
     public function getRepositoryInstance()
-    {
+    {    
         return app($this->repository());
     }
 

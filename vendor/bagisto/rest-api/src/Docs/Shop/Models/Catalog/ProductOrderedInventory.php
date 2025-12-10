@@ -18,7 +18,7 @@ class ProductOrderedInventory
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 
@@ -30,7 +30,7 @@ class ProductOrderedInventory
      *     example=150
      * )
      *
-     * @var int
+     * @var integer
      */
     protected $qty;
 
@@ -42,7 +42,7 @@ class ProductOrderedInventory
      *     example=4
      * )
      *
-     * @var int
+     * @var integer
      */
     public $product_id;
 
@@ -54,7 +54,7 @@ class ProductOrderedInventory
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $channel_id;
 }

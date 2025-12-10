@@ -18,7 +18,7 @@ class ProductReview
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -42,7 +42,7 @@ class ProductReview
      *     enum={"5", "4", "3", "2", "1"}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $rating;
 
@@ -78,18 +78,7 @@ class ProductReview
      * @var string
      */
     private $status;
-
-    /**
-     * @OA\Property(
-     *     title="Attachments",
-     *     description="Review attachments",
-     *     example="http://localhost/private/storage/review/{product_id}/{image_name.jpg}"
-     * )
-     *
-     * @var string
-     */
-    private $attachments;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",
@@ -124,7 +113,7 @@ class ProductReview
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $product_id;
 
@@ -133,7 +122,7 @@ class ProductReview
      *     title="Product",
      *     description="Reviewed Product"
      * )
-     *
+     * 
      * @var \Webkul\RestApi\Docs\Shop\Models\Catalog\Product
      */
     private $product;
@@ -146,7 +135,7 @@ class ProductReview
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $customer_id;
 
@@ -155,7 +144,7 @@ class ProductReview
      *     title="Customer",
      *     description="Review's Customer"
      * )
-     *
+     * 
      * @var \Webkul\RestApi\Docs\Shop\Models\Customer\Customer
      */
     private $customer;

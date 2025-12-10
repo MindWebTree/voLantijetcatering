@@ -18,7 +18,7 @@ class EmailTemplate
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -41,7 +41,7 @@ class EmailTemplate
      *     enum={0,1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $status;
 

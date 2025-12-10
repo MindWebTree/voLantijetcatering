@@ -3,67 +3,64 @@
 namespace Webkul\RestApi\Http\Controllers\V1\Shop\Catalog;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\RestApi\Http\Resources\V1\Shop\Catalog\ProductResource;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends CatalogController
 {
-        /**
-     * Create a controller instance.
-     *
-     * @return void
-     */
-    public function __construct(protected ProductRepository $productRepository) {}
-
     /**
      * Is resource authorized.
+     *
+     * @return bool
      */
-    public function isAuthorized(): bool
+    public function isAuthorized()
     {
         return false;
     }
 
     /**
      * Repository class name.
+     *
+     * @return string
      */
-    public function repository(): string
+    public function repository()
     {
         return ProductRepository::class;
     }
 
     /**
      * Resource class name.
+     *
+     * @return string
      */
-    public function resource(): string
+    public function resource()
     {
         return ProductResource::class;
     }
 
     /**
      * Returns a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function allResources(Request $request)
     {
-        if (core()->getConfigData('catalog.products.search.engine') == 'elastic') {
-            $searchEngine = core()->getConfigData('catalog.products.search.storefront_mode');
-        }
 
-        $products = $this->getRepositoryInstance()
-            ->setSearchEngine($searchEngine ?? 'database')
-            ->getAll(array_merge(request()->query(), [
-                'channel_id'           => core()->getCurrentChannel()->id,
-                'status'               => 1,
-                'visible_individually' => 1,
-            ]));
+        $results = $this->getRepositoryInstance()->getAll($request->input('category_id'));
 
-        return $this->getResourceCollection($products);
+        return $this->getResourceCollection($results);
     }
 
     /**
      * Returns product's additional information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function additionalInformation(Request $request, int $id): Response
+    public function additionalInformation(Request $request, $id)
     {
         $resource = $this->getRepositoryInstance()->findOrFail($id);
 
@@ -77,8 +74,12 @@ class ProductController extends CatalogController
 
     /**
      * Returns product's additional information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function configurableConfig(Request $request, int $id): Response
+    public function configurableConfig(Request $request, $id)
     {
         $resource = $this->getRepositoryInstance()->findOrFail($id);
 
@@ -89,4 +90,81 @@ class ProductController extends CatalogController
             'data' => $configurableConfig,
         ]);
     }
+
+    /**
+     * Is product wishlisted.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $productId
+     * @return \Illuminate\Http\Response
+     */
+    public function isWishlisted(Request $request, $productId)
+    {
+        $product = $this->getRepositoryInstance()->findOrFail($productId);
+
+        $wishlistHelper = app(\Webkul\Customer\Helpers\Wishlist::class);
+
+        return response([
+            'data' => [
+                'is_wishlisted' => $wishlistHelper->getWishlistProduct($product) ? true : false
+            ],
+        ]);
+    }
+
+
+
+    // sandeep add funtion for search page
+    public function search_products(Request $request){
+
+        //  $validator = Validator::make($request->all(),[
+        //     'query' => 'required|min:3', 
+        //  ]);
+
+        //  if($validator->fails()){
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors(),
+        //     ], 422);
+        //  }
+
+
+        $results = collect();
+        $errorMessage = null;
+        $searchTerm = request()->input('query', '');
+
+        // $productRepository = app(ProductRepository::class);
+
+        if (!empty($searchTerm)) {
+            if (strlen($searchTerm) >= 3) {
+                // request()->query->add([
+                //     'name'  => $searchTerm,
+                //     'sort'  => 'created_at',
+                //     'order' => 'desc',
+                // ]);
+
+                $request->merge([
+                    'name'  => $searchTerm,
+                    'sort'  => 'created_at',
+                    'order' => 'desc',
+                ]);
+    
+                // Fetch results from the repository instance
+                $getItems = $this->getRepositoryInstance()->getAll();
+                $results =  $this->getResourceCollection($getItems);
+                
+                // $results =  $productRepository->getAll();
+            } else {
+                $errorMessage = 'Search term must be at least 3 characters long.';
+            }
+        } else {
+            $getItems = $this->getRepositoryInstance()->getAll();
+            $results =  $this->getResourceCollection($getItems);
+        }
+
+        return response()->json([
+            'results' => $results->count() ? $results : null,
+            'errorMessage' => $errorMessage,
+        ]);
+    }
+
 }

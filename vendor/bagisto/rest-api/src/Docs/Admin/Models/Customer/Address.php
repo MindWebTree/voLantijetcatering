@@ -18,7 +18,7 @@ class Address
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -68,39 +68,36 @@ class Address
 
     /**
      * @OA\Property(
-     *     title="Customer's Address",
+     *     title="Cart Address1",
      *     description="Customer's address detail",
      *     type="array",
      *     example={
      *          "819, Farnum Road"
      *     },
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(
-     *              property="address",
+     *              property="address1",
      *              type="array",
-     *
      *              @OA\Items(
-     *
      *                  @OA\Property(type="string")
      *              )
      *          )
      *     )
      * )
+     *
      */
-    private $address;
+    private $address1;
 
     /**
      * @OA\Property(
-     *     title="Email",
-     *     description="Customer's Email",
-     *     example="admin@example.com",
+     *     title="Address2",
+     *     description="Customer's Address2",
+     *     example="St. Elmira",
      * )
      *
      * @var string
      */
-    private $email;
+    private $address2;
 
     /**
      * @OA\Property(
@@ -116,7 +113,7 @@ class Address
     /**
      * @OA\Property(
      *     title="Country Name",
-     *     description="Address Country Name, contains complete country name (e.g. United States)",
+     *     description="Address Country Name, contains complate country name (e.g. United States)",
      *     example="United States",
      * )
      *
@@ -154,7 +151,7 @@ class Address
      *     example=21797
      * )
      *
-     * @var int
+     * @var integer
      */
     private $postcode;
 
@@ -176,7 +173,7 @@ class Address
      *     enum={"1", "0"}
      * )
      *
-     * @var bool
+     * @var boolean
      */
     private $is_default;
 

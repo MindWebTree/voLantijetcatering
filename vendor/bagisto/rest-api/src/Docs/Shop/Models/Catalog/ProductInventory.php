@@ -18,7 +18,7 @@ class ProductInventory
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 
@@ -30,7 +30,7 @@ class ProductInventory
      *     example=150
      * )
      *
-     * @var int
+     * @var integer
      */
     protected $qty;
 
@@ -42,7 +42,7 @@ class ProductInventory
      *     example=4
      * )
      *
-     * @var int
+     * @var integer
      */
     public $product_id;
 
@@ -54,7 +54,7 @@ class ProductInventory
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $inventory_source_id;
 
@@ -66,7 +66,7 @@ class ProductInventory
      *     example=0
      * )
      *
-     * @var int
+     * @var integer
      */
     public $vendor_id;
 }

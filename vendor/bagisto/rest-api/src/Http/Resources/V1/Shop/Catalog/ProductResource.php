@@ -3,27 +3,47 @@
 namespace Webkul\RestApi\Http\Resources\V1\Shop\Catalog;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Webkul\Checkout\Facades\Cart;
 use Webkul\Product\Facades\ProductImage;
-use Webkul\Product\Helpers\BundleOption;
+use Illuminate\Support\Facades\DB;
 
 class ProductResource extends JsonResource
 {
     /**
+     * Product review helper.
+     *
+     * @var \Webkul\Product\Helpers\Review
+     */
+    protected $productReviewHelper;
+
+    /**
+     * Create a new resource instance.
+     *
+     * @return void
+     */
+    public function __construct($resource)
+    {
+        $this->productReviewHelper = app(\Webkul\Product\Helpers\Review::class);
+
+        parent::__construct($resource);
+    }
+
+    /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function toArray($request)
     {
         /* assign product */
-        $product = $this->product ?? $this;
-
+        $product = $this->product ? $this->product : $this;
+        // sandeep || get product qty
+        $product->load('inventory_indices');
+        $qty = optional($product->inventory_indices->first())->qty ?? 0;
+    
         /* get type instance */
         $productTypeInstance = $product->getTypeInstance();
-
-        /* Get review helper */
-        $reviewHelper = app(\Webkul\Product\Helpers\Review::class);
 
         /* generating resource */
         return [
@@ -32,6 +52,7 @@ class ProductResource extends JsonResource
             'sku'                => $product->sku,
             'type'               => $product->type,
             'name'               => $product->name,
+            'qty'                => $qty,
             'url_key'            => $product->url_key,
             'price'              => core()->convertPrice($productTypeInstance->getMinimalPrice()),
             'formatted_price'    => core()->currency($productTypeInstance->getMinimalPrice()),
@@ -45,16 +66,16 @@ class ProductResource extends JsonResource
 
             /* product's reviews */
             'reviews' => [
-                'total'          => $total = $reviewHelper->getTotalReviews($product),
-                'total_rating'   => $total ? $reviewHelper->getTotalRating($product) : 0,
-                'average_rating' => $total ? $reviewHelper->getAverageRating($product) : 0,
-                'percentage'     => $total ? json_encode($reviewHelper->getPercentageRating($product)) : [],
+                'total'          => $total = $this->productReviewHelper->getTotalReviews($product),
+                'total_rating'   => $total ? $this->productReviewHelper->getTotalRating($product) : 0,
+                'average_rating' => $total ? $this->productReviewHelper->getAverageRating($product) : 0,
+                'percentage'     => $total ? json_encode($this->productReviewHelper->getPercentageRating($product)) : [],
             ],
 
             /* product's checks */
             'in_stock'              => $product->haveSufficientQuantity(1),
             'is_saved'              => false,
-            'is_item_in_cart'       => \Cart::getCart(),
+            'is_item_in_cart'       => Cart::hasProduct($product),
             'show_quantity_changer' => $this->when(
                 $product->type !== 'grouped',
                 $product->getTypeInstance()->showQuantityBox()
@@ -80,13 +101,13 @@ class ProductResource extends JsonResource
      */
     private function specialPriceInfo()
     {
-        $product = $this->product ?? $this;
+        $product = $this->product ? $this->product : $this;
 
         $productTypeInstance = $product->getTypeInstance();
 
         return [
             'special_price'           => $this->when(
-                $productTypeInstance->haveDiscount(),
+                $productTypeInstance ->haveDiscount(),
                 core()->convertPrice($productTypeInstance->getMinimalPrice())
             ),
             'formatted_special_price' => $this->when(
@@ -111,7 +132,7 @@ class ProductResource extends JsonResource
      */
     private function allProductExtraInfo()
     {
-        $product = $this->product ?? $this;
+        $product = $this->product ? $this->product : $this;
 
         $productTypeInstance = $product->getTypeInstance();
 
@@ -145,6 +166,14 @@ class ProductResource extends JsonResource
                 $productTypeInstance instanceof \Webkul\Product\Type\Downloadable,
                 $product->type == 'downloadable'
                     ? $this->getDownloadableProductInfo($product)
+                    : null
+            ),
+
+            /* booking product */
+            $this->mergeWhen(
+                $product->type == 'booking',
+                $product->type == 'booking'
+                    ? $this->getBookingProductInfo($product)
                     : null
             ),
         ];
@@ -183,7 +212,8 @@ class ProductResource extends JsonResource
     private function getBundleProductInfo($product)
     {
         return [
-            'bundle_options' => app(BundleOption::class)->getBundleConfig($product),
+            'currency_options' => core()->getAccountJsSymbols(),
+            'bundle_options'   => app('Webkul\Product\Helpers\BundleOption')->getBundleConfig($product),
         ];
     }
 
@@ -195,6 +225,9 @@ class ProductResource extends JsonResource
      */
     private function getConfigurableProductInfo($product)
     {
+    //    sandeep || add code for load inventory table data
+        $product->load('variants.inventory_indices');
+
         return [
             'variants' => $product->variants,
         ];
@@ -224,9 +257,51 @@ class ProductResource extends JsonResource
                 $sample = $downloadableSample->toArray();
                 $data = $sample;
                 $data['download_url'] = route('shop.downloadable.download_sample', ['type' => 'sample', 'id' => $sample['id']]);
-
                 return $data;
             }),
         ];
+    }
+
+    /**
+     * Get booking product's extra information.
+     *
+     * @param  \Webkul\Product\Models\Product  $product
+     * @return array
+     */
+    private function getBookingProductInfo($product)
+    {
+        $bookingProduct = app('\Webkul\BookingProduct\Repositories\BookingProductRepository')->findOneByField('product_id', $product->id);
+
+        $data['booking'] = $bookingProduct;
+        $data['slot_index_route'] = route('booking_product.slots.index', $bookingProduct->id);
+
+        if ($bookingProduct->type == 'appointment') {
+            $bookingSlotHelper = app('\Webkul\BookingProduct\Helpers\AppointmentSlot');
+
+            $data['today_slots_html'] = $bookingSlotHelper->getTodaySlotsHtml($bookingProduct);
+            $data['week_slot_durations'] = $bookingSlotHelper->getWeekSlotDurations($bookingProduct);
+            $data['appointment_slot'] = $bookingProduct->appointment_slot;
+        }
+
+        if ($bookingProduct->type == 'event') {
+            $bookingSlotHelper = app('\Webkul\BookingProduct\Helpers\EventTicket');
+
+            $data['tickets'] = $bookingSlotHelper->getTickets($bookingProduct);
+            $data['event_date'] = $bookingSlotHelper->getEventDate($bookingProduct);
+        }
+
+        if ($bookingProduct->type == 'rental') {
+            $data['renting_slot'] = $bookingProduct->rental_slot;
+        }
+
+        if ($bookingProduct->type == 'table') {
+            $bookingSlotHelper = app('\Webkul\BookingProduct\Helpers\TableSlot');
+
+            $data['today_slots_html'] = $bookingSlotHelper->getTodaySlotsHtml($bookingProduct);
+            $data['week_slot_durations'] = $bookingSlotHelper->getWeekSlotDurations($bookingProduct);
+            $data['table_slot'] = $bookingProduct->table_slot;
+        }
+
+        return $data;
     }
 }

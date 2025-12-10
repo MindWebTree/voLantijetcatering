@@ -18,7 +18,7 @@ class ProductAttributeValue
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 
@@ -62,7 +62,7 @@ class ProductAttributeValue
      *     example=false
      * )
      *
-     * @var bool
+     * @var boolean
      */
     protected $boolean_value;
 
@@ -73,7 +73,7 @@ class ProductAttributeValue
      *     example=30
      * )
      *
-     * @var int
+     * @var integer
      */
     protected $integer_value;
 
@@ -84,7 +84,7 @@ class ProductAttributeValue
      *     example=30.20
      * )
      *
-     * @var int
+     * @var integer
      */
     protected $float_value;
 
@@ -129,7 +129,7 @@ class ProductAttributeValue
      *     example=4
      * )
      *
-     * @var int
+     * @var integer
      */
     public $product_id;
 
@@ -141,7 +141,7 @@ class ProductAttributeValue
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $attribute_id;
 }

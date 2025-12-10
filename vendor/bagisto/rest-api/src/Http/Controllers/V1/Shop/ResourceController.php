@@ -29,19 +29,38 @@ class ResourceController extends V1Controller implements ResourceContract
     /**
      * Returns a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function allResources(Request $request)
     {
+
         $query = $this->getRepositoryInstance()->scopeQuery(function ($query) use ($request) {
+            // sandeep add code
+            $repository = $this->getRepositoryInstance();
+            $customerAddress = is_a($repository, \Webkul\Customer\Repositories\CustomerAddressRepository::class);
+
             if ($this->isAuthorized()) {
-                $query = $query->where('customer_id', $this->resolveShopUser($request)->id);
+                if ($customerAddress) {
+                    $query = $query->where('addresses.customer_id', $this->resolveShopUser($request)->id);
+                }else{
+                    $query = $query->where('customer_id', $this->resolveShopUser($request)->id);
+                }
             }
 
             foreach ($request->except($this->requestException) as $input => $value) {
                 $query = $query->whereIn($input, array_map('trim', explode(',', $value)));
             }
 
+
+            // sandeep add code for get airport fbo details this condition only work when then get address data 
+            if ($customerAddress) {
+                $query = $query->join('airport_fbo_details', 'addresses.airport_fbo_id', '=', 'airport_fbo_details.id')
+                ->select('addresses.*', 'airport_fbo_details.name as airport_fbo_name', 'airport_fbo_details.address as airport_fbo_address');
+            }
+
+
+            // dd($query);
             if ($sort = $request->input('sort')) {
                 $query = $query->orderBy($sort, $request->input('order') ?? 'desc');
             } else {
@@ -51,10 +70,11 @@ class ResourceController extends V1Controller implements ResourceContract
             return $query;
         });
 
+
         if (is_null($request->input('pagination')) || $request->input('pagination')) {
-            $results = $query->paginate($request->input('limit') ?? 10);
+             $results = $query->paginate($request->input('limit') ?? 10);
         } else {
-            $results = $query->get();
+             $results = $query->get();
         }
 
         return $this->getResourceCollection($results);
@@ -63,17 +83,59 @@ class ResourceController extends V1Controller implements ResourceContract
     /**
      * Returns an individual resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getResource(Request $request, $id)
+    public function getResource(Request $request, int $id)
     {
         $resourceClassName = $this->resource();
 
+        // sandeep commnet code
+        // $resource = $this->isAuthorized()
+        //     ? $this->getRepositoryInstance()->where('customer_id', $this->resolveShopUser($request)->id)->findOrFail($id)
+        //     : $this->getRepositoryInstance()->findOrFail($id);
+
+        $query = $this->getRepositoryInstance();
+        $customerAddress = $resourceClassName === \Webkul\RestApi\Http\Resources\V1\Shop\Customer\CustomerAddressResource::class;
+
+        // sandeep add code for working only get single address data
+        if ($customerAddress) {
+            $query = $query->join('airport_fbo_details', 'addresses.airport_fbo_id', '=', 'airport_fbo_details.id')
+                ->select('addresses.*', 'airport_fbo_details.name as airport_fbo_name', 'airport_fbo_details.address as airport_fbo_address');
+        }
+
+        if ($this->isAuthorized()) {
+            if($customerAddress){
+                $query = $query->where('addresses.customer_id', $this->resolveShopUser($request)->id);
+            }else{
+                $query = $query->where('customer_id', $this->resolveShopUser($request)->id);
+            }
+        }
+
+            // Fetch the resource
+             $resource = $query->findOrFail($id);
+            
+        return new $resourceClassName($resource);
+    }
+
+    /**
+     * Delete's an individual resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyResource(Request $request, int $id)
+    {
         $resource = $this->isAuthorized()
             ? $this->getRepositoryInstance()->where('customer_id', $this->resolveShopUser($request)->id)->findOrFail($id)
             : $this->getRepositoryInstance()->findOrFail($id);
 
-        return new $resourceClassName($resource);
+        $resource->delete();
+
+        return response([
+            'message' => __('rest-api::app.common-response.success.delete', ['name' => $this->resourceName]),
+        ]);
     }
 }

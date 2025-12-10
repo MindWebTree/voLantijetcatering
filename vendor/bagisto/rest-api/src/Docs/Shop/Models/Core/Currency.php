@@ -18,7 +18,7 @@ class Currency
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 

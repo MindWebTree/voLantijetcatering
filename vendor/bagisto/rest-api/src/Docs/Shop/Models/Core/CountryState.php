@@ -18,7 +18,7 @@ class CountryState
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 
@@ -63,7 +63,7 @@ class CountryState
      *     example=106
      * )
      *
-     * @var int
+     * @var integer
      */
     public $country_id;
 

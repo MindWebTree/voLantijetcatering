@@ -9,16 +9,20 @@ class ShipmentController extends CustomerController
 {
     /**
      * Repository class name.
+     *
+     * @return string
      */
-    public function repository(): string
+    public function repository()
     {
         return ShipmentRepository::class;
     }
 
     /**
      * Resource class name.
+     *
+     * @return string
      */
-    public function resource(): string
+    public function resource()
     {
         return ShipmentResource::class;
     }

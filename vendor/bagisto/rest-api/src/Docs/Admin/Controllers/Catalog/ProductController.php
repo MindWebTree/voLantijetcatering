@@ -4,144 +4,122 @@ namespace Webkul\RestApi\Docs\Admin\Controllers\Catalog;
 
 class ProductController
 {
-    /**
-     * @OA\Get(
-     *      path="/api/v1/admin/catalog/products",
-     *      operationId="getProducts",
-     *      tags={"Products"},
-     *      summary="Get admin catalog product list",
+	/**
+	 * @OA\Get(
+	 *      path="/api/v1/admin/catalog/products",
+	 *      operationId="getProducts",
+	 *      tags={"Products"},
+	 *      summary="Get admin catalog product list",
      *      description="Returns catalog product list, if you want to retrieve all catalog products at once pass pagination=0 otherwise ignore this parameter",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product Id",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="sort",
      *          description="Sort column",
      *          example="id",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="string"
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="order",
      *          description="Sort order",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="string",
      *              enum={"desc", "asc"}
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="page",
      *          description="Page number",
      *          required=false,
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Parameter(
      *          name="limit",
      *          description="Limit",
      *          in="query",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(
      *                      allOf={
-     *
      *                          @OA\Schema(ref="#/components/schemas/Product"),
      *                          @OA\Schema(ref="#/components/schemas/ProductFlat")
      *                      }
      *                  )
      *              ),
-     *
      *              @OA\Property(
      *                  property="meta",
      *                  ref="#/components/schemas/Pagination"
      *              )
      *          )
      *      )
-     * )
-     */
-    public function list()
-    {
-    }
+	 * )
+	 */
+	public function list()
+	{
+	}
 
-    /**
-     * @OA\Get(
-     *      path="/api/v1/admin/catalog/products/{id}",
-     *      operationId="getProduct",
-     *      tags={"Products"},
-     *      summary="Get admin catalog product detail",
+	/**
+	 * @OA\Get(
+	 *      path="/api/v1/admin/catalog/products/{id}",
+	 *      operationId="getProduct",
+	 *      tags={"Products"},
+	 *      summary="Get admin catalog product detail",
      *      description="Returns catalog product detail",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product ID",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="data",
      *                  type="object",
      *                  allOf={
-     *
      *                      @OA\Schema(ref="#/components/schemas/Product"),
      *                      @OA\Schema(ref="#/components/schemas/ProductFlat")
      *                  }
      *              )
      *          )
      *      )
-     * )
-     */
-    public function get()
-    {
-    }
+	 * )
+	 */
+	public function get()
+	{
+	}
 
     /**
      * @OA\Post(
@@ -151,20 +129,16 @@ class ProductController
      *      summary="Store the catalog product",
      *      description="Store the catalog product",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *
      *              @OA\Schema(
-     *
      *                  @OA\Property(
      *                      property="type",
-     *                      description="Product's type i.e. `simple`, `configurable`, `virtual`, `grouped`, `downloadable`, `bundle`",
+     *                      description="Product's type i.e. `simple`, `configurable`, `virtual`, `grouped`, `downloadable`, `bundle`, `booking`",
      *                      type="string",
      *                      example="simple",
-     *                      enum={"simple", "configurable", "virtual", "grouped", "downloadable", "bundle"}
+     *                      enum={"simple", "configurable", "virtual", "grouped", "downloadable", "bundle", "booking"}
      *                  ),
      *                  @OA\Property(
      *                      property="attribute_family_id",
@@ -185,14 +159,11 @@ class ProductController
      *                      @OA\Property(
      *                          property="color",
      *                          type="array",
-     *
      *                          @OA\Items(type="integer", example=1)
      *                      ),
-     *
      *                      @OA\Property(
      *                          property="size",
      *                          type="array",
-     *
      *                          @OA\Items(type="integer", example=6)
      *                      )
      *                  ),
@@ -200,13 +171,10 @@ class ProductController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -216,14 +184,12 @@ class ProductController
      *                  property="data",
      *                  type="object",
      *                  allOf={
-     *
      *                      @OA\Schema(ref="#/components/schemas/Product"),
      *                      @OA\Schema(ref="#/components/schemas/ProductFlat")
      *                  }
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -242,25 +208,19 @@ class ProductController
      *      summary="Update product (Simple, Virtual)",
      *      description="Update product (Simple, Virtual)",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product ID",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
      *              mediaType="multipart/form-data",
-     *
      *              @OA\Schema(
-     *
      *                  @OA\Property(
      *                      property="_method",
      *                      type="string",
@@ -319,13 +279,6 @@ class ProductController
      *                  @OA\Property(
      *                      property="featured",
      *                      description="Featured's status",
-     *                      type="integer",
-     *                      example=1,
-     *                      enum={0,1}
-     *                  ),
-     *                  @OA\Property(
-     *                      property="manage_stock",
-     *                      description="Manage Stock status",
      *                      type="integer",
      *                      example=1,
      *                      enum={0,1}
@@ -457,94 +410,72 @@ class ProductController
      *                      property="inventories[1]",
      *                      description="Product's inventories",
      *                      type="array",
-     *
      *                      @OA\Items(type="integer", example=500)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="images[files][]",
      *                      description="Product's images",
      *                      type="array",
-     *
      *                      @OA\Items(format="binary", type="string")
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="images[position][]",
      *                      description="Product's image position",
      *                      type="array",
      *                      collectionFormat="multi",
-     *
-     *                      @OA\Items(format="id", type="integer", example=1)
+     *                      @OA\Items(format="id", type="inetger", example=1)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="videos[files][]",
      *                      description="Product's videos",
      *                      type="array",
-     *
      *                      @OA\Items(format="binary", type="string")
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="videos[position][]",
      *                      description="Product's video position",
      *                      type="array",
      *                      collectionFormat="multi",
-     *
-     *                      @OA\Items(format="id", type="integer", example=1)
+     *                      @OA\Items(format="id", type="inetger", example=1)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="categories[]",
      *                      description="Product's categories",
      *                      type="array",
-     *
      *                      @OA\Items(type="integer", example=1)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="channels[]",
      *                      description="Product's channels",
      *                      type="array",
-     *
      *                      @OA\Items(type="integer", example=1)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="up_sell[]",
      *                      description="Product's channels",
      *                      type="array",
-     *
      *                      @OA\Items(type="integer", example=1)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="cross_sell[]",
      *                      description="Product's channels",
      *                      type="array",
-     *
-     *                      @OA\Items(type="integer", example=1)
+     *                      @OA\Items(type="integer", example=18)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="related_products[]",
      *                      description="Product's channels",
      *                      type="array",
-     *
-     *                      @OA\Items(type="integer", example=1)
+     *                      @OA\Items(type="integer", example=8)
      *                  ),
      *                  required={"sku", "name", "url_key", "short_description", "description"}
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -556,7 +487,6 @@ class ProductController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -572,28 +502,22 @@ class ProductController
      *      path="/api/v1/admin/catalog/products/{id}",
      *      operationId="updateOtherTypeProduct",
      *      tags={"Products"},
-     *      summary="Update product (Configurable, Grouped, Downloadable, Bundle)",
-     *      description="Update product (Configurable, Grouped, Downloadable, Bundle)",
+     *      summary="Update product (Configurable, Grouped, Downloadable, Bundle, Booking)",
+     *      description="Update product (Configurable, Grouped, Downloadable, Bundle, Booking)",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product ID",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *
      *              @OA\Schema(
-     *
      *                  @OA\Property(
      *                      property="channel",
      *                      description="Store's channel code",
@@ -647,19 +571,6 @@ class ProductController
      *                  @OA\Property(
      *                      property="featured",
      *                      description="Featured's status",
-     *                      type="integer",
-     *                      example=1,
-     *                      enum={0,1}
-     *                  ),
-     *                  @OA\Property(
-     *                      property="weight",
-     *                      description="Weight",
-     *                      type="integer",
-     *                      example=1,
-     *                  ),
-     *                  @OA\Property(
-     *                      property="manage_stock",
-     *                      description="Manage Stock status",
      *                      type="integer",
      *                      example=1,
      *                      enum={0,1}
@@ -733,7 +644,7 @@ class ProductController
      *                      description="Product's customer group prices",
      *                      type="object",
      *                      @OA\Property(
-     *                          property="price_0",
+     *                          property="customer_group_price_0",
      *                          type="object",
      *                          @OA\Property(
      *                              property="customer_group_id",
@@ -766,10 +677,8 @@ class ProductController
      *                          "0": 1,
      *                          "1": 2
      *                      },
-     *
      *                      @OA\Items(type="integer", example=1)
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="channels",
      *                      description="Product's channels",
@@ -779,16 +688,8 @@ class ProductController
      *                          "1": 3,
      *                          "2": 4
      *                      },
-     *
      *                      @OA\Items(type="integer", example=1)
      *                  ),
-     *                  @OA\Property(
-     *                      property="inventories",
-     *                      description="Inventories",
-     *                      type="object",
-     *                      @OA\Property(property="1", description="Inventory source id", format="id", type="integer", example=270)
-     *                  ),
-     *
      *                  @OA\Property(
      *                      property="variants",
      *                      description="Product's variants, `Only use in case of configurable type product (required field)`",
@@ -811,11 +712,9 @@ class ProductController
      *                          @OA\Property(
      *                              property="images[]",
      *                              type="array",
-     *
      *                              @OA\Items(type="string", format="binary"),
      *                          )
      *                      ),
-     *
      *                      @OA\Property(
      *                          property="29",
      *                          type="object",
@@ -834,12 +733,10 @@ class ProductController
      *                          @OA\Property(
      *                              property="images[files]",
      *                              type="array",
-     *
      *                              @OA\Items(type="string", format="binary"),
      *                          )
      *                      )
      *                  ),
-     *
      *                  @OA\Property(
      *                      property="links",
      *                      description="Product's links, `Only use in case of grouped type product (required field)`",
@@ -1027,18 +924,96 @@ class ProductController
      *                          )
      *                      )
      *                  ),
-
+     *                  @OA\Property(
+     *                      property="booking",
+     *                      description="Booking product options, `Info: Only use in booking type product`",
+     *                      type="object",
+     * 
+     *                      @OA\Property(property="type", type="string", example="default", enum={"default", "appointment", "event", "rental", "table"}),
+     * 
+     *                      @OA\Property(property="booking_type", description="`Only use with booking type=default`", type="string", example="one", enum={"one","many"}),
+     * 
+     *                      @OA\Property(property="location", type="string", example="India"),
+     * 
+     *                      @OA\Property(property="available_every_week", description="`Use with booking type=appointment, rental, table`", type="integer", example=1, enum={0,1}),
+     * 
+     *                      @OA\Property(property="available_from", description="`Not use if available_every_week=1 in appointment, rental, table bookings`", format="datetime", type="string", example="2023-05-31 12:00:00"),
+     * 
+     *                      @OA\Property(property="available_to", description="`Not use if available_every_week=1 in appointment, rental, table bookings`", format="datetime", type="string", example="2024-05-31 12:00:00"),
+     * 
+     *                      @OA\Property(property="duration", description="`Not use with type=event, rental, & booking_type=one`", type="float", example=30),
+     * 
+     *                      @OA\Property(property="break_time", description="`Not use with type=event, rental, & booking_type=one`", type="float", example=15),
+     * 
+     *                      @OA\Property(property="qty", description="`Not use with booking type=event`", type="integer", example=50),
+     * 
+     *                      @OA\Property(property="same_slot_all_days", description="`Use with booking type=appointment, rental, table`", type="integer", example=1, enum={0,1}),
+     * 
+     *                      @OA\Property(
+     *                          property="slots",
+     *                          description="`Not use with booking type=event`",
+     *                          type="array",
+     *                          @OA\Items(
+     *                              @OA\Property(property="from_day", description="`Only use with type=default with booking_type=one`", type="integer", example=0, enum={0,1,2,3,4,5,6}),
+     *                              @OA\Property(property="to_day", description="`Only use with type=default with booking_type=one`", type="integer", example=0, enum={0,1,2,3,4,5,6}),
+     *                              @OA\Property(property="from", type="string", example="09:00"),
+     *                              @OA\Property(property="to", type="string", example="11:00"),
+     *                              @OA\Property(property="status", description="`Only use with booking_type=many`", type="integer", example=1, enum={0,1})
+     *                          )
+     *                      ),
+     * 
+     *                      @OA\Property(
+     *                          property="tickets",
+     *                          description="`Only use with booking type=event`",
+     *                          type="object",
+     *                          @OA\Property(
+     *                              property="ticket_0",
+     *                              type="object",
+     *                              @OA\Property(property="en", type="object", 
+     *                                  @OA\Property(property="name", type="string", example="Morning Show"),
+     *                                  @OA\Property(property="description", type="string", example="Lorem Ipsum is simply dummy text of the printing and typesetting industry.")
+     *                              ),
+     *                              @OA\Property(property="qty", type="integer", example="150"),
+     *                              @OA\Property(property="price", type="float", example=10.50),
+     *                              @OA\Property(property="special_price", type="float"),
+     *                              @OA\Property(property="special_price_from", format="datetime", type="string", example=null),
+     *                              @OA\Property(property="special_price_to", format="datetime", type="string", example=null)
+     *                          ),
+     *                          @OA\Property(
+     *                              property="ticket_1",
+     *                              type="object",
+     *                              @OA\Property(property="en", type="object", 
+     *                                  @OA\Property(property="name", type="string", example="Evening Show"),
+     *                                  @OA\Property(property="description", type="string", example="Lorem Ipsum is simply dummy text of the printing and typesetting industry.")
+     *                              ),
+     *                              @OA\Property(property="qty", type="integer", example="200"),
+     *                              @OA\Property(property="price", type="float", example=22),
+     *                              @OA\Property(property="special_price", type="float", example=20.50),
+     *                              @OA\Property(property="special_price_from", format="datetime", type="string", example="2023-05-31 12:00:00"),
+     *                              @OA\Property(property="special_price_to", format="datetime", type="string", example="2024-05-31 12:00:00")
+     *                          )
+     *                      ),
+     * 
+     *                      @OA\Property(property="renting_type", description="`Only use with booking type=rental`", type="string", example="daily_hourly", enum={"daily", "hourly", "daily_hourly"}),
+     * 
+     *                      @OA\Property(property="daily_price", description="`Only use with booking type=rental & renting_type=daily, daily_hourly`", type="float", example=24.00),
+     * 
+     *                      @OA\Property(property="hourly_price", description="`Only use with booking type=rental & renting_type=hourly, daily_hourly`", type="float", example=1.00),
+     * 
+     *                      @OA\Property(property="price_type", description="`Only use with booking type=table`", type="string", example="guest", enum={"guest", "table"}),
+     * 
+     *                      @OA\Property(property="guest_limit", description="`Only use with booking type=table & price_type=table`", type="integer", example=20),
+     * 
+     *                      @OA\Property(property="prevent_scheduling_before", description="`Only use with booking type=table`", type="float", example=5.00)
+     *                  ),
      *                  required={"sku", "name", "url_key", "short_description", "description"}
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -1050,7 +1025,6 @@ class ProductController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -1069,25 +1043,19 @@ class ProductController
      *      summary="Update the catalog product's inventory",
      *      description="Update the catalog product's inventory",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product ID",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *
      *              @OA\Schema(
-     *
      *                  @OA\Property(
      *                      property="inventories",
      *                      description="Product's inventories in key:value pair i.e. `key` is `inventory_source_id` and `value` is `quantity`",
@@ -1098,13 +1066,10 @@ class ProductController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -1117,7 +1082,6 @@ class ProductController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -1136,24 +1100,19 @@ class ProductController
      *      summary="Delete catalog product by id",
      *      description="Delete catalog product by id",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product ID",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -1175,38 +1134,31 @@ class ProductController
      *      summary="Mass update products",
      *      description="Mass update products",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
-     *              mediaType="application/json",
-     *
+	 *              mediaType="application/json",
      *              @OA\Schema(
-     *
      *                  @OA\Property(
-     *                      property="indices",
+     *                      property="indexes",
      *                      description="Products Ids `CommaSeperated`",
      *                      type="string",
-     *                      example={1,2}
+     *                      example="1,2"
      *                  ),
      *                  @OA\Property(
-     *                      property="value",
+     *                      property="update_value",
      *                      description="Product's status value",
      *                      type="integer",
      *                      example=1,
      *                      enum={0,1}
      *                  ),
-     *                  required={"indices", "value"}
+     *                  required={"indexes", "update_value"}
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -1228,31 +1180,24 @@ class ProductController
      *      summary="Mass delete products",
      *      description="Mass delete products",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
-     *              mediaType="application/json",
-     *
+	 *              mediaType="application/json",
      *              @OA\Schema(
-     *
      *                  @OA\Property(
-     *                      property="indices",
+     *                      property="indexes",
      *                      description="Products Ids `CommaSeperated`",
      *                      type="string",
-     *                      example={1,2}
+     *                      example="1,2"
      *                  ),
-     *                  required={"indices"}
+     *                  required={"indexes"}
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",

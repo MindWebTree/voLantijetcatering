@@ -4,34 +4,30 @@ namespace Webkul\RestApi\Docs\Admin\Controllers\Configuration;
 
 class ConfigurationController
 {
-    /**
-     * @OA\Get(
-     *      path="/api/v1/admin/configuration",
-     *      operationId="getConfigurations",
-     *      tags={"Configurations"},
-     *      summary="Get admin configuration's item list",
+	/**
+	 * @OA\Get(
+	 *      path="/api/v1/admin/configuration",
+	 *      operationId="getConfigurations",
+	 *      tags={"Configurations"},
+	 *      summary="Get admin configuration's item list",
      *      description="Returns configuration's item list",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(ref="#/components/schemas/Configuration")
      *              )
      *          )
      *      )
-     * )
-     */
-    public function list()
-    {
-    }
+	 * )
+	 */
+	public function list()
+	{
+	}
 
     /**
      * @OA\Post(
@@ -41,14 +37,10 @@ class ConfigurationController
      *      summary="Store the configuration value",
      *      description="Store the configuration calue",
      *      security={ {"sanctum_admin": {} }},
-     *
      *      @OA\RequestBody(
-     *
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *
      *              @OA\Schema(
-     *
      *                  @OA\Property(
      *                      property="channel",
      *                      description="Channel code for which you want to save the config value",
@@ -66,16 +58,22 @@ class ConfigurationController
      *                      description="Replace `index` with your key, like: `general`",
      *                      type="object",
      *                      example={
-     *                         "content": {
-     *                             "shop": {
-     *                                 "compare_option": "0",
-     *                                 "wishlist_option": "0"
-     *                              },
-     *                             "custom_scripts": {
-     *                               "custom_css": "<style>.demo{width:100px;}</style>",
-     *                               "custom_javascript": "<script>console.log('Texting')</script>"
-     *                             }
-     *                         }
+     *                          "general": {
+     *                              "content": {
+     *                                  "shop": {
+     *                                      "compare_option": "0",
+     *                                      "wishlist_option": "0"
+     *                                   },
+     *                                  "footer": {
+     *                                    "footer_content": "Powered By Webkul",
+     *                                    "footer_toggle": "1"
+     *                                  },
+     *                                  "custom_scripts": {
+     *                                    "custom_css": "<style>.demo{width:100px;}</style>",
+     *                                    "custom_javascript": "<script>console.log('Texting')</script>"
+     *                                  }
+     *                              }
+     *                          }
      *                      },
      *                      @OA\Property(
      *                          property="child_index",
@@ -107,17 +105,13 @@ class ConfigurationController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(property="message", type="string", example="Configuration updated successfully.")
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",

@@ -12,21 +12,17 @@ class CheckoutController
      *      summary="Save addresses at the checkout",
      *      description="Save addresses at the checkout",
      *      security={ {"sanctum": {} }},
-     *
-     *      @OA\RequestBody(
-     *
-     *          @OA\MediaType(
-     *              mediaType="application/json",
-     *
-     *              @OA\Schema(
-     *
+	 *      @OA\RequestBody(
+	 *          @OA\MediaType(
+	 *              mediaType="application/json",
+	 *              @OA\Schema(
      *                  @OA\Property(
      *                      property="billing",
      *                      type="array",
      *                      description="",
      *                      example={
-     *                          "id": 14,
-     *                          "address": {"70 Winchester Rd"},
+     *                          "address_id": 14,
+     *                          "address1": {"70 Winchester Rd"},
      *                          "save_as_address": false,
      *                          "use_for_shipping": false,
      *                          "first_name": "John",
@@ -39,11 +35,9 @@ class CheckoutController
      *                          "postcode": 70072,
      *                          "phone": 9871234560
      *                      },
-     *
      *                      @OA\Items(
-     *
-     *                          @OA\Property(property="id", type="integer"),
-     *                          @OA\Property(property="address", type="array", @OA\Items(
+     *                          @OA\Property(property="address_id", type="integer"),
+     *                          @OA\Property(property="address1", type="array", @OA\Items(
      *                              @OA\Property(type="string")
      *                          )),
      *                          @OA\Property(property="save_as_address", type="boolean"),
@@ -64,8 +58,8 @@ class CheckoutController
      *                      type="array",
      *                      description="",
      *                      example={
-     *                          "id": null,
-     *                          "address": {"819  Farnum Road"},
+     *                          "address_id": null,
+     *                          "address1": {"819  Farnum Road"},
      *                          "save_as_address": false,
      *                          "first_name": "John",
      *                          "last_name": "Doe",
@@ -77,11 +71,9 @@ class CheckoutController
      *                          "postcode": 44907,
      *                          "phone": 987654321
      *                      },
-     *
      *                      @OA\Items(
-     *
-     *                          @OA\Property(property="id", type="integer"),
-     *                          @OA\Property(property="address", type="array", @OA\Items(
+     *                          @OA\Property(property="address_id", type="integer"),
+     *                          @OA\Property(property="address1", type="array", @OA\Items(
      *                              @OA\Property(type="string")
      *                          )),
      *                          @OA\Property(property="save_as_address", type="boolean"),
@@ -97,16 +89,13 @@ class CheckoutController
      *                      )
      *                  ),
      *                  required={"billing"}
-     *              )
-     *          )
-     *      ),
-     *
+	 *              )
+	 *          )
+	 *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -115,9 +104,7 @@ class CheckoutController
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(
-     *
      *                      @OA\Property(
      *                          property="cart",
      *                          type="object",
@@ -126,9 +113,7 @@ class CheckoutController
      *                      @OA\Property(
      *                          property="rates",
      *                          type="array",
-     *
      *                          @OA\Items(
-     *
      *                              @OA\Property(
      *                                  property="carrier_title",
      *                                  type="string",
@@ -145,7 +130,6 @@ class CheckoutController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=400,
      *          description="Quantity cannot be lesser than one."
@@ -159,7 +143,7 @@ class CheckoutController
     public function saveAddress()
     {
     }
-
+    
     /**
      * @OA\Post(
      *      path="/api/v1/customer/checkout/save-shipping",
@@ -168,30 +152,23 @@ class CheckoutController
      *      summary="Save shipping method at the checkout",
      *      description="Save shipping method at the checkout",
      *      security={ {"sanctum": {} }},
-     *
-     *      @OA\RequestBody(
-     *
-     *          @OA\MediaType(
-     *              mediaType="multipart/form-data",
-     *
-     *              @OA\Schema(
-     *
+	 *      @OA\RequestBody(
+	 *          @OA\MediaType(
+	 *              mediaType="multipart/form-data",
+	 *              @OA\Schema(
      *                  @OA\Property(
      *                      property="shipping_method",
      *                      type="string",
      *                      example="flatrate_flatrate",
      *                  ),
      *                  required={"shipping_method"}
-     *              )
-     *          )
-     *      ),
-     *
+	 *              )
+	 *          )
+	 *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -200,9 +177,7 @@ class CheckoutController
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(
-     *
      *                      @OA\Property(
      *                          property="cart",
      *                          type="object",
@@ -217,7 +192,6 @@ class CheckoutController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=404,
      *          description="Something went wrong!"
@@ -227,7 +201,7 @@ class CheckoutController
     public function saveShipping()
     {
     }
-
+    
     /**
      * @OA\Post(
      *      path="/api/v1/customer/checkout/save-payment",
@@ -236,37 +210,28 @@ class CheckoutController
      *      summary="Save payment method at the checkout",
      *      description="Save payment method at the checkout",
      *      security={ {"sanctum": {} }},
-     *
-     *      @OA\RequestBody(
-     *
-     *          @OA\MediaType(
-     *              mediaType="application/json",
-     *
-     *              @OA\Schema(
-     *
+	 *      @OA\RequestBody(
+	 *          @OA\MediaType(
+	 *              mediaType="application/json",
+	 *              @OA\Schema(
      *                  @OA\Property(
      *                      property="payment",
      *                      type="array",
      *                      example={
      *                          "method": "cashondelivery"
      *                      },
-     *
      *                      @OA\Items(
-     *
      *                          @OA\Property(property="method", type="string")
      *                      )
      *                  ),
      *                  required={"payment"}
-     *              )
-     *          )
-     *      ),
-     *
+	 *              )
+	 *          )
+	 *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -275,9 +240,7 @@ class CheckoutController
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(
-     *
      *                      @OA\Property(
      *                          property="cart",
      *                          type="object",
@@ -287,7 +250,6 @@ class CheckoutController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=404,
      *          description="Something went wrong!"
@@ -297,7 +259,7 @@ class CheckoutController
     public function savePayment()
     {
     }
-
+    
     /**
      * @OA\Post(
      *      path="/api/v1/customer/checkout/check-minimum-order",
@@ -306,13 +268,10 @@ class CheckoutController
      *      summary="Check minimun order at the checkout",
      *      description="Check minimun order at the checkout",
      *      security={ {"sanctum": {} }},
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -321,9 +280,7 @@ class CheckoutController
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(
-     *
      *                      @OA\Property(
      *                          property="cart",
      *                          type="object",
@@ -338,7 +295,6 @@ class CheckoutController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=404,
      *          description="Something went wrong!"
@@ -348,7 +304,7 @@ class CheckoutController
     public function checkMinimumOrder()
     {
     }
-
+    
     /**
      * @OA\Post(
      *      path="/api/v1/customer/checkout/save-order",
@@ -357,13 +313,10 @@ class CheckoutController
      *      summary="Create order at the checkout",
      *      description="Create order at the checkout",
      *      security={ {"sanctum": {} }},
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -372,9 +325,7 @@ class CheckoutController
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *
      *                  @OA\Items(
-     *
      *                      @OA\Property(
      *                          property="order",
      *                          type="object",
@@ -384,7 +335,6 @@ class CheckoutController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=404,
      *          description="Something went wrong!"

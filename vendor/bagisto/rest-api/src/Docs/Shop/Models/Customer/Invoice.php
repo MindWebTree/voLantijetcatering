@@ -18,10 +18,10 @@ class Invoice
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
-
+    
     /**
      * @OA\Property(
      *     title="Increment ID",
@@ -52,7 +52,7 @@ class Invoice
      *     example=true,
      * )
      *
-     * @var bool
+     * @var boolean
      */
     private $email_sent;
 
@@ -63,7 +63,7 @@ class Invoice
      *     example=2,
      * )
      *
-     * @var int
+     * @var integer
      */
     private $total_qty;
 
@@ -196,7 +196,7 @@ class Invoice
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $order_id;
 
@@ -208,10 +208,10 @@ class Invoice
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $order_address_id;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",
@@ -257,7 +257,7 @@ class Invoice
      *     example=3
      * )
      *
-     * @var int
+     * @var integer
      */
     private $reminders;
 

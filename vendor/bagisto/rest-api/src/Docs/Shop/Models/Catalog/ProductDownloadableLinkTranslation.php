@@ -18,7 +18,7 @@ class ProductDownloadableLinkTranslation
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $id;
 
@@ -43,7 +43,6 @@ class ProductDownloadableLinkTranslation
      * @var string
      */
     protected $title;
-
     /**
      * @OA\Property(
      *     title="Product Downloadable Link ID",
@@ -52,7 +51,7 @@ class ProductDownloadableLinkTranslation
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     public $product_downloadable_link_id;
 }

@@ -18,7 +18,7 @@ class Role
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -79,9 +79,7 @@ class Role
      *          "settings.users.users",
      *          "settings.users.users.edit"
      *     },
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(property="dashboard", type="string"),
      *          @OA\Property(property="catalog", type="string"),
      *          @OA\Property(property="catalog.products", type="string"),
@@ -94,11 +92,11 @@ class Role
      *          @OA\Property(property="settings.users.users.edit", type="string")
      *     )
      * )
-     *
+     * 
      * @var array
      */
     private $permission;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

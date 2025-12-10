@@ -18,7 +18,7 @@ class Wishlist
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -30,7 +30,7 @@ class Wishlist
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $channel_id;
 
@@ -42,7 +42,7 @@ class Wishlist
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $product_id;
 
@@ -54,7 +54,7 @@ class Wishlist
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $customer_id;
 
@@ -89,7 +89,7 @@ class Wishlist
      *     format="true",
      * )
      *
-     * @var bool
+     * @var boolean
      */
     private $shared;
 
@@ -105,7 +105,7 @@ class Wishlist
      * @var \Date
      */
     private $time_of_moving;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

@@ -14,7 +14,7 @@ Route::group([
     /**
      * Sale routes.
      */
-    require 'sales-routes.php';
+    require 'sale-routes.php';
 
     /**
      * Catalog routes.
@@ -24,7 +24,12 @@ Route::group([
     /**
      * Customer routes.
      */
-    require 'customers-routes.php';
+    require 'customer-routes.php';
+
+    /**
+     * Velocity routes.
+     */
+    require 'velocity-routes.php';
 
     /**
      * Marketing routes.
@@ -39,15 +44,10 @@ Route::group([
     /**
      * Setting routes.
      */
-    require 'settings-routes.php';
+    require 'setting-routes.php';
 
     /**
      * Configuration routes.
      */
     require 'configuration-routes.php';
-
-    /**
-     * Reporting routes.
-     */
-    require 'reporting-routes.php';
 });

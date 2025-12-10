@@ -18,7 +18,7 @@ class Pagination
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $current_page;
 
@@ -30,7 +30,7 @@ class Pagination
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $from;
 
@@ -42,7 +42,7 @@ class Pagination
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $last_page;
 
@@ -54,7 +54,7 @@ class Pagination
      *     example=10
      * )
      *
-     * @var int
+     * @var integer
      */
     private $per_page;
 
@@ -76,9 +76,7 @@ class Pagination
      *       "label": "Next",
      *       "active": false,
      *     }},
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(
      *              property="url",
      *              type="string",
@@ -95,9 +93,7 @@ class Pagination
      *              example=false
      *          ),
      *     ),
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(
      *              property="url",
      *              type="string",
@@ -114,9 +110,7 @@ class Pagination
      *              example=true
      *          ),
      *     ),
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(
      *              property="url",
      *              type="string",
@@ -144,7 +138,7 @@ class Pagination
      *     example="http://localhost/public/api/v1/examples"
      * )
      *
-     * @var int
+     * @var integer
      */
     private $path;
 
@@ -156,7 +150,7 @@ class Pagination
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $to;
 
@@ -168,7 +162,7 @@ class Pagination
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $total;
 }

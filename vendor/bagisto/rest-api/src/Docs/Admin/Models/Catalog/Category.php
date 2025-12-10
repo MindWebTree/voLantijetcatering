@@ -18,7 +18,7 @@ class Category
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -108,31 +108,31 @@ class Category
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $status;
 
     /**
      * @OA\Property(
-     *     title="Banner URL",
-     *     description="Category's Banner URL",
+     *     title="Image URL",
+     *     description="Category's image URL",
      *     example="http://localhost/private/storage/category/{category_id}/{image_name}.jpg"
      * )
      *
      * @var string
      */
-    private $banner_path;
+    private $image_url;
 
     /**
      * @OA\Property(
-     *     title="Category Logo Path",
-     *     description="Category's Logo path",
-     *     example="http://localhost/private/storage/velocity/logo_path/{category_id}/{image_name}.png"
+     *     title="Category Icon Path",
+     *     description="Category's icon path",
+     *     example="http://localhost/private/storage/velocity/category_icon_path/{category_id}/{image_name}.png"
      * )
      *
      * @var string
      */
-    private $logo_path;
+    private $category_icon_path;
 
     /**
      * @OA\Property(
@@ -144,7 +144,7 @@ class Category
      * @var object
      */
     private $additional;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

@@ -18,7 +18,7 @@ class Address
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -140,7 +140,7 @@ class Address
      *     example=21797
      * )
      *
-     * @var int
+     * @var integer
      */
     private $postcode;
 
@@ -162,7 +162,7 @@ class Address
      *     enum={"1", "0"}
      * )
      *
-     * @var bool
+     * @var boolean
      */
     private $is_default;
 

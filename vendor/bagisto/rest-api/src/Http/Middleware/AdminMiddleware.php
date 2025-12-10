@@ -4,17 +4,18 @@ namespace Webkul\RestApi\Http\Middleware;
 
 use Closure;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use Illuminate\Http\Request;
 
 class AdminMiddleware
 {
     /**
      * Handle an incoming request.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, $guard = null)
     {
         /**
          * This is for session based authentication.

@@ -18,10 +18,10 @@ class OrderItem
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
-
+    
     /**
      * @OA\Property(
      *     title="SKU",
@@ -32,7 +32,7 @@ class OrderItem
      * @var string
      */
     private $sku;
-
+    
     /**
      * @OA\Property(
      *     title="Type",
@@ -43,7 +43,7 @@ class OrderItem
      * @var string
      */
     private $type;
-
+    
     /**
      * @OA\Property(
      *     title="Name",
@@ -85,7 +85,7 @@ class OrderItem
      *     example=6,
      * )
      *
-     * @var int
+     * @var integer
      */
     private $qty_ordered;
 
@@ -97,7 +97,7 @@ class OrderItem
      *     example=2,
      * )
      *
-     * @var int
+     * @var integer
      */
     private $qty_shipped;
 
@@ -109,7 +109,7 @@ class OrderItem
      *     example=4,
      * )
      *
-     * @var int
+     * @var integer
      */
     private $qty_invoiced;
 
@@ -121,7 +121,7 @@ class OrderItem
      *     example=2,
      * )
      *
-     * @var int
+     * @var integer
      */
     private $qty_canceled;
 
@@ -133,7 +133,7 @@ class OrderItem
      *     example=0,
      * )
      *
-     * @var int
+     * @var integer
      */
     private $qty_refunded;
 
@@ -310,7 +310,7 @@ class OrderItem
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $product_id;
 
@@ -333,7 +333,7 @@ class OrderItem
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $order_id;
 
@@ -345,7 +345,7 @@ class OrderItem
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $parent_id;
 

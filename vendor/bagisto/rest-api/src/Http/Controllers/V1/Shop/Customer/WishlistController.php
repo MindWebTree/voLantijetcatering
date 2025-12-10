@@ -2,7 +2,6 @@
 
 namespace Webkul\RestApi\Http\Controllers\V1\Shop\Customer;
 
-use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Customer\Repositories\WishlistRepository;
@@ -13,17 +12,43 @@ use Webkul\RestApi\Http\Resources\V1\Shop\Customer\CustomerWishlistResource;
 class WishlistController extends CustomerController
 {
     /**
-     * Create a new controller instance.
+     * Wishlist repository instance.
+     *
+     * @var \Webkul\Customer\Repositories\WishlistRepository
+     */
+    protected $wishlistRepository;
+
+    /**
+     * Product repository instance.
+     *
+     * @var \Webkul\Customer\Repositories\ProductRepository
+     */
+    protected $productRepository;
+
+    /**
+     * Create a new controller istance.
+     *
+     * @param  \Webkul\Customer\Repositories\WishlistRepository  $wishlistRepository
+     * @param  \Webkul\Product\Repositories\ProductRepository  $productRepository
      */
     public function __construct(
-        protected WishlistRepository $wishlistRepository,
-        protected ProductRepository $productRepository
-    ) {}
+        WishlistRepository $wishlistRepository,
+        ProductRepository $productRepository
+    ) {
+        parent::__construct();
+        
+        $this->wishlistRepository = $wishlistRepository;
+
+        $this->productRepository = $productRepository;
+    }
 
     /**
      * Get customer wishlist.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $customer = $this->resolveShopUser($request);
 
@@ -34,20 +59,18 @@ class WishlistController extends CustomerController
 
     /**
      * Add or remote item from wishlist.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function addOrRemove(Request $request, int $id): Response
+    public function addOrRemove(Request $request, $id)
     {
-        $this->validate($request, [
-            'product_id' => 'required|integer|exists:products,id',
-        ]);
-
-        $product = $this->productRepository->findOrFail($id);
-
         $customer = $this->resolveShopUser($request);
 
         $wishlistItem = $this->wishlistRepository->findOneWhere([
             'channel_id'  => core()->getCurrentChannel()->id,
-            'product_id'  => $product->id,
+            'product_id'  => $id,
             'customer_id' => $customer->id,
         ]);
 
@@ -56,82 +79,69 @@ class WishlistController extends CustomerController
 
             return response([
                 'data'    => CustomerWishlistResource::collection($customer->wishlist_items()->get()),
-                'message' => trans('rest-api::app.shop.wishlist.removed'),
+                'message' => 'Item removed from wishlist successfully.',
             ]);
         }
 
         $wishlistItem = $this->wishlistRepository->create([
             'channel_id'  => core()->getCurrentChannel()->id,
-            'product_id'  => $product->id,
+            'product_id'  => $id,
             'customer_id' => $customer->id,
-            'additional'  => $request->input('additional') ?? null,
+            'additional'  => $request->input('additional') ?? null
         ]);
 
         return response([
             'data'    => new CustomerWishlistResource($wishlistItem),
-            'message' => trans('rest-api::app.shop.wishlist.success'),
+            'message' => __('rest-api::app.common-response.success.add', ['name' => 'Wishlist']),
         ]);
     }
 
     /**
      * Move product from wishlist to cart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function moveToCart(Request $request, int $id): Response
+    public function moveToCart(Request $request, $id)
     {
         $customer = $this->resolveShopUser($request);
 
         $wishlistItem = $this->wishlistRepository->findOneWhere([
+            'channel_id'  => core()->getCurrentChannel()->id,
             'product_id'  => $id,
             'customer_id' => $customer->id,
         ]);
 
         if (! $wishlistItem) {
             return response([
-                'message' => trans('rest-api::app.shop.wishlist.error.mass-operations.resource-not-found'),
+                'message' => __('rest-api::app.common-response.error.mass-operations.resource-not-found', [
+                    'name' => 'Wishlist product'
+                ]),
             ], 400);
         }
 
         if ($wishlistItem->customer_id != $customer->id) {
             return response([
-                'message' => trans('rest-api::app.shop.wishlist.error.security-warning'),
+                'message' => __('rest-api::app.common-response.error.security-warning'),
             ], 400);
         }
 
-        $result = Cart::moveToCart($wishlistItem, $request->input('quantity'));
+        $result = Cart::moveToCart($wishlistItem);
 
         if ($result) {
+            Cart::collectTotals();
+
             $cart = Cart::getCart();
 
             return response([
                 'data'    => $cart ? new CartResource($cart) : null,
-                'message' => trans('rest-api::app.shop.wishlist.moved'),
+                'message' => __('rest-api::app.wishlist.moved'),
             ]);
         }
 
         return response([
-            'message' => trans('rest-api::app.shop.wishlist.option-missing'),
+            'message' => __('rest-api::app.wishlist.option-missing'),
         ], 400);
-    }
-
-     /**
-     * Method for removing all items from the wishlist.
-     */
-    public function destroyAll(Request $request): Response
-    {
-        $customer = $this->resolveShopUser($request);
-
-        $success = $this->wishlistRepository->deleteWhere([
-            'customer_id'  => $customer->id,
-        ]);
-
-        if (! $success) {
-            return response([
-                'message'  => trans('rest-api::app.shop.wishlist.remove-fail'),
-            ]);
-        }
-
-        return response([
-            'message'  => trans('rest-api::app.shop.wishlist.removed'),
-        ]);
     }
 }

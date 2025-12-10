@@ -18,7 +18,7 @@ class CartItem
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -30,10 +30,10 @@ class CartItem
      *     example=2
      * )
      *
-     * @var int
+     * @var integer
      */
     private $quantity;
-
+    
     /**
      * @OA\Property(
      *     title="Product SKU",
@@ -259,15 +259,11 @@ class CartItem
      *              }
      *          }
      *     },
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(
      *              property="additional",
      *              type="array",
-     *
      *              @OA\Items(
-     *
      *                  @OA\Property(property="selected_configurable_option", type="integer"),
      *                  @OA\Property(property="quantity", type="integer"),
      *                  @OA\Property(property="product_id", type="integer"),
@@ -275,24 +271,18 @@ class CartItem
      *                  @OA\Property(
      *                      property="super_attribute",
      *                      type="array",
-     *
      *                      @OA\Items(
-     *
      *                          @OA\Property(type="integer")
      *                      )
      *                  ),
      *                  @OA\Property(
      *                      property="attributes",
      *                      type="array",
-     *
      *                      @OA\Items(
-     *
      *                          @OA\Property(
      *                              property="size",
      *                              type="array",
-     *
      *                              @OA\Items(
-     *
      *                                  @OA\Property(property="option_id", type="integer"),
      *                                  @OA\Property(property="option_label", type="string"),
      *                                  @OA\Property(property="attribute_name", type="string")
@@ -301,9 +291,7 @@ class CartItem
      *                          @OA\Property(
      *                              property="color",
      *                              type="array",
-     *
      *                              @OA\Items(
-     *
      *                                  @OA\Property(property="option_id", type="integer"),
      *                                  @OA\Property(property="option_label", type="string"),
      *                                  @OA\Property(property="attribute_name", type="string")
@@ -315,6 +303,7 @@ class CartItem
      *          )
      *     )
      * )
+     *
      */
     private $additional;
 
@@ -327,7 +316,7 @@ class CartItem
      * @var \Webkul\RestApi\Docs\Shop\Models\Customer\CartItem
      */
     private $child;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

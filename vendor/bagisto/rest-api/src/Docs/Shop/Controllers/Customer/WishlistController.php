@@ -12,13 +12,10 @@ class WishlistController
      *      summary="Get customer's wishlist",
      *      description="Returns customer's wishlist",
      *      security={ {"sanctum": {} }},
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="data",
      *                  type="object",
@@ -26,7 +23,6 @@ class WishlistController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -49,25 +45,19 @@ class WishlistController
      *      summary="Add or Remove product to customer's wishlist",
      *      description="Add or Remove product to customer's wishlist",
      *      security={ {"sanctum": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product id",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
-     *      @OA\RequestBody(
-     *
-     *          @OA\MediaType(
-     *              mediaType="application/json",
-     *
-     *              @OA\Schema(
-     *
+	 *      @OA\RequestBody(
+	 *          @OA\MediaType(
+	 *              mediaType="application/json",
+	 *              @OA\Schema(
      *                  @OA\Property(
      *                      property="additional",
      *                      type="array",
@@ -80,24 +70,18 @@ class WishlistController
      *                              "attribute_id_2": "attribute_option_id_2"
      *                          }
      *                      },
-     *
      *                      @OA\Items(
-     *
      *                          @OA\Property(
      *                              property="additional",
      *                              type="array",
-     *
      *                              @OA\Items(
-     *
      *                                  @OA\Property(property="selected_configurable_option", type="integer"),
      *                                  @OA\Property(property="quantity", type="integer"),
      *                                  @OA\Property(property="product_id", type="integer"),
      *                                  @OA\Property(
      *                                      property="super_attribute",
      *                                      type="array",
-     *
      *                                      @OA\Items(
-     *
      *                                          @OA\Property(type="integer")
      *                                      )
      *                                  ),
@@ -105,16 +89,13 @@ class WishlistController
      *                          )
      *                      )
      *                  )
-     *              )
-     *          )
-     *      ),
-     *
+	 *              )
+	 *          )
+	 *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -122,7 +103,6 @@ class WishlistController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=404,
      *          description="Something went wrong!"
@@ -141,24 +121,19 @@ class WishlistController
      *      summary="Move Product From Wishlist To Cart",
      *      description="Move product from wishlist to cart",
      *      security={ {"sanctum": {} }},
-     *
      *      @OA\Parameter(
      *          name="id",
      *          description="Product id",
      *          required=true,
      *          in="path",
-     *
      *          @OA\Schema(
      *              type="integer"
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *
      *          @OA\JsonContent(
-     *
      *              @OA\Property(
      *                  property="message",
      *                  type="string",
@@ -170,7 +145,6 @@ class WishlistController
      *              )
      *          )
      *      ),
-     *
      *      @OA\Response(
      *          response=400,
      *          description="Selected Wishlist product not found.."
@@ -182,43 +156,6 @@ class WishlistController
      * )
      */
     public function moveToCart()
-    {
-    }
-
-    /**
-     * @OA\Delete(
-     *      path="/api/v1/customer/wishlist/all",
-     *      operationId="deleteAllWishlistItems",
-     *      tags={"Wishlists"},
-     *      summary="Delete all wishlist items.",
-     *      description="Delete all wishlists items to the customer.",
-     *      security={ {"sanctum": {} }},
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="object",
-     *                  ref="#/components/schemas/Wishlist"
-     *              )
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=404,
-     *          description="Resource Not Found"
-     *      )
-     * )
-     */
-    public function deleteAll()
     {
     }
 }

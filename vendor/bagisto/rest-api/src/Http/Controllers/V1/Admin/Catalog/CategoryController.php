@@ -2,12 +2,10 @@
 
 namespace Webkul\RestApi\Http\Controllers\V1\Admin\Catalog;
 
-use Illuminate\Support\Facades\Event;
-use Illuminate\Http\Response;
-use Webkul\Admin\Http\Requests\CategoryRequest;
-use Webkul\Admin\Http\Requests\MassDestroyRequest;
-use Webkul\Admin\Http\Requests\MassUpdateRequest;
+use Illuminate\Http\Request;
+use Webkul\Category\Http\Requests\CategoryRequest;
 use Webkul\Category\Repositories\CategoryRepository;
+use Webkul\Core\Http\Requests\MassDestroyRequest;
 use Webkul\Core\Models\Channel;
 use Webkul\RestApi\Http\Resources\V1\Admin\Catalog\CategoryResource;
 
@@ -15,154 +13,112 @@ class CategoryController extends CatalogController
 {
     /**
      * Repository class name.
+     *
+     * @return string
      */
-    public function repository(): string
+    public function repository()
     {
         return CategoryRepository::class;
     }
 
     /**
      * Resource class name.
+     *
+     * @return string
      */
-    public function resource(): string
+    public function resource()
     {
         return CategoryResource::class;
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Webkul\Category\Http\Requests\CategoryRequest  $request
+     * @return \Illuminate\Http\Response
      */
-    public function store(CategoryRequest $request): Response
+    public function store(CategoryRequest $request)
     {
-        Event::dispatch('catalog.category.create.before');
+        $request->validate([
+            'slug'        => ['required', 'unique:category_translations,slug'],
+            'name'        => 'required',
+            'image.*'     => 'mimes:bmp,jpeg,jpg,png,webp',
+            'description' => 'required_if:display_mode,==,description_only,products_and_description',
+        ]);
 
-        $category = $this->getRepositoryInstance()->create($request->only([
-            'locale',
-            'name',
-            'parent_id',
-            'description',
-            'slug',
-            'meta_title',
-            'meta_keywords',
-            'meta_description',
-            'status',
-            'position',
-            'display_mode',
-            'attributes',
-            'logo_path',
-            'banner_path',
-        ]));
-
-        Event::dispatch('catalog.category.create.after', $category);
+        $category = $this->getRepositoryInstance()->create($request->all());
 
         return response([
             'data'    => new CategoryResource($category),
-            'message' => trans('rest-api::app.admin.catalog.categories.create-success'),
+            'message' => __('rest-api::app.common-response.success.create', ['name' => 'Category']),
         ]);
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \Webkul\Category\Http\Requests\CategoryRequest  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function update(CategoryRequest $request, int $id): Response
+    public function update(CategoryRequest $request, $id)
     {
         $this->getRepositoryInstance()->findOrFail($id);
 
-        Event::dispatch('catalog.category.update.before', $id);
-
-        $category = $this->getRepositoryInstance()->update($request->only([
-            'locale',
-            'parent_id',
-            'logo_path',
-            'banner_path',
-            'position',
-            'display_mode',
-            'status',
-            'attributes',
-            $request->input('locale'),
-        ]), $id);
-
-        Event::dispatch('catalog.category.update.after', $category);
+        $category = $this->getRepositoryInstance()->update($request->all(), $id);
 
         return response([
             'data'    => new CategoryResource($category),
-            'message' => trans('rest-api::app.admin.catalog.categories.update-success'),
+            'message' => __('rest-api::app.common-response.success.update', ['name' => 'Category']),
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id): Response
+    public function destroy(Request $request, $id)
     {
         $category = $this->getRepositoryInstance()->findOrFail($id);
 
         if (! $this->isCategoryDeletable($category)) {
             return response([
-                'message' => trans('rest-api::app.admin.catalog.categories.root-category-delete'),
+                'message' => __('rest-api::app.common-response.error.root-category-delete', ['name' => 'Category']),
             ], 400);
         }
 
-        Event::dispatch('catalog.category.delete.before', $id);
-
-        $category->delete();
-
-        Event::dispatch('catalog.category.delete.after', $id);
+        $this->getRepositoryInstance()->delete($id);
 
         return response([
-            'message' => trans('rest-api::app.admin.catalog.categories.delete-success'),
-        ]);
-    }
-
-    /**
-     * Mass update Category.
-     */
-    public function massUpdate(MassUpdateRequest $massUpdateRequest): Response
-    {
-        $indices = $massUpdateRequest->input('indices');
-
-        foreach ($indices as $categoryId) {
-            $this->getRepositoryInstance()->findOrFail($categoryId);
-
-            Event::dispatch('catalog.categories.mass-update.before', $categoryId);
-
-            $category = $this->getRepositoryInstance()->find($categoryId);
-
-            $category->status = $massUpdateRequest->input('value');
-
-            $category->save();
-
-            Event::dispatch('catalog.categories.mass-update.after', $category);
-        }
-
-        return response([
-            'message' => trans('rest-api::app.admin.catalog.categories.mass-operations.update-success'),
+            'message' => __('rest-api::app.common-response.success.delete', ['name' => 'Category']),
         ]);
     }
 
     /**
      * Remove the specified resources from database.
+     *
+     * @param  \Webkul\Core\Http\Requests\MassDestroyRequest  $request
+     * @return \Illuminate\Http\Response
      */
-    public function massDestroy(MassDestroyRequest $massDestroyRequest): Response
+    public function massDestroy(MassDestroyRequest $request)
     {
-        $categoryIds = collect($massDestroyRequest->input('indices'));
-    
-        $categoryIds->each(function ($categoryId) {
-            $category = $this->getRepositoryInstance()->find($categoryId);
+        $categories = $this->getRepositoryInstance()->findWhereIn('id', $request->indexes);
 
-            if (! $this->isCategoryDeletable($category)) {
-                return response(['message' => trans('rest-api::app.admin.catalog.categories.root-category-delete')]);
-            }
+        if ($this->containsNonDeletableCategory($categories)) {
+            return response([
+                'message' => __('rest-api::app.common-response.error.root-category-delete', ['name' => 'Category']),
+            ], 400);
+        }
 
-            Event::dispatch('catalog.category.delete.before', $categoryId);
-
-            $this->getRepositoryInstance()->delete($categoryId);
-
-            Event::dispatch('catalog.category.delete.after', $categoryId);
+        $categories->each(function ($category) {
+            $this->getRepositoryInstance()->delete($category->id);
         });
 
         return response([
-            'message' => trans('rest-api::app.admin.catalog.categories.mass-operations.delete-success'),
+            'message' => __('rest-api::app.common-response.success.mass-operations.delete', ['name' => 'categories']),
         ]);
     }
 
@@ -173,13 +129,29 @@ class CategoryController extends CatalogController
      * then it is not deletable.
      *
      * @param  \Webkul\Category\Models\Category  $category
+     * @return bool
      */
-    private function isCategoryDeletable($category): bool
+    private function isCategoryDeletable($category)
     {
-        if ($category->id === 1) {
-            return false;
+        static $rootIdInChannels;
+
+        if (! $rootIdInChannels) {
+            $rootIdInChannels = Channel::pluck('root_category_id');
         }
 
-        return ! Channel::pluck('root_category_id')->contains($category->id);
+        return ! ($category->id === 1 || $rootIdInChannels->contains($category->id));
+    }
+
+    /**
+     * Check whether indexes contains non deletable category or not.
+     *
+     * @param  \Kalnoy\Nestedset\Collection  $categoryIds
+     * @return bool
+     */
+    private function containsNonDeletableCategory($categories)
+    {
+        return $categories->contains(function ($category) {
+            return ! $this->isCategoryDeletable($category);
+        });
     }
 }

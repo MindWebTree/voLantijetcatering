@@ -7,69 +7,52 @@ use Webkul\RestApi\Http\Controllers\V1\Shop\Core\CountryController;
 use Webkul\RestApi\Http\Controllers\V1\Shop\Core\CountryStateController;
 use Webkul\RestApi\Http\Controllers\V1\Shop\Core\CurrencyController;
 use Webkul\RestApi\Http\Controllers\V1\Shop\Core\LocaleController;
-use Webkul\RestApi\Http\Controllers\V1\Shop\Core\ThemeController;
+use Webkul\RestApi\Http\Controllers\V1\Shop\Core\SliderController;
 
 /**
  * Core configs.
  */
-Route::controller(CoreController::class)->prefix('core-configs')->group(function () {
-    Route::get('', 'getCoreConfigs');
-});
+Route::post('core-configs', [CoreController::class, 'getCoreConfigs']);
 
-Route::controller(CoreController::class)->prefix('core-config-fields')->group(function () {
-    Route::get('', 'allResources');
+Route::get('core-config-fields', [CoreController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
-});
+Route::get('core-config-fields/{id}', [CoreController::class, 'getResource']);
 
 /**
  * Locale routes.
  */
-Route::controller(LocaleController::class)->prefix('locales')->group(function () {
-    Route::get('', 'allResources');
+Route::get('locales', [LocaleController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
-});
+Route::get('locales/{id}', [LocaleController::class, 'getResource']);
 
 /**
  * Currency routes.
  */
-Route::controller(CurrencyController::class)->prefix('currencies')->group(function () {
-    Route::get('', 'allResources');
+Route::get('currencies', [CurrencyController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
-});
+Route::get('currencies/{id}', [CurrencyController::class, 'getResource']);
 
 /**
  * Channel routes.
  */
-Route::controller(ChannelController::class)->prefix('channels')->group(function () {
-    Route::get('', 'allResources');
+Route::get('channels', [ChannelController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
-});
+Route::get('channels/{id}', [ChannelController::class, 'getResource']);
+
+/**
+ * Slider routes.
+ */
+Route::get('sliders', [SliderController::class, 'allResources']);
+
+Route::get('sliders/{id}', [SliderController::class, 'getResource']);
 
 /**
  * Country routes.
  */
-Route::controller(CountryController::class)->prefix('countries')->group(function () {
-    Route::get('', 'allResources');
+Route::get('countries', [CountryController::class, 'allResources']);
 
-    Route::get('{id}', 'getResource');
+Route::get('countries/{id}', [CountryController::class, 'getResource']);
 
-    Route::get('states/groups', 'getCountryStateGroups');
+Route::get('countries/states/groups', [CountryController::class, 'getCountryStateGroups']);
 
-});
-
-Route::controller(CountryStateController::class)->prefix('countries-states')->group(function () {
-    Route::get('', 'allResources');
-});
-
-/**
- * Theme routes.
- */
-Route::controller(ThemeController::class)->prefix('theme/customizations')->group(function () {
-    Route::get('', 'getThemeCustomizations');
-
-    Route::get('{id}', 'getResource');
-});
+Route::get('countries-states', [CountryStateController::class, 'allResources']);

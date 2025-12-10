@@ -18,7 +18,7 @@ class CartRule
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -78,7 +78,7 @@ class CartRule
      *     enum={0,1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $status;
 
@@ -90,7 +90,7 @@ class CartRule
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $coupon_type;
 
@@ -102,7 +102,7 @@ class CartRule
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $use_auto_generation;
 
@@ -116,7 +116,7 @@ class CartRule
      * @var string
      */
     private $coupon_code;
-
+    
     /**
      * @OA\Property(
      *     title="Uses Per Coupon",
@@ -124,10 +124,10 @@ class CartRule
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $uses_per_coupon;
-
+    
     /**
      * @OA\Property(
      *     title="Uses Per Customer",
@@ -135,10 +135,10 @@ class CartRule
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $usage_per_customer;
-
+    
     /**
      * @OA\Property(
      *     title="Times Used",
@@ -146,10 +146,10 @@ class CartRule
      *     example=0
      * )
      *
-     * @var int
+     * @var integer
      */
     private $times_used;
-
+    
     /**
      * @OA\Property(
      *     title="Condition Type",
@@ -158,7 +158,7 @@ class CartRule
      *     enum={1, 2}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $condition_type;
 
@@ -172,9 +172,7 @@ class CartRule
      *         "attribute": "cart|items_qty",
      *         "attribute_type": "integer"
      *     }},
-     *
      *     @OA\Items(
-     *
      *          @OA\Property(property="value", type="string", example="2"),
      *          @OA\Property(property="operator", type="string", example=">="),
      *          @OA\Property(property="attribute", type="string", example="cart|items_qty"),
@@ -194,7 +192,7 @@ class CartRule
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $end_other_rules;
 
@@ -228,7 +226,7 @@ class CartRule
      *     example=2
      * )
      *
-     * @var int
+     * @var integer
      */
     private $discount_quantity;
 
@@ -239,7 +237,7 @@ class CartRule
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $discount_step;
 
@@ -251,7 +249,7 @@ class CartRule
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $apply_to_shipping;
 
@@ -263,10 +261,10 @@ class CartRule
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $free_shipping;
-
+    
     /**
      * @OA\Property(
      *     title="Sort Order",
@@ -274,10 +272,10 @@ class CartRule
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $sort_order;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

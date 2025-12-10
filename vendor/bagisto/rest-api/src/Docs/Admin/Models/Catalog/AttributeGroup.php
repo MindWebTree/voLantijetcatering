@@ -18,7 +18,7 @@ class AttributeGroup
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -51,7 +51,7 @@ class AttributeGroup
      *     example=null
      * )
      *
-     * @var int
+     * @var integer
      */
     private $swatch_type;
 
@@ -60,14 +60,13 @@ class AttributeGroup
      *     title="Attributes",
      *     description="Attributes",
      *     type="array",
-     *
      *     @OA\Items(ref="#/components/schemas/Attribute")
      * )
-     *
+     * 
      * @var array
      */
     private $attributes;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

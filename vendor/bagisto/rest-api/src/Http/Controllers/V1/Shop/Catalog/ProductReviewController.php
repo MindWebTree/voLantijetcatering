@@ -4,45 +4,43 @@ namespace Webkul\RestApi\Http\Controllers\V1\Shop\Catalog;
 
 use Illuminate\Http\Request;
 use Webkul\Product\Repositories\ProductReviewRepository;
-use Webkul\Product\Repositories\ProductReviewAttachmentRepository;
 use Webkul\RestApi\Http\Resources\V1\Shop\Catalog\ProductReviewResource;
 
 class ProductReviewController extends CatalogController
 {
     /**
-     * Create a controller instance.
-     *
-     * @return void
-     */
-    public function __construct(protected ProductReviewAttachmentRepository $productReviewAttachmentRepository) {}
-
-    /**
      * Repository class name.
+     *
+     * @return string
      */
-    public function repository(): string
+    public function repository()
     {
         return ProductReviewRepository::class;
     }
 
     /**
      * Resource class name.
+     *
+     * @return string
      */
-    public function resource(): string
+    public function resource()
     {
         return ProductReviewResource::class;
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $productId
+     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, int $productId): \Illuminate\Http\Response
+    public function store(Request $request, int $productId)
     {
         $this->validate($request, [
-            'title'         => 'required',
-            'comment'       => 'required',
-            'rating'        => 'required|numeric|min:1|max:5',
-            'attachments'   => 'array',
-            'attachments.*' => 'file|mimetypes:image/*,video/*',
+            'comment' => 'required',
+            'rating'  => 'required|numeric|min:1|max:5',
+            'title'   => 'required',
         ]);
 
         $customer = $this->resolveShopUser($request);
@@ -57,11 +55,9 @@ class ProductReviewController extends CatalogController
             'title'       => $request->title,
         ]);
 
-        $this->productReviewAttachmentRepository->upload(request()->file('attachments') ?? [], $productReview);
-
         return response([
             'data'    => new ProductReviewResource($productReview),
-            'message' => trans('rest-api::app.shop.catalog.products.reviews.create-success'),
+            'message' => 'Your review submitted successfully.',
         ]);
     }
 }

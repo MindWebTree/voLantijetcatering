@@ -18,7 +18,7 @@ class AttributeFamily
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -52,7 +52,7 @@ class AttributeFamily
      *     enum={"0", "1"}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $status;
 
@@ -61,14 +61,13 @@ class AttributeFamily
      *     title="Groups",
      *     description="Attribute's groups",
      *     type="array",
-     *
      *     @OA\Items(ref="#/components/schemas/AttributeGroup")
      * )
-     *
+     * 
      * @var array
      */
     private $groups;
-
+    
     /**
      * @OA\Property(
      *     title="Created at",

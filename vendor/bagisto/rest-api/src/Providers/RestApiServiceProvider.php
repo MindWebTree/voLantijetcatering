@@ -4,8 +4,6 @@ namespace Webkul\RestApi\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Webkul\Core\Exceptions\Handler as BaseHandler;
-use Webkul\RestApi\Exceptions\Handler;
 
 class RestApiServiceProvider extends ServiceProvider
 {
@@ -30,13 +28,11 @@ class RestApiServiceProvider extends ServiceProvider
     {
         $this->activateMiddlewareAliases();
 
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'rest-api');
-
-        $this->app->bind(BaseHandler::class, Handler::class);
+        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'rest-api');
 
         $this->publishes([
             __DIR__.'/../Config/l5-swagger.php' => config_path('l5-swagger.php'),
-        ], 'bagisto-rest-api-swagger');
+        ], ['bagisto-rest-api-swagger']);
     }
 
     /**
@@ -72,11 +68,13 @@ class RestApiServiceProvider extends ServiceProvider
     {
         Route::prefix('api')
             ->middleware('api')
-            ->group(__DIR__.'/../Routes/api.php');
+            ->group(__DIR__ . '/../Routes/api.php');
     }
 
     /**
      * Register the console commands of this package.
+     *
+     * @return void
      */
     protected function registerCommands(): void
     {

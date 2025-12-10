@@ -18,7 +18,7 @@ class Customer
      *     example=1
      * )
      *
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -108,7 +108,7 @@ class Customer
      *     enum={0, 1}
      * )
      *
-     * @var int
+     * @var integer
      */
     private $status;
 

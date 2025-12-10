@@ -2,133 +2,82 @@
 
 namespace Webkul\RestApi\Http\Controllers\V1\Admin\CMS;
 
-use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Event;
-use Webkul\Admin\Http\Requests\MassDestroyRequest;
-use Webkul\CMS\Repositories\PageRepository;
-use Webkul\Core\Rules\Slug;
-use Webkul\RestApi\Http\Resources\V1\Admin\CMS\PageResource;
+use Webkul\CMS\Repositories\CmsRepository;
+use Webkul\RestApi\Http\Resources\V1\Admin\CMS\CMSResource;
 
 class PageController extends CMSController
 {
     /**
      * Repository class name.
+     *
+     * @return string
      */
-    public function repository(): string
+    public function repository()
     {
-        return PageRepository::class;
+        return CmsRepository::class;
     }
 
     /**
      * Resource class name.
+     *
+     * @return string
      */
-    public function resource(): string
+    public function resource()
     {
-        return PageResource::class;
+        return CMSResource::class;
     }
 
     /**
      * To store a new page in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): Response
+    public function store(Request $request)
     {
         $request->validate([
-            'url_key'      => ['required', 'unique:cms_page_translations,url_key', new Slug],
+            'url_key'      => ['required', 'unique:cms_page_translations,url_key', new \Webkul\Core\Contracts\Validations\Slug],
             'page_title'   => 'required',
             'channels'     => 'required',
             'html_content' => 'required',
         ]);
 
-        Event::dispatch('cms.pages.create.before');
-
-        $page = $this->getRepositoryInstance()->create($request->only([
-            'page_title',
-            'channels',
-            'html_content',
-            'meta_title',
-            'url_key',
-            'meta_keywords',
-            'meta_description',
-        ]));
-
-        Event::dispatch('cms.pages.create.after', $page);
+        $page = $this->getRepositoryInstance()->create($request->all());
 
         return response([
-            'data'    => new PageResource($page),
-            'message' => trans('rest-api::app.admin.cms.create-success'),
+            'data'    => new CMSResource($page),
+            'message' => __('rest-api::app.common-response.success.create', ['name' => 'Page']),
         ]);
     }
 
     /**
      * To update the previously created page in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id): Response
+    public function update(Request $request, $id)
     {
         $locale = core()->getRequestedLocaleCode();
 
         $request->validate([
-            $locale.'.url_key'     => ['required', new Slug, function ($attribute, $value, $fail) use ($id) {
+            $locale . '.url_key'      => ['required', new \Webkul\Core\Contracts\Validations\Slug, function ($attribute, $value, $fail) use ($id) {
                 if (! $this->getRepositoryInstance()->isUrlKeyUnique($id, $value)) {
-                    $fail(trans('rest-api::app.admin.cms.error.already-taken'));
+                    $fail(__('rest-api::app.common-response.error.already-taken', ['name' => 'Page']));
                 }
             }],
-            $locale.'.page_title'   => 'required',
-            $locale.'.html_content' => 'required',
-            'channels'              => 'required',
+            $locale . '.page_title'   => 'required',
+            $locale . '.html_content' => 'required',
+            'channels'                => 'required',
         ]);
 
-        Event::dispatch('cms.pages.update.before', $id);
-
-        $page = $this->getRepositoryInstance()->update([
-            $locale    => request()->input($locale),
-            'channels' => request()->input('channels'),
-            'locale'   => $locale,
-        ], $id);
-
-        Event::dispatch('cms.pages.update.after', $page->refresh());
+        $page = $this->getRepositoryInstance()->update($request->all(), $id);
 
         return response([
-            'data'    => new PageResource($page->refresh()),
-            'message' => trans('rest-api::app.admin.cms.update-success'),
-        ]);
-    }
-
-    /**
-     * To delete the previously create CMS page.
-     */
-    public function destroy(int $id): Response
-    {
-        $page = $this->getRepositoryInstance()->findOrFail($id);
-
-        Event::dispatch('cms.pages.delete.before', $id);
-
-        $page->delete();
-
-        Event::dispatch('cms.pages.delete.after', $id);
-
-        return response([
-            'message' => trans('rest-api::app.admin.cms.mass-operations.delete-success'),
-        ]);
-    }
-
-    /**
-     * To mass delete the CMS resource from storage.
-     */
-    public function massDestroy(MassDestroyRequest $massDestroyRequest): Response
-    {
-        $indices = $massDestroyRequest->input('indices');
-
-        foreach ($indices as $index) {
-            Event::dispatch('cms.pages.delete.before', $index);
-
-            $this->getRepositoryInstance()->delete($index);
-
-            Event::dispatch('cms.pages.delete.after', $index);
-        }
-
-        return response([
-            'message' => trans('rest-api::app.admin.cms.mass-operations.delete-success'),
+            'data'    => new CMSResource($page),
+            'message' => __('rest-api::app.common-response.success.update', ['name' => 'Page']),
         ]);
     }
 }
