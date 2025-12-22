@@ -493,14 +493,6 @@
                     </p>
                 </td>
             </tr>
-                        <tr>
-            <td style="padding: 20px; text-align: left;">
-            <a href="{{ isset($pdfUrl) ? $pdfUrl : '#' }}" 
-            target="_blank">
-                Click here to view/download Invoice
-            </a>
-            </td>
-</tr>
         </tbody>
     </table>
 </table>

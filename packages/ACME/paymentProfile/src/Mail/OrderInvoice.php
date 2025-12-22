@@ -32,15 +32,15 @@ class OrderInvoice extends Mailable
      *
      * @return $this
      */
-public function build()
-{
-    $increment_id = $this->order->increment_id;
-    $pdfUrl = url(Storage::url('invoice/' . basename($this->pdfPath)));
-    
-    return $this->subject('Invoice #' . $increment_id)
+    public function build()
+    {
+        $increment_id = $this->order->increment_id;
+        return $this->subject('Invoice'. ' #' . $increment_id)
         ->view('paymentprofile::shop.volantijetcatering.invoices.mail.create')
-        ->with([
-            'pdfUrl' => $pdfUrl,
+        ->attach($this->pdfPath, [
+            'as' => 'invoice.pdf', // Name of the attachment
+            'mime' => 'application/pdf' // MIME type of the attachment
         ]);
-}
+    }
+
 }

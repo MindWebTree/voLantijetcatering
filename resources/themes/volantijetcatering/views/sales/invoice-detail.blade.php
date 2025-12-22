@@ -292,8 +292,8 @@
                     Make Payment
                 </button> --}}
 
-                <div class="payment_section w-50" style="">
-                    <div class="">
+                <div class="payment_section customer-payment-section w-50">
+                    <div class="customer-payment-methods">
 
                     <div class="fs19 pb-4">
                         <span><strong>Debit or Credit Card</strong></span>
@@ -306,7 +306,7 @@
                             <img src="{{ asset('themes/volantijetcatering/assets/images/discover.png') }}" alt="Authorize.net Logo" width="35px" class="mr-2" id="AuthorizeNet_image">
                             <img src="{{ asset('themes/volantijetcatering/assets/images/american-express.png') }}" alt="Authorize.net Logo" width="35px" id="AuthorizeNet_image">
                     </div>
-                   
+            
                     @if (isset($cards) && count($cards) > 0)
                     <div class="existing_card pt-2">
                         @include(
@@ -316,15 +316,24 @@
                             ]
                         )
                     </div>
-          
+        
                     @endif
                 </div>
-                <div id="customAcceptUIContainer" class="p-3 mr-2 mr-lg-0 mr-md-0"></div>
+                <div class="ml-3 mt-3">
+                <label class="radio-container">
+                <input type="radio"
+                    name="add_new_card"
+                    class="customer-add-new-card">
+                <span class="checkmark ml-3"></span>
+                Add New Card
+            </label>
+                </div>
+                <div id="customAcceptUIContainer" class="p-3 mr-2 mr-lg-0 mr-md-0 d-none"></div>
                     </div>
 
                     </div>
                         <div class="card_erorr_message p-2 d-none" style="color:red;">
-                          <span class="payment_error_message"></span>
+                        <span class="payment_error_message"></span>
                         </div>
                         <input type="hidden" id="order_order_id" value="{{ $order->increment_id }}">
                         <input type="hidden" id="order_customer_id" value="{{ $order->customer_id }}">
@@ -352,4 +361,21 @@
         'orderId' => $order->id,
         'customerId' => $order->customer_id,
     ])
+
+    <script>
+        $('body').on('click', '.customer-add-new-card', function () {
+            $('input[name="saved-card"]:checked').prop('checked', false);
+            $('.invoice_view_pay_button').css('opacity', '0.5')
+            $(".invoice_view_pay_button").prop("disabled", true);
+            $("#customAcceptUIContainer").removeClass("d-none").slideDown(400);
+        });
+
+        $('body').on('click', 'input[name="saved-card"]', function () {
+            $('input[name="add_new_card"]:checked').prop('checked', false);
+            $(".invoice_view_pay_button").prop("disabled", true);
+            $("#customAcceptUIContainer").slideUp(400, function() {
+                $(this).addClass("d-none");
+            });
+        }); 
+    </script>
 @endpush

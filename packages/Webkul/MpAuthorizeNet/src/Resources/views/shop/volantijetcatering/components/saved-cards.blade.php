@@ -1,7 +1,17 @@
 @php
     $cards = collect();
-    if (auth()->guard('customer')->check()) {
-        $customer_id = auth()->guard('customer')->user()->id;
+    if (auth()->guard('customer')->check() || session()->has('token') ) {
+        $customer_id = null;
+        if (auth()->guard('customer')->check()) {
+            $customer_id = auth()->guard('customer')->user()->id;
+        } else {
+            $token = session('token');
+            $customer = DB::table('customers')->where('token', $token)->first();
+            if ($customer) {
+                $customer_id = $customer->id;
+            }
+        }
+        
         $cards = app('Webkul\MpAuthorizeNet\Repositories\MpAuthorizeNetRepository')->findWhere(['customers_id' => $customer_id]);
 
     } elseif (isset($customerId) && $customerId) {
@@ -10,7 +20,7 @@
 
 @endphp
 
-@if (auth()->guard('customer')->check() || isset($customerId) && $customerId)
+@if (isset($customer_id) && $customer_id || isset($customerId) && $customerId)
     <div class="mpauthorizenet-cards-block" id="saved-cards" style="padding-left: 15px; padding-bottom: 10px; margin-bottom:10px;">
         <div class="control-info mt-10 mb-10">
             @foreach ($cards as $card)

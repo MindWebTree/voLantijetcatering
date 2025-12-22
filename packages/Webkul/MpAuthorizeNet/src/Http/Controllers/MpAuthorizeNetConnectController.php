@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\SendOrderFailedEmail;
 
-
 /**
  * MpAuthorizeNetConnectController Controller
  *
@@ -99,12 +98,10 @@ class MpAuthorizeNetConnectController extends Controller
     public function collectToken()
     {
 
-
-        //log::info('collectToken');
         try {
             // sandeep add code 
             $orderId = request()->input('order_id');
-            
+            log::info("inside collectToken");
             if(isset($orderId) && $orderId){
                 DB::table('mpauthorizenet_cart')
                 ->where('cart_id', $orderId)
@@ -114,15 +111,12 @@ class MpAuthorizeNetConnectController extends Controller
                 ->where('cart_id', Cart::getCart()->id)
                 ->delete();
             }
- 
-            log::info('savedCardSelectedId',['savedCardSelectedId',request()->input('savedCardSelectedId')]);
-            if (request()->input('savedCardSelectedId')) {
 
-                //log::info('1');
+            if (request()->input('savedCardSelectedId')) {
+                log::info("inside savedCardSelectedId");
 
                 if (isset($orderId) && $orderId) {
-                //log::info('2');
-
+log::info("inside saved card admin section");
                     session()->put('ADMIN_PAYMENT', true);
                     session()->put('ADMIN_CARD', true);
 
@@ -139,13 +133,23 @@ class MpAuthorizeNetConnectController extends Controller
                     DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
                 } else {
-                //log::info('3a');
+log::info("inside saved card customer section");
+                    if (auth()->guard('customer')->check()) {
+                            $customer_id = auth()->guard('customer')->user()->id;
+                        } else {
+                            $token = session('token');
+                            $customer = DB::table('customers')->where('token', $token)->first();
+                            if ($customer) {
+                                $customer_id = $customer->id;
+                        } 
+                    }
 
                     session()->forget('ADMIN_PAYMENT');
                     session()->forget('ADMIN_CARD');
+
                     $misc = $this->mpauthorizenetRepository->findOneWhere([
                         'id' => request()->input('savedCardSelectedId'),
-                        'customers_id' => auth()->guard('customer')->user()->id,
+                        'customers_id' => $customer_id,
                     ])->misc;
 
                     $result = $this->mpauthorizenetcartRepository->create([
@@ -157,27 +161,42 @@ class MpAuthorizeNetConnectController extends Controller
 
                 if ($result) {
                      // sandeep add code
-                     session()->put('card', request()->input('result'));
+                    session()->put('card', request()->input('result'));
                     return response()->json(['success' => 'true']);
                 } else {
                     return response()->json(['success' => 'false'], 400);
                 }
 
             } else {
-                //log::info('4a');
-                $misc = request()->input('response');
-                //log::info('misc',['misc'=>$misc]);
-                log::info('result',['result',request()->input('result')]);
-                if (auth()->guard('customer')->check() && request()->input('result') == 'true') {
-                //log::info('5a');
+                log::info("inside no saved card section");
 
-                    log::info('misc',['misc'=>$misc]);
+                $misc = request()->input('response');
+                if ((auth()->guard('customer')->check() || session()->has('token') ) && request()->input('result') == 'true') {
+                log::info("inside no saved card and now click save card");
+
+                $token = session('token');
+                if (auth()->guard('customer')->check()) {
+                        $customer_id = auth()->guard('customer')->user()->id;
+                } else {
+                    $customer = DB::table('customers')->where('token', $token)->first();
+                    if ($customer) {
+                        $customer_id = $customer->id;
+                    } else {
+                        $customer_id = DB::table('customers')->insertGetId([
+                            'first_name' => '',
+                            'last_name' => '',
+                            'password' => '',
+                            'token' => $token,
+                        ]);
+                    }
+                    session(['customer_id' => $customer_id]);
+                }
+
                     $last4 = $misc['encryptedCardData']['cardNumber'];
-                    //log::info('last4',['last4',$last4]);
 
                     $cardExist = $this->mpauthorizenetRepository->findOneWhere([
                         'last_four' => $last4,
-                        'customers_id' => auth()->guard('customer')->user()->id,
+                        'customers_id' => $customer_id,
                     ]);
 
                     if ($cardExist) {
@@ -185,10 +204,10 @@ class MpAuthorizeNetConnectController extends Controller
                             'token' => $misc['opaqueData']['dataValue'],
                             'misc' => json_encode($misc),
                         ]);
-                        
+
                     } else {
                         $result = $this->mpauthorizenetRepository->create([
-                            'customers_id' => auth()->guard('customer')->user()->id,
+                            'customers_id' => $customer_id,
                             'token' => $misc['opaqueData']['dataValue'],
                             'last_four' => $last4,
                             'misc' => json_encode($misc),
@@ -208,10 +227,11 @@ class MpAuthorizeNetConnectController extends Controller
                         return response()->json(['success' => 'false'], 400);
                     }
                 } else {
-                    //log::info('second');
 
+                    log::info("inside no save card and click not save card");
                     //payment from admin or invoice view and card is not save
                     if (request()->input('order_id')) {
+                        log::info("admin side no save card");
                         session()->put('ADMIN_PAYMENT', true);
                         session()->forget('ADMIN_CARD');
 
@@ -244,9 +264,9 @@ class MpAuthorizeNetConnectController extends Controller
                         }
 
                     } else {
-                        //log::info('set card velue');
                         session()->forget('ADMIN_PAYMENT');
                         session()->forget('ADMIN_CARD');
+                        log::info("admin side no save card");
 
                         session()->put('card', request()->input('result'));
                         $result = $this->mpauthorizenetcartRepository->create([
@@ -273,29 +293,21 @@ class MpAuthorizeNetConnectController extends Controller
 
     public function createCharge(Request $request)
     {
-        //log::info('1');
-        log::info('session_data',['session_data',session()->all()]); 
         try {
 
             $cardBoolean = session()->get('card');
             $orderId = request()->input('order_id');
 
-            //log::info('2');
-            log::info('cardBoolean',['cardBoolean'=>$cardBoolean]);
-
-            // dd($orderId);
             //customer is login and customer has saved card or if session has ADMIN_CARD and order id
-            if ((auth()->guard('customer')->check() && $cardBoolean != 'false'  && !isset($orderId)) || session()->has('ADMIN_CARD') && isset($orderId)) {
-                log::info('3');
+            if (((auth()->guard('customer')->check() || session()->has('token')) && $cardBoolean != 'false' && !isset($orderId)) || session()->has('ADMIN_CARD') && isset($orderId)) {
 
                 if (session()->has('ADMIN_PAYMENT') && $orderId) {
-                    //log::info('4');
+
                     $MpauthorizeNetCard = $this->mpauthorizenetcartRepository->findOneWhere([
                         'cart_id' => $orderId
                     ])->mpauthorizenet_token;
 
                 } else {
-                    //log::info('5');
                     $MpauthorizeNetCard = $this->mpauthorizenetcartRepository->findOneWhere([
                         'cart_id' => Cart::getCart()->id
                     ])->mpauthorizenet_token;
@@ -304,9 +316,7 @@ class MpAuthorizeNetConnectController extends Controller
                 $MpauthorizeNetCardDecode = json_decode($MpauthorizeNetCard);
 
                 if (isset($MpauthorizeNetCardDecode->customerResponse)) {
-                    //log::info('6');
                     if (session()->has('ADMIN_PAYMENT') && $orderId) {
-                        //log::info('7');
                         $savedCardPaymentResponse = $this->helper->chargeCustomerProfile($MpauthorizeNetCardDecode);
 
                         $this->mpauthorizenetcartRepository->deleteWhere([
@@ -314,15 +324,12 @@ class MpAuthorizeNetConnectController extends Controller
                         ]);
 
                         $customerProfileResponse = $this->helper->paymentResponse($savedCardPaymentResponse);
-                        // dd($customerProfileResponse);
                         if ($customerProfileResponse == 'true') {
-                            //log::info('8');
                             session()->forget('ADMIN_PAYMENT');
                             session()->forget('ADMIN_CARD');
                             return $customerProfileResponse;
-                        }
+                        }   
                     } else {
-                        //log::info('9');
                         $savedCardPaymentResponse = $this->helper->chargeCustomerProfile($MpauthorizeNetCardDecode);
 
                         $this->mpauthorizenetcartRepository->deleteWhere([
@@ -332,19 +339,35 @@ class MpAuthorizeNetConnectController extends Controller
                         $customerProfileResponse = $this->helper->paymentResponse($savedCardPaymentResponse);
 
                         if ($customerProfileResponse == 'true') {
+                            if(auth()->guard('customer')->check()){
+                                $customerEmail = Auth::user()->email;
+                                $customer_id = Auth::user()->id;
+                            } else {
+                                $token = session('token');
+                                $fboDetails = DB::table('fbo_details')
+                                    ->where('customer_token', $token)
+                                    ->whereNotNull('customer_token')
+                                    ->orderBy('id', 'DESC')
+                                    ->first();
+                                $customerEmail = $fboDetails->email_address;
+                                $customer = DB::table('customers')->where('token', $token)->first();
+                                if ($customer) {
+                                    $customer_id = $customer->id;
+                                }
+                            }
+
+
                             $cart = Cart::getCart();
-                            //log::info('10');
                             CustomerProfileLog::create([
                                 'profile_id' => $MpauthorizeNetCardDecode->customerResponse->customerProfileId,
                                 'payment_profile_id' => $MpauthorizeNetCardDecode->customerResponse->paymentProfielId,
-                                'email' => Auth::user()->email,
-                                'customer_id' => Auth::user()->id,
+                                'email' => $customerEmail,
+                                'customer_id' => $customer_id,
                             ]);
                     
                             return redirect()->route('shop.checkout.success');
 
                         } else {
-                            //log::info('11');
                             session()->flash('warning', $customerProfileResponse);
                             return redirect()->route('shop.checkout.cart.index');
                         }
@@ -355,12 +378,9 @@ class MpAuthorizeNetConnectController extends Controller
                     $customerEmail = Cart::getCart()->customer_email;
                     $cutomerProfileResponse = $this->helper->createCustomerProfile($customerEmail, $MpauthorizeNetCardDecode);
 
-                    log::info('cutomerProfileResponse',['cutomerProfileResponse'=>$cutomerProfileResponse]);
 
                     if (($cutomerProfileResponse != null) && ($cutomerProfileResponse->getMessages()->getResultCode() == "Ok")) {
                         $paymentProfiles = $cutomerProfileResponse->getCustomerPaymentProfileIdList();
-
-                        log::info('paymentProfiles',['paymentProfiles'=>$paymentProfiles]);
 
                         $customerResponse = [
                             'customerProfileId' => $cutomerProfileResponse->getCustomerProfileId(),
@@ -371,11 +391,7 @@ class MpAuthorizeNetConnectController extends Controller
                             'token' => $MpauthorizeNetCardDecode->opaqueData->dataValue,
                         ])->misc;
 
-                        log::info('cardToken',['cardToken'=>$cardToken]);
-
                         $cardTokenDecode = json_decode($cardToken);
-
-                        log::info('cardTokenDecode',['cardTokenDecode',$cardTokenDecode]);
 
                         $updateRespone = [
                             'cardResponse' => $cardTokenDecode,
@@ -386,41 +402,49 @@ class MpAuthorizeNetConnectController extends Controller
                             'token' => $MpauthorizeNetCardDecode->opaqueData->dataValue,
                         ])->update([
                                     'misc' => json_encode($updateRespone),
-                               ]);
+                            ]);
 
                         $UpdatedToken = $this->mpauthorizenetRepository->findOneWhere([
                             'token' => $MpauthorizeNetCardDecode->opaqueData->dataValue,
                         ])->misc;
 
                         $decodeUpdatedToken = json_decode($UpdatedToken);
-                        log::info('decodeUpdatedToken',['decodeUpdatedToken',$decodeUpdatedToken]);
 
                         $savedCardPaymentResponse = $this->helper->chargeCustomerProfile($decodeUpdatedToken);
 
-                        log::info('savedCardPaymentResponse',['savedCardPaymentResponse',$savedCardPaymentResponse]);
-
                         $customerProfileResponse = $this->helper->paymentResponse($savedCardPaymentResponse);
 
-                        log::info('customerProfileResponse',['customerProfileResponse'=>$customerProfileResponse]);
-
                         if ($customerProfileResponse == 'true') {
-                            //log::info('14');
+                            if(auth()->guard('customer')->check()){
+                            $customerEmail = Auth::user()->email;
+                            $customer_id = Auth::user()->id;
+                        } else {
+                            $token = session('token');
+                            $fboDetails = DB::table('fbo_details')
+                                ->where('customer_token', $token)
+                                ->whereNotNull('customer_token')
+                                ->orderBy('id', 'DESC')
+                                ->first();
+                            $customerEmail = $fboDetails->email_address;
+                            $customer = DB::table('customers')->where('token', $token)->first();
+                            if ($customer) {
+                                $customer_id = $customer->id;
+                            }
+                        }
                             CustomerProfileLog::create([
                                 'profile_id' => $customerResponse['customerProfileId'],
                                 'payment_profile_id' => $customerResponse['paymentProfielId'],
-                                'email' => Auth::user()->email,
-                                'customer_id' => Auth::user()->id,
+                                'email' => $customerEmail,
+                                'customer_id' => $customer_id,
                             ]);
                             return redirect()->route('shop.checkout.success');
                         } else {
-                            //log::info('15');
                             session()->flash('warning', $customerProfileResponse);
 
                             return redirect()->route('shop.checkout.cart.index');
                         }
 
                     } else {
-                        //log::info('16');
                         $this->helper->deleteCart();
 
                         $errorMessages = $cutomerProfileResponse->getMessages()->getMessage();
@@ -431,17 +455,22 @@ class MpAuthorizeNetConnectController extends Controller
                     }
                 }
             } else {
-                //log::info('17');
+                
                 if (session()->has('ADMIN_PAYMENT')) {
-                    //log::info('18');
                     $MpauthorizeNetCard = $this->mpauthorizenetcartRepository->findOneWhere([
                         'cart_id' => request()->input('order_id')
                     ])->mpauthorizenet_token;
 
                     $MpauthorizeNetCardDecode = json_decode($MpauthorizeNetCard);
+
+                    // $guestPaymentprofile = $this->helper->createCustomerProfile('sandeep@mindwebtree.com', $MpauthorizeNetCardDecode);
+
+                    // log::info("guestPaymentprofile",$guestPaymentprofile);
+
                     $token = session('token');
 
                     $guestResponse = $this->helper->createAnAcceptPaymentTransaction($MpauthorizeNetCardDecode);
+Log::info('guestResponse', (array) $guestResponse);
                     // dd($guestResponse);
 
                     $this->mpauthorizenetcartRepository->deleteWhere([
@@ -454,32 +483,24 @@ class MpAuthorizeNetConnectController extends Controller
 
                     if ($paymentResponse == 'true') {
                         
-                        //log::info('19');
                         session()->forget('ADMIN_PAYMENT');
                         return $paymentResponse;
 
                     } else {
-                        //log::info('20');
                         $this->helper->deleteCart();
 
                         return redirect()->back();
                     }
                 } else {
 
-                    log::info('21');                
-                    log::info(Cart::getCart()->id);
                     $MpauthorizeNetCard = $this->mpauthorizenetcartRepository->findOneWhere([
                         'cart_id' => Cart::getCart()->id
                     ])->mpauthorizenet_token;
                     
 
-                    log::info('card_detail',['cart_detail'=>$MpauthorizeNetCard]);
-
                     $MpauthorizeNetCardDecode = json_decode($MpauthorizeNetCard);
-                    log::info('MpauthorizeNetCardDecode3',['MpauthorizeNetCardDecode2'=>$MpauthorizeNetCardDecode]);
 
                     $token = session('token');
-                    log::info('token',['token'=>$token]);
 
                     // sandeep add code
                     if(auth()->guard('customer')->check()){
@@ -499,13 +520,8 @@ class MpAuthorizeNetConnectController extends Controller
                             $customerEmail = $fboDetails->email_address;
                             $customerName = $fboDetails->full_name ?? "";
                     }
-
-                log::info('cartcustomerEmail',['customerEmail'=>$customerEmail]);
                 
-                log::info('guest_email',['guest_email'=>$customerEmail]);
-
                     $guestPaymentprofile = $this->helper->createCustomerProfile($customerEmail, $MpauthorizeNetCardDecode);
-                    log::info('guestPaymentprofile',['guestPaymentprofile'=>$guestPaymentprofile]);
 
                     $guestResponse = $this->helper->createAnAcceptPaymentTransaction($MpauthorizeNetCardDecode);
 
@@ -514,11 +530,7 @@ class MpAuthorizeNetConnectController extends Controller
                     ]);
 
                     $paymentResponse = $this->helper->paymentResponse($guestResponse);
-                    log::info('paymentResponse',['paymentResponse'=>$paymentResponse]);
-                    log::info('session_id',['session_id'=>session()->has('customer_id')]);
-                    log::info('session_orderData',['session_orderData'=>session()->has('order')]);
                     if ($paymentResponse == 'true') {
-                        log::info('22');
                         // sandeep add auth check
                         if(!auth()->guard('customer')->check()){
                         if (!session()->has('customer_id')) {
@@ -542,23 +554,15 @@ class MpAuthorizeNetConnectController extends Controller
                                 ]);
                             }
                             session(['customer_id' => $customer_id]);
-                            log::info('guest customer id',['customer_id'=>$customer_id]);
 
                         } else {
-                            log::info('23');
                             // Customer found, use the existing ID                   
                             $customer_id = session('customer_id');
-                            log::info('login customer id',['customer_id'=>$customer_id]);
                         }
 
                     }else{
                         $customer_id = Auth::user()->id;
                     }
-
-                    // log::info('profile_id',['profile_id'=>$guestPaymentprofile->getCustomerProfileId()]);
-                    // log::info('payment_profile_id',['payment_profile_id'=>$guestPaymentprofile->getCustomerPaymentProfileIdList()[0]]);
-                    // log::info('profile_id',['profile_id'=>$customer_id]);
-                    // log::info('email',['email'=>$fboDetails->email_address]);
 
 
                         CustomerProfileLog::create([
@@ -568,12 +572,9 @@ class MpAuthorizeNetConnectController extends Controller
                             'email' => $customerEmail
                         ]);
 
-                        log::info('session_orderData1',['session_orderData1'=>session()->has('order')]);
-
                         return redirect()->route('shop.checkout.success');
 
                     } else {
-                        log::info('24');
                         $this->helper->deleteCart();
 
                         session()->flash('warning', $guestResponse);
@@ -585,7 +586,6 @@ class MpAuthorizeNetConnectController extends Controller
         } catch (\Exception $e) {
             session()->flash('error', __('mpauthorizenet::app.error.something-went-wrong'));
             $order = session('order');
-            log::info('order',['order'=>$order]);
             log::error($e->getMessage());
             $errorFile = $e->getFile();
             $errorLine = $e->getLine();
@@ -641,12 +641,22 @@ class MpAuthorizeNetConnectController extends Controller
     public function deleteCard()
     {
         try {
-            $customerId = request()->input('customerId');
+            $customerId = request()->input('customerId');   
 
             if (isset($customerId)) {
                 $deleteIfFound = $this->mpauthorizenetRepository->findOneWhere(['id' => request()->input('id'), 'customers_id' => $customerId]);
             } else {
-                $deleteIfFound = $this->mpauthorizenetRepository->findOneWhere(['id' => request()->input('id'), 'customers_id' => auth()->guard('customer')->user()->id]);
+                $customer_id = null;
+                if(auth()->guard('customer')->check()){
+                    $customer_id = Auth::user()->id;
+                } else {
+                    $token = session('token');
+                    $customer = DB::table('customers')->where('token', $token)->first();
+                    if ($customer) {
+                        $customer_id = $customer->id;
+                    }
+                }
+                $deleteIfFound = $this->mpauthorizenetRepository->findOneWhere(['id' => request()->input('id'), 'customers_id' => $customer_id]);
             }
 
 

@@ -27,12 +27,23 @@ class GraphTransport extends AbstractTransport
         $body = $email->getHtmlBody() ?? $email->getTextBody();
         $from = config('graph.user_email');
 
+        $attachments = [];
+        foreach ($email->getAttachments() as $attachment) {
+            $attachments[] = [
+                '@odata.type' => '#microsoft.graph.fileAttachment',
+                'name' => $attachment->getFilename() ?? 'attachment',
+                'contentType' => $attachment->getContentType(),
+                'contentBytes' => base64_encode($attachment->getBody())
+            ];
+        }
+
         foreach ($email->getTo() as $to) {
             $this->graph->sendMail(
                 $from,
                 $to->getAddress(),
                 $subject,
                 $body,
+                $attachments
             );
         }
     }

@@ -43,7 +43,7 @@ class MicrosoftGraphMailService
     /**
      * Send email via Microsoft Graph API
      */
-    public function sendMail($fromEmail, $toEmail, $subject, $bodyHtml)
+    public function sendMail($fromEmail, $toEmail, $subject, $bodyHtml, $attachments = [])
     {
         $accessToken = $this->getAccessToken();
 
@@ -68,6 +68,11 @@ class MicrosoftGraphMailService
             ],
             'saveToSentItems' => true
         ];
+
+        // Add attachments if present
+        if (!empty($attachments)) {
+            $emailData['message']['attachments'] = $attachments;
+        }
 
         $response = \Illuminate\Support\Facades\Http::withToken($accessToken)
             ->post($endpoint, $emailData);

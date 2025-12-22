@@ -1639,8 +1639,18 @@
                         </div>
 
                         <div class="modal-body text-dark">
+                            <div class=" customer-payment-methods">
                             <div class="add_new_card">
-                                <button type="button" id="open-mpauthorizenet-modal" class="order_view_add_card_button mr-2">Add card</button>
+                                {{-- <button type="button" id="open-mpauthorizenet-modal" class="order_view_add_card_button mr-2">Add card</button> --}}
+                                <label class="radio-container">
+                                    <input type="radio"
+                                        name="add_new_card"
+                                        id="open-mpauthorizenet-modal"
+                                        class="customer-add-new-card">
+                                    <span class="checkmark ml-3"></span>
+                                    Add New Card
+                                </label>
+
                                 <input type="hidden" id="order_order_id" value="{{ $order->id }}">
                                 <input type="hidden" id="admin_id" value="{{ auth()->guard('admin')->id() }}">
                                 <input type="hidden" id="order_customer_id" value="{{ $order->customer_id }}">
@@ -1711,6 +1721,7 @@
 
                             </div>
                             @endif
+                        </div>
                         </div>
                         <div class="modal-footer p-2">
                             <button type="button" class="collect_payment_close_button" data-dismiss="modal">Close</button>
@@ -2213,7 +2224,7 @@
                 // sandeep add mobile code
                 var mobile = $(this).find('.control-group').find('#customer_mobile').val();
                 var mobileDigits = mobile.replace(/\D/g, '');
-                if (mobileDigits.length < 14 || mobileDigits.length > 18) {
+                if (mobileDigits.length < 10 || mobileDigits.length > 14) {
                     mobilevalid = false;
                 }
                 $(this).find('input').each(function() {
@@ -2227,7 +2238,6 @@
                 if (allInputsFilled && mobilevalid) {
                     this.submit();
                 } else {
-
                     if ($('.validate_form').next('.alert.alert-danger').length === 0) {
                         $('.validate_form').after(
                             '<div class="alert alert-danger">Please fill in all required fields.</div>');
@@ -3068,6 +3078,18 @@ function parseCustomDate(dateString) {
     return new Date(year, month, day);
 }
 
+
+    $('body').on('click', '.customer-add-new-card', function () {
+        $('.order_view_pay_button').removeClass('pay_disable').css('cursor', 'not-allowed');
+        $('input[name="saved-card"]:checked').prop('checked', false);
+        $(".invoice_view_pay_button").prop("disabled", true);
+    });
+
+    $('body').on('click', 'input[name="saved-card"]', function () {
+        $('.order_view_pay_button').removeClass('pay_disable').css('cursor', 'not-allowed');
+        $('input[name="add_new_card"]:checked').prop('checked', false);
+        $(".invoice_view_pay_button").prop("disabled", true);
+    }); 
 
 </script>
 @endpush

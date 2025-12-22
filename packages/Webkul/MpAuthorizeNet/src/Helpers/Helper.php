@@ -181,7 +181,7 @@ class Helper
         // Create the controller and get the response
         $controller = new AnetController\CreateCustomerProfileController($request);
         log::info('controller', ['controller' => $controller]);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
         // dd($response);
         log::info('response', ['response' => $response]);
 
@@ -459,7 +459,7 @@ class Helper
             // $request->setRefId($this->refId);
             // $request->setTransactionRequest($transactionRequestType);
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             $profileToCharge = new AnetAPI\CustomerProfilePaymentType();
             $profileToCharge->setCustomerProfileId($decodeUpdatedToken->customerResponse->customerProfileId);
@@ -477,7 +477,7 @@ class Helper
             $request->setRefId($this->refId);
             $request->setTransactionRequest($transactionRequestType);
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             Log::info('Request:', ['response' => json_encode($response)]);
             $transactionResponse = $response->getTransactionResponse();
@@ -627,13 +627,26 @@ class Helper
 
             // // Create the controller and get the response
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             // return $response;
             $order_id = request()->input('order_id');
+
             $invoice = Invoice::select('id')->where('order_id', $order_id)->first();
 
             $order = Order::where('id', $order_id)->first();
+
+            if (!$invoice){
+                log::info("invoice not found");
+                $this->order = $this->orderRepository->findOneWhere([
+                    'id' => $order->id
+                ]);
+
+                if ($this->order->canInvoice()) {
+                    $invoice = $this->invoiceRepository->create($this->prepareInvoiceData());
+                }
+            }
+
             // dd($order->base_grand_total);
             // dd($order);
             $opaqueData = new AnetAPI\OpaqueDataType();
@@ -710,7 +723,7 @@ class Helper
             Log::info('Response123:', ['response' => json_encode($request)]);
             // Create the controller and get the response
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             log::info('response',['response'=>$response]);
 
@@ -849,7 +862,7 @@ class Helper
     //     $request->setRefId($this->refId);
     //     $request->setTransactionRequest($transactionRequestType);
     //     $controller = new AnetController\CreateTransactionController($request);
-    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
     //     return $response;
     // }
