@@ -22,6 +22,7 @@ use Auth;
 use Illuminate\Support\Facades\Session;
 use DateTime;
 use Illuminate\Support\Facades\Log;
+use Webkul\Checkout\Facades\Cart;
 
 class SignUpController extends Controller
 {
@@ -281,17 +282,34 @@ class SignUpController extends Controller
 
 
     public function fbo_details()
+    
     {
-        return view('cateringpackage::shop.customer.fbo');
+        $cart = Cart::getCart();
+        $oldAdditionalNotes = $cart ? $cart->fbo_additional_notes : null;
+
+        return view('cateringpackage::shop.customer.fbo', compact('oldAdditionalNotes'));
     }
 
 
 
     public function add_fbo_details(Request $request)
     {
+       
+       
+
+
         $validate = $request->validate([
             'fullname' => 'required|max:30'
         ]);
+            $cart = Cart::getCart();
+
+                if ($cart) {
+                    DB::table('cart')
+                        ->where('id', $cart->id)
+                        ->update([
+                            'fbo_additional_notes' => $request->additional_notes,
+                        ]);
+                }
 
         $customer_token = $request->_token;
         $dateString = $request->delivery_date;
@@ -327,7 +345,7 @@ class SignUpController extends Controller
                         'email_address' => $request->email,
                         'tail_number' => $request->tailnumber,
                         'packaging_section' => $request->packagingsection,
-                        'service_packaging' => $request->servicepackaging,
+                        'service_packaging' => $request->servicepackaging,                        
                         'delivery_time' => $request->delivery_time,
                         'delivery_date' => $formattedDate,
                     ]);
@@ -340,7 +358,7 @@ class SignUpController extends Controller
                     'email_address' => $request->email,
                     'tail_number' => $request->tailnumber,
                     'packaging_section' => $request->packagingsection,
-                    'service_packaging' => $request->servicepackaging,
+                    'service_packaging' => $request->servicepackaging,                   
                     'delivery_time' => $request->delivery_time,
                     'delivery_date' => $formattedDate,
                 ]);
@@ -384,7 +402,7 @@ class SignUpController extends Controller
                         'email_address' => $request->email,
                         'tail_number' => $request->tailnumber,
                         'packaging_section' => $request->packagingsection,
-                        'service_packaging' => $request->servicepackaging,
+                        'service_packaging' => $request->servicepackaging,                       
                         'delivery_time' => $request->delivery_time,
                         'delivery_date' => $formattedDate,
                     ]);
@@ -417,6 +435,8 @@ class SignUpController extends Controller
 
     public function add_profile_fbo(Request $request)
     {
+        
+
         DB::table('fbo_details')
             ->insert([
                 'full_name' => $request->fullname,
@@ -432,6 +452,17 @@ class SignUpController extends Controller
 
     public function update_fbo_detail(Request $request)
     {
+         
+            $cart = Cart::getCart();
+
+        if ($cart) {
+            DB::table('cart')
+                ->where('id', $cart->id)
+                ->update([
+                    'fbo_additional_notes' => $request->additional_notes,
+                ]);
+        }
+
         $dateString = $request->delivery_date;
         // dd($dateString);
         // Check if the requested date is "Today" or "Tomorrow"

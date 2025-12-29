@@ -53,14 +53,45 @@ class OrderController extends Controller
     {
 
         // sandeep add code
+        
         $agent = agentHandler::where('order_id', $id)->first();
 
         $customer = auth()->guard('customer')->user();
 
-        $order = $this->orderRepository->findOneWhere([
-            'customer_id' => $customer->id,
-            'id' => $id,
-        ]);
+        $order = $this->orderRepository
+            ->leftJoin('airport_fbo_details as fbo', 'orders.airport_fbo_id', '=', 'fbo.id')
+            ->where([
+                'orders.customer_id' => $customer->id,
+                'orders.id' => $id,
+            ])
+            ->select(
+                'orders.*',
+                'fbo.name as fbo_name',
+                'fbo.address as fbo_address'
+            )
+            ->first();
+
+            // dd($order);
+
+        
+        $orderRow = DB::table('orders')
+            ->select('cart_id')
+            ->where('id', $id)
+            ->first();
+
+        $fboAdditionalNotes = null;
+
+        if ($orderRow && $orderRow->cart_id) {
+            $cartRow = DB::table('cart')
+                ->select('fbo_additional_notes')
+                ->where('id', $orderRow->cart_id)
+                ->first();
+
+            $fboAdditionalNotes = $cartRow?->fbo_additional_notes;
+        }
+
+        // 🔥 attach to order object
+        $order->fbo_additional_notes = $fboAdditionalNotes;
         // dd($order);
 
         if (!$order) {
@@ -100,7 +131,7 @@ class OrderController extends Controller
         $admin_notes = OrderNotes::where('order_id', $id)->where('customer_notified', 1)->orderby('id', 'desc')->first();
 
         $result = $this->createOrderTimeline($order_status, $status_update);
-        // dd($result);
+        // dd($order);
         return view($this->_config['view'], compact(['order', 'agent', 'order_status', 'admin_notes', 'status_update', 'result']));
     }
 

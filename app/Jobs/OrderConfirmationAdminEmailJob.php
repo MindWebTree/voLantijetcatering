@@ -20,14 +20,17 @@ class OrderConfirmationAdminEmailJob implements ShouldQueue
     protected $fboDetails;
     protected $extraData;
 
+    public $fboAdditionalNotes;
+
     /**
      * Create a new job instance.
      */
-    public function __construct($order,$fboDetails, $extraData)
+    public function __construct($order,$fboDetails, $extraData,$fboAdditionalNotes)
     {
         $this->order = $order;
         $this->fboDetails = $fboDetails;
         $this->extraData = $extraData;
+        $this->fboAdditionalNotes = $fboAdditionalNotes;
 
     }
 
@@ -42,28 +45,17 @@ class OrderConfirmationAdminEmailJob implements ShouldQueue
         $order = $this->order;
         $fboDetails = $this->fboDetails;
         $extraData = $this->extraData;
+        $fboAdditionalNotes = $this->fboAdditionalNotes;
 
         $emailList = $admins->pluck('email')->toArray();
         try {
             Mail::to($emailList)
-                ->send(new AdminOrderNotification($order, $fboDetails,$extraData));
-            Log::info('Email sent to: ' . implode(', ', $emailList));
+                ->send(new AdminOrderNotification($order, $fboDetails,$extraData,  $fboAdditionalNotes));
         } catch (\Exception $e) {
             Log::error('Failed to send email', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
         }
-        // foreach ($admins as $admin) {
-        //     try {
-        //         Mail::to($admin->email)->send(new AdminOrderNotification($order, $admin->name,$fboDetails));
-        //         Log::info('Email sent successfully to: ' . $admin->email);
-        //     } catch (\Exception $e) {
-        //         Log::error('Failed to send email to: ' . $admin->email, [
-        //             'error' => $e->getMessage(),
-        //             'trace' => $e->getTraceAsString()
-        //         ]);
-        //     }
-        // }
     }
 }

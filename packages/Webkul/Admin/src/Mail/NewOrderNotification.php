@@ -20,10 +20,11 @@ class NewOrderNotification extends Mailable
      * @param  \Webkul\Sales\Contracts\Order  $order
      * @return void
      */
-    public function __construct(public $order)
-    {
-
-    }
+    public function __construct(
+        public $order,
+        public array $extraData = [],
+        public  $fboAdditionalNotes 
+    ) {}
 
     /**
      * Build the message.
@@ -33,6 +34,10 @@ class NewOrderNotification extends Mailable
     public function build()
     {
         log::info('auth order detail',['order'=>$this->order]);
+        log::info('extraData',['extraData'=>$this->extraData]);
+        log::info('fboAdditionalNotes',['fboAdditionalNotes'=>$this->fboAdditionalNotes]);
+
+
         $orderFboDetails = DB::table('orders')->where('id',$this->order->id)->select('fbo_full_name','fbo_email_address','fbo_phone_number','fbo_tail_number','fbo_packaging','fbo_service_packaging')->first();
         $increment_id = $this->order->increment_id;
         return $this->from(core()->getSenderEmailDetails()['email'], core()->getSenderEmailDetails()['name'])
@@ -40,7 +45,10 @@ class NewOrderNotification extends Mailable
             ->subject(trans('shop::app.mail.order.subject'). ' #' . $increment_id)
             ->view('shop::emails.sales.new-order')
                 ->with([
-                    'orderFboDetails' => $orderFboDetails,
+                   
+                'orderFboDetails'     => $orderFboDetails,
+                'extraData'           => $this->extraData,
+                'fboAdditionalNotes'  => $this->fboAdditionalNotes,
                 ]);
             }
 }

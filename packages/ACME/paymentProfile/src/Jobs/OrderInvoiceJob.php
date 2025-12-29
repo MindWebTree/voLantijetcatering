@@ -35,7 +35,31 @@ class OrderInvoiceJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $order  = Order::where('id', $this->orderId)->first();
+        $order = Order::where('orders.id', $this->orderId)
+                    ->leftJoin(
+                        'airport_fbo_details',
+                        'airport_fbo_details.id',
+                        '=',
+                        'orders.airport_fbo_id'
+                    )
+                    ->leftJoin(
+                        'cart',
+                        'cart.id',
+                        '=',
+                        'orders.cart_id'
+                    )
+                    ->select(
+                        'orders.*',
+                        'airport_fbo_details.name as airport_fbo_name',
+                        'airport_fbo_details.address as airport_fbo_address',
+                        'cart.fbo_additional_notes'
+                    )
+                    ->first();
+
+
+
+        log::info('order invoice job details',['order'=>$order]);
+
         // sandeep add code for send invoice mail
         if ($order->customer_email === null) {
             $email = $order->fbo_email_address;

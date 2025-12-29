@@ -30,15 +30,24 @@ class OrderConfirmationGuestEmailJob implements ShouldQueue
     protected $fboDetails;
 
     /**
+     * @var array
+     */
+    protected $extraData;
+
+ public $fboAdditionalNotes;
+
+    /**
      * Create a new job instance.
      *
      * @param array $order
      * @param object $fboDetails
      */
-    public function __construct($order, $fboDetails)
+    public function __construct($order, $fboDetails,array $extraData,$fboAdditionalNotes)
     {
         $this->order = $order;
         $this->fboDetails = $fboDetails;
+        $this->extraData = $extraData;
+        $this->fboAdditionalNotes = $fboAdditionalNotes;
     }
 
     /**
@@ -49,16 +58,18 @@ class OrderConfirmationGuestEmailJob implements ShouldQueue
         // sandeep || send guest user order confirmation mail
         $email = $this->order->customer_email ?? $this->fboDetails->email_address;
         log::info('customer_email',['email'=>$email]);
+    
         try {
             log::info('mail send to guest user',['guest user'=>$this->fboDetails->email_address]);
             Mail::to($email)
                 ->send(new GuestNewOrderNotification(
                     $this->order, 
-                    $this->fboDetails
+                    $this->fboDetails,
+                    $this->extraData,
+                        $this->fboAdditionalNotes
                 ));
                 Log::info('Email sent successfully to: ' . $this->fboDetails->email_address);
         } catch (\Exception $e) {
-            log::info('faild to send mail');
             Log::error('Failed to send queued email', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()

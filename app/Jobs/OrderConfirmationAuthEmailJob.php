@@ -17,12 +17,18 @@ class OrderConfirmationAuthEmailJob implements ShouldQueue
 
     protected $order;
 
+     protected $extraData;
+
+ public $fboAdditionalNotes;
+
     /**
      * Create a new job instance.
      */
-    public function __construct($order)
+    public function __construct($order,$extraData,$fboAdditionalNotes)
     {
         $this->order = $order;
+        $this->extraData = $extraData;
+        $this->fboAdditionalNotes = $fboAdditionalNotes;    
     }
     /**
      * Execute the job.
@@ -30,15 +36,16 @@ class OrderConfirmationAuthEmailJob implements ShouldQueue
     public function handle(): void
     {
         $email = $this->order->customer_email ?? $this->order->fbo_email_address;
-        log::info('ordre details',['order'=>$this->order]);
+
         try {
             Mail::to($email)
                 ->send(new NewOrderNotification(
-                    $this->order
+                    $this->order,
+                    $this->extraData,
+                    $this->fboAdditionalNotes
                 ));
                 Log::info('Email sent successfully to: ' . $email);
         } catch (\Exception $e) {
-            log::info('faild to send mail');
             Log::error('Failed to send queued email', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()

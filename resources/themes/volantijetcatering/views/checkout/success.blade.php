@@ -51,10 +51,7 @@
     </div> --}}
 
 
-
-
-
-
+    
     <div class="container my-5 thank__you">
         <div class="thank__you text-center">
             <img class="mr-5 success_tick" src="./../themes/volantijetcatering/assets/images/tick.png" alt="">
@@ -104,9 +101,16 @@
                     </p>
                 @endif
                     @endif
-                    <h5 class="my-2 fs23 fw6">Airport Fbo Detail</h5>
+                    <h5 class="my-2 fs23 fw6"> Fbo Detail</h5>
                     <p class="m-0"> {{ $orderDetails[0]->fbo_airport_name }} </p>
                     <p class="m-0"> {{ $orderDetails[0]->fbo_airport_address }} </p>
+
+                    @if(!empty($fboAdditionalNotes))
+                    <h5 class="my-2 fs23 fw6">Additional Notes</h5>
+                    <p class="m-0">{{ $fboAdditionalNotes }}</p>
+                @endif
+
+                    
                 </div>
                 @if (!auth()->guard('customer')->check())
                     <div class="col-12 border my-3 thank__create p-3 thank__order">

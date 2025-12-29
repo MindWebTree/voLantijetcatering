@@ -19,6 +19,7 @@ use Dompdf\Options;
 use Webkul\Sales\Models\OrderItem;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Support\Facades\DB;
 
 // use App\packages\ACME\paymentProfile\src\Models\CustomerInquery;
 
@@ -71,6 +72,7 @@ class paymentProfileController extends Controller
 
         $detail = $request->all();
         $order = Order::where('id', $detail['orderid'])->first();
+       
 
         // dd($order , $detail);
 
@@ -121,8 +123,23 @@ class paymentProfileController extends Controller
             return redirect()->route('order-invoice-view', ['orderid' => $request->orderid, 'customerid' => $request->customerid]);
         }
 
-        $order = Order::where('id', $request->orderid)->first();
+       $order = Order::leftJoin('airport_fbo_details as fbo', 'orders.airport_fbo_id', '=', 'fbo.id')
+            ->where('orders.id', $request->orderid)
+            ->select(
+                'orders.*',
+                'fbo.name as fbo_name',
+                'fbo.address as fbo_address'
+            )
+            ->first();
+         if ($order && $order->cart_id) {
+            $order->fbo_additional_notes = DB::table('cart')
+                ->where('id', $order->cart_id)
+                ->value('fbo_additional_notes');
+        } else {
+            $order->fbo_additional_notes = null;
+        }
         $agent = agentHandler::where('order_id', $request->orderid)->first();
+        // dd($order);
 
         return view('shop::sales.invoice-detail', compact('order', 'agent'));
     }

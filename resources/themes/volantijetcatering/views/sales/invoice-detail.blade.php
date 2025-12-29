@@ -81,11 +81,36 @@
                 </div>
 
                 <div class="col-sm-12 col-md-8 col-lg-5 airport_address">
-                    <h4 class="">Address</h4>
+                    <h4 class="">Airport</h4>
 
                     <strong>{{ $order->shipping_address->airport_name }}</strong>
                     <p> {{ $order->shipping_address->address1 }} </p>
                 </div>
+                @if(!empty(trim($order->fbo_additional_notes ?? '')))
+            <div class="col-sm-12 col-md-8 col-lg-5 fbo_additional_notes">
+                <h4>Additional Notes</h4>
+                <p>{{ $order->fbo_additional_notes }}</p>
+            </div>
+            @endif
+
+
+            @if(!empty(trim($order->fbo_name ?? '')) || !empty(trim($order->fbo_address ?? '')))
+            <div class="col-sm-12 col-md-8 col-lg-5 fbo_additional_notes">
+                <h4>FBO Details</h4>
+
+                @if(!empty(trim($order->fbo_name ?? '')))
+                    <p>{{ $order->fbo_name }}</p>
+                @endif
+
+                @if(!empty(trim($order->fbo_address ?? '')))
+                    <p>{{ $order->fbo_address }}</p>
+                @endif
+            </div>
+            @endif
+
+
+
+
             </div>
         </section>
 
@@ -157,7 +182,7 @@
                                                     ({{ $optionLabel }})
                                                 @endif
                                                 @if (!empty($specialInstruction))
-                                                <div class="" style="gap:4px;font-size:11px;"><span>Special Instruction:  </span>
+                                                <div class="" style="gap:4px;font-size:11px; margin-top: 10px;"><span>Special Instruction:  </span>
                                                     <p class="m-0 display__notes" style="font-weight:500;"> {{ $specialInstruction }}</p>
                                                     </div>
                                                 @endif

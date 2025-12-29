@@ -261,6 +261,27 @@
                                 <span class="control-error" v-if="errors.has('servicepackaging')"
                                     v-text="'The packaging section field is required'"></span>
                             </div>
+                      
+                              {{-- additional_notes --}}
+                                    <div  iv class="control-group col-sm-12 col-md-6 mb-3 additional-notes">
+
+                                        <label for="additional_notes" class="label-style">
+                                            Additional Notes
+                                        </label>
+
+                                        <div class="custom-textarea">
+                                            <textarea
+                                                class="form-control form-control-lg"
+                                                name="additional_notes"
+                                                id="additional_notes"
+                                                rows="4"
+                                                placeholder="Enter additional notes (optional)"
+                                            >{{ old('additional_notes', $oldAdditionalNotes ?? '') }}</textarea>
+                                        </div>
+
+                                    </div>
+
+
                         </div>
                         @if (isset($fboDetails))
                             @if (!isset($fboDetails->delivery_date) && !isset($fboDetails->delivery_time))
@@ -528,7 +549,27 @@
                                                     v-text="'The packaging section field is required'"></span>
                                 
                                             </div>
+                                            {{-- additional_notes --}}
+                                          
+                                            <div  iv class="control-group col-sm-12 col-md-6 mb-3 additional-notes">
+
+                                                <label for="additional_notes" class="label-style">
+                                                    Additional Notes
+                                                </label>
+
+                                                <div class="custom-textarea">
+                                                    <textarea
+                                                        class="form-control form-control-lg test"
+                                                        name="additional_notes"
+                                                        id="additional_notes"
+                                                        rows="4"
+                                                        placeholder="Enter additional notes (optional)"
+                                                    >{!! old('additional_notes', $cart->fbo_additional_notes ?? '') !!}</textarea>
+                                                </div>
+
+                                            </div>
                                         </div>
+                                         
                                         <h1 class="text-center fs24 fw6 mt-1 margin-top-2">Delivery Time</h1>
                                         <div class="row">
                                             <div class="control-group col-sm-12 col-md-6 col-lg-6 mb-3" :class="[errors.has('delivery_date') ? 'has-error' : '']">
@@ -589,10 +630,10 @@
                                             <p class="px-3">Save cards securely for future use with our convenient feature. Enjoy hassle-free transactions  and seamless experiences by storing your card details for future transactions</p>
                                             <div class="row w-100">
                                                 <div class="col">
-                                                    <button type="button" class="btn btn-primary accept">Ok</button>
+                                                    <button type="button" class="btn btn-primary accept" data-dismiss="modal">Ok</button>
                                                 </div>
                                                 <div class="col">
-                                                    <button type="button" class="btn btn-primary cancel">Cancel</button>
+                                                    <button type="button" class="btn btn-primary cancel" data-dismiss="modal">Cancel</button>
                                                 </div>
                                         </div>
                                     </div>
@@ -605,6 +646,7 @@
                 </div>
 
                 {{-- end payment modal --}}
+
 
                 {{-- delete payment modal --}}
                 <button class="payment-delete-model-btn" data-toggle="modal" data-target="#payment_delete_model" >delete model</button>
@@ -694,6 +736,21 @@
                         </div>
                     </div>
                 </div>
+                {{-- @dd($cart); --}}
+                @if(!empty($cart->fbo_additional_notes))
+                    <div style="padding: 0 20px;">
+                        <h4 class="card-title order-summary fw6">Additional Notes</h4>
+
+                        <div class="additional-notes-summary">
+                            <p style="
+                                overflow-wrap: break-word;
+                                white-space: normal;
+                            ">
+                                {{ $cart->fbo_additional_notes }}
+                            </p>
+                        </div>
+                    </div>
+                    @endif
 
                 <div
                     class="step-content shipping"

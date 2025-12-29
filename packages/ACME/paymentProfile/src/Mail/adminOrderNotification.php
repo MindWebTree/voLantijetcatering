@@ -14,16 +14,19 @@ class adminOrderNotification extends Mailable
     public $order;
     public $fboDetails;
     public $extraData;
+
+     public $fboAdditionalNotes;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($order ,$fboDetails, $extraData = [])
+    public function __construct($order ,$fboDetails, $extraData = [],$fboAdditionalNotes)
     {
         $this->order = $order;
         $this->fboDetails = $fboDetails;
         $this->extraData = $extraData;
+        $this->fboAdditionalNotes = $fboAdditionalNotes;
     }
 
     /**
@@ -33,8 +36,13 @@ class adminOrderNotification extends Mailable
      */
     public function build()
     {
+        log::info('Admin order email BUILD successful', [
+       
+        'notes'    => $this->fboAdditionalNotes
+    ]);
+
         $increment_id = $this->order['increment_id'];
-        // Log::info('admin page');
+        log::info('admin page');
         return $this->subject(trans('shop::app.mail.order.subject'). ' #' . $increment_id)->view('mail.admin-order-notify');
 
     }

@@ -27,6 +27,15 @@ use Carbon\Carbon;
         .w-100 {
             width: 100%;
         }
+        
+         .fbo_additional_notes {
+           text-align: left;
+            font-size: 20px;
+        }
+         p.fbo_additional_notes {
+          
+            font-size: 20px !important;
+        }
 
         main {
             margin-top: 0;
@@ -377,7 +386,7 @@ use Carbon\Carbon;
 
                     <img src="{{$sort_invoice_image['logo']}}"
                         alt="">
-                    <div>
+                    <div>Aircraft Information
                         <p>{{ $Order_date}}</p>
                         <p>Volanti Inflight Catering</p>
                     </div>
@@ -453,16 +462,22 @@ use Carbon\Carbon;
                 </td>
                
                 <td>
-                    <p class="red-heading">LOCATION</p>
+                    <p class="red-heading">AIRPORT</p>
                     <p>{{ isset($order->shipping_address->airport_name) ? $order->shipping_address->airport_name : '' }}</p>
 
                 </td>
-                <td>
+                 <td>
+                    <p class="red-heading"> FBO DETAILS </p>
+                    <p>{{ $order->airport_fbo_name }}</p>
+                    <p>{{ $order->airport_fbo_address }}</p>
+                </td>
+               
+            </tr>
+            <tr class="center-table">
+                 <td>
                     <p class="red-heading">AIRCRAFT</p>
                     <p>{{ $order->fbo_tail_number }}</p>
                 </td>
-            </tr>
-            <tr class="center-table">
                
                 <td>
                     <p class="red-heading">READY TO SERVE</p>
@@ -478,8 +493,11 @@ use Carbon\Carbon;
                     <img src="{{$sort_invoice_image['microwave']}}"
                         alt="">
                 </td>
+                
             </tr>
         </table>
+      
+
 
         
 
@@ -489,11 +507,25 @@ use Carbon\Carbon;
         </div>
         <div class="info-2 packaging-section">
         <p >{{ $order->fbo_packaging }}</p>
+
+       
+
+    </div>
+ <table class="  w-100 ">
+        <div class="color-heading mt-2" >
+            <p class="red-heading fbo_additional_notes text-left">Additional Notes</p>
+        </div>
+        <div class=" packaging-section">
+        <p >{{ $order->fbo_additional_notes }}</p>
+
     </div>
 
+     
+    </table>
 
 
-    <div class="page-break"></div>
+
+    {{-- <div class="page-break"></div> --}}
 
 
 

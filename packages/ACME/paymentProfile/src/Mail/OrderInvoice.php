@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class OrderInvoice extends Mailable
@@ -34,6 +35,10 @@ class OrderInvoice extends Mailable
      */
     public function build()
     {
+        $order = $this->order;
+        Log::info('order invoice details',['order'=> $order]);
+        // log::info('order invoice mail details',['order'=> $order]);
+
         $increment_id = $this->order->increment_id;
         return $this->subject('Invoice'. ' #' . $increment_id)
         ->view('paymentprofile::shop.volantijetcatering.invoices.mail.create')

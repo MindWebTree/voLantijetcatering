@@ -76,7 +76,7 @@
         <p>Thank you for placing an order with <span class="text-info"><a
                     href="{{ route('shop.home.index') }}">Volantijet Catering</a></span>. We are pleased to inform you
             that your order <strong>#{{ $order->increment_id }}</strong>, placed on
-            <strong>{{ date('m-d-Y h:i:s A', strtotime($order->created_at)) }}</strong>, has been
+            <strong>{{ date('m/d/Y', strtotime($order->created_at)) }}</strong>, has been
             <strong>accepted</strong>.</p>
 
         <p>Your order is now being prepared. We will notify you once it is ready for delivery or pickup.</p>

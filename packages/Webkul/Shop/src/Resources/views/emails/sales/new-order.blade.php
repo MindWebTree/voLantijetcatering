@@ -129,84 +129,149 @@
                                 '" style="color: #0041FF; font-weight: bold;">#' .
                                 $order->increment_id .
                                 '</a>',
-                            'created_at' => core()->formatDate($order->created_at, 'Y-m-d H:i:s'),
+                            'created_at' => core()->formatDate($order['created_at'] ?? now(), 'm/d/Y'),
                         ]) !!}
                     </p>
             </div>
         </td>
     </tr>
     
-    <tr>
-        <td colspan="3" style="width: 100%">
-            <div style="border-top: 1px dotted black; border-bottom: 1px dotted black; padding: 0; text-align: center;">
-                <h3 style="padding: 15px 0px; font-weight: bold; margin: 0px; font-size: 20px;">
-                    Order Details
-                </h3>
-            </div>
-        </td>
-    </tr>
-    
-<tr style="background: #f6f6f6;">
-    <td style="padding: 20px;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td colspan="3" style="width:100%;">
+        <div style="
+            border-top:1px dotted #000;
+            border-bottom:1px dotted #000;
+            text-align:center;
+        ">
+            <h3 style="
+                padding:15px 0;
+                font-weight:bold;
+                margin:0;
+                font-size:20px;
+            ">
+                Order Details
+            </h3>
+        </div>
+    </td>
+</tr>
+
+<tr style="background:#f6f6f6;">
+    <td style="padding:20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="text-align:start;">
+
+            <!-- Order Meta -->
             <tr>
-                <td style="font-weight: 600; font-size: 14px;" colspan="3">
-                    Order No: {{ $order->increment_id }}
+                <td colspan="3" style="font-weight:600;font-size:14px;padding-bottom:6px;">
+                    Order No:  {{ $order->increment_id }}
                 </td>
             </tr>
-            <tr>
-                <td colspan="3" style="padding-bottom: 15px;">
-                    Order Date & Time: {{ date('m-d-Y h:i:s A', strtotime($order->created_at)) }}
+
+             <tr>
+                <td colspan="3" style="font-size:14px;padding-bottom:3px;">
+                    Order Date: {{ $order->created_at->format('m/d/Y') }}
                 </td>
             </tr>
-                <tr style="display: flex;word-wrap: break-word;">
-                    <!-- Account Information -->
-                    <td width="30%" valign="top" style="padding-right: 10px;">
-                        <p style="font-size: 15px; font-weight: bold; margin: 0 0 5px;">
-                            {{ __('shop::app.fbo-detail.client-info') }}
-                        </p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->fbo_full_name) ? $order->fbo_full_name : (!empty($orderFboDetails->fbo_full_name) ? $orderFboDetails->fbo_full_name : 'N/A') }}
-                        </p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->fbo_email_address) ? $order->fbo_email_address : (!empty($orderFboDetails->fbo_email_address) ? $orderFboDetails->fbo_email_address : 'N/A') }}
-                        </p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->fbo_phone_number) ? $order->fbo_phone_number : (!empty($orderFboDetails->fbo_phone_number) ? $orderFboDetails->fbo_phone_number : 'N/A') }}
-                        </p>
-                    </td>
 
-                    <!-- Address -->
-                    <td width="30%" valign="top" style="padding: 0 10px;">
-                        <p style="font-size: 15px; font-weight: bold; margin: 0 0 5px;">Address</p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->shipping_address->airport_name) ? $order->shipping_address->airport_name : 'N/A' }}
-                        </p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->shipping_address->address1) ? $order->shipping_address->address1 : 'N/A' }}
-                        </p>
-                    </td>
+            <tr>
+                  <td colspan="3" style="font-size:14px;padding-bottom:30px;">
+                Delivery Date & Time:
+                {{
+                    ($order->delivery_date && $order->delivery_time)
+                    ? date(
+                        'm/d/Y, g:i A',
+                        strtotime($order->delivery_date . ' ' . $order->delivery_time)
+                    )
+                    : 'N/A'
+                }}
+            </td>
+            </tr>
 
-                    <!-- Aircraft Information -->
-                    <td width="30%" valign="top" style="padding-left: 10px;">
-                        <p style="font-size: 15px; font-weight: bold; margin: 0 0 5px;">
-                            {{ __('shop::app.fbo-detail.aircraft-info') }}
-                        </p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->fbo_tail_number) ? $order->fbo_tail_number : (!empty($orderFboDetails->fbo_tail_number) ? $orderFboDetails->fbo_tail_number : 'N/A') }}
-                        </p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->fbo_packaging) ? $order->fbo_packaging : (!empty($orderFboDetails->fbo_packaging) ? $orderFboDetails->fbo_packaging : 'N/A') }}
-                        </p>
-                        <p style="margin: 0;">
-                            {{ !empty($order->fbo_service_packaging) ? $order->fbo_service_packaging : (!empty($orderFboDetails->fbo_service_packaging) ? $orderFboDetails->fbo_service_packaging : 'N/A') }}
-                        </p>
-                    </td>
-                </tr>
+            <!-- Separator -->
+            <tr>
+                <td colspan="3" style="border-top:1px solid #ddd;"></td>
+            </tr>
+
+            <!-- 3 Column Layout -->
+            <tr>
+
+                <!-- Account Info -->
+                <td width="33%" valign="top" style="
+                    padding:15px;
+                    border-right:1px solid #ddd;
+                    text-align:left;
+                ">
+                    <p style="font-size:15px;font-weight:bold;margin:0 0 6px;">
+                        {{ __('shop::app.fbo-detail.client-info') }}
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->fbo_full_name ?? $orderFboDetails->fbo_full_name ?? 'N/A' }}
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->fbo_email_address ?? $orderFboDetails->fbo_email_address ?? 'N/A' }}
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->fbo_phone_number ?? $orderFboDetails->fbo_phone_number ?? 'N/A' }}
+                    </p>
+                </td>
+
+                <!-- Address -->
+                <td width="33%" valign="top" style="
+                    padding:15px;
+                    border-right:1px solid #ddd;
+                    text-align:left;
+                ">
+                    <p style="font-size:15px;font-weight:bold;margin:0 0 6px;">
+                        Airport
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->shipping_address->airport_name ?? 'N/A' }}
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->shipping_address->address1 ?? 'N/A' }}
+                    </p>
+
+                    <p style="font-size:15px;font-weight:bold;margin:12px 0 6px;">
+                        FBO Details
+                    </p>
+                    <p style="margin:0;">{{ $extraData['fbo_airport_name'] ?? 'N/A' }}</p>
+                    <p style="margin:0;">{{ $extraData['fbo_airport_address'] ?? 'N/A' }}</p>
+                </td>
+
+                <!-- Aircraft Info -->
+                <td width="33%" valign="top" style="
+                    padding:15px;
+                    text-align:left;
+                ">
+                    <p style="font-size:15px;font-weight:bold;margin:0 0 6px;">
+                        {{ __('shop::app.fbo-detail.aircraft-info') }}
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->fbo_tail_number ?? $orderFboDetails->fbo_tail_number ?? 'N/A' }}
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->fbo_packaging ?? $orderFboDetails->fbo_packaging ?? 'N/A' }}
+                    </p>
+                    <p style="margin:0;">
+                        {{ $order->fbo_service_packaging ?? $orderFboDetails->fbo_service_packaging ?? 'N/A' }}
+                    </p>
+                </td>
+
+            </tr>
+             <tr>
+                        <td style="
+            padding: 15px;
+        ">
+                            @if(!empty($fboAdditionalNotes))
+                            <p><strong>Additional Notes:</strong></p>
+                            <p>{{ $fboAdditionalNotes }}</p>
+                        @endif
+                        </td>
+                    </tr>
 
         </table>
     </td>
 </tr>
+
     
 
     <tr>

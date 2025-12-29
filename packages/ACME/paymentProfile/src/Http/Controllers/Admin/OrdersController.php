@@ -113,11 +113,32 @@ class OrdersController extends Controller
      */
     public function view($id)
     {
+        // dd('dsds');
         $agent = agentHandler::where('order_id', $id)->first();
         $countries = Db::table('countries')->get();
         $shipment = $this->shipmentRepository->where('order_id', $id)->first();
         $states = Db::table('country_states')->where('country_code', 'US')->get();
         $order = $this->orderRepository->findOrFail($id);
+
+        $orderRow = DB::table('orders')
+        ->select('cart_id')
+        ->where('id', $id)
+        ->first();
+
+    $fboAdditionalNotes = null;
+
+    if ($orderRow && $orderRow->cart_id) {
+        $cartRow = DB::table('cart')
+            ->select('fbo_additional_notes')
+            ->where('id', $orderRow->cart_id)
+            ->first();
+
+        $fboAdditionalNotes = $cartRow?->fbo_additional_notes;
+    }
+// dd( $fboAdditionalNotes);
+
+
+        
         $deliver_partner = '';
         if ($shipment) {
             $deliver_partner = Admin::where('id', $shipment->delivery_partner)->first();
@@ -127,7 +148,7 @@ class OrdersController extends Controller
             ->where('id', $order->airport_fbo_id)
             ->select('id', 'name', 'address', 'airport_id', 'customer_id')->first();
         // dd($airport_fbo);
-        return view($this->_config['view'], compact('order', 'countries', 'states', 'agent', 'shipment', 'deliver_partner', 'airport_fbo'));
+        return view($this->_config['view'], compact('order', 'countries', 'states', 'agent', 'shipment', 'deliver_partner', 'airport_fbo', 'fboAdditionalNotes'));
     }
 
     /**

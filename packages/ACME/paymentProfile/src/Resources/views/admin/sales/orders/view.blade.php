@@ -135,9 +135,13 @@
                                     <p class="m-0">{{ $order->fbo_tail_number }}</p>
                                     <p class="m-0">Packaging: {{ $order->fbo_packaging }}</p>
                                     <p class="m-0">Service Packaging: {{ $order->fbo_service_packaging }}</p>
+                                    
                                     <h5 class="mt-3">Delivery Time</h5>
                                     <p class="m-0">Delivery Date: {{ date('m-d-Y', strtotime($order->delivery_date)) }}</p>
                                     <p>Delivery Time: {{ $order->delivery_time }}</p>
+
+                                   
+
 
                                 </div>
                                 <div class='col-3 fbo-edit text-right p-3'>
@@ -437,7 +441,7 @@
                                             </div>
 
 
-                                            {{-- Service packaging --}}
+                                            {{--  --}}
                                             <div class="control-group col-sm-12 col-md-6 mb-3 packagingsection" :class="[errors.has('packagingsection') ? 'has-error' : '']">
 
                                                 <label for="packaging section" class="required label-style">
@@ -984,6 +988,16 @@
                 </div>
             </div>
         </div>
+
+        @if($fboAdditionalNotes)
+         <div class="Additional_Notes" style="    padding-top: 15px;">
+            <h4>Additional Notes</h4>
+         <p style="
+    overflow-wrap: break-word;
+" >{{ $fboAdditionalNotes }}</p>
+
+         </div>
+        @endif
 
         {{-- Products modal end --}}
 
@@ -2138,6 +2152,9 @@
 
 
             $('.close').click(function() {
+                $('.modal-backdrop').removeClass('modal-backdrop');
+            })
+            $('.cancel').click(function() {
                 $('.modal-backdrop').removeClass('modal-backdrop');
             })
             jQuery('body').on('click', '#order_view_shipped', function() {

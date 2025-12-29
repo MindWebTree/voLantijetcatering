@@ -94,6 +94,8 @@ class InvoicesController extends Controller
 
             $order = $this->orderRepository->findOrFail($orderId);
 
+            
+
             $order->update(['status' => 'invoice sent', 'status_id' => 3]);
             DB::table('order_status_log')
                 ->insert([
@@ -248,7 +250,27 @@ class InvoicesController extends Controller
 
         array_multisort($nameArray, $imageEncodeArray);
         $sort_invoice_image = array_combine($nameArray, $imageEncodeArray);
-        $order = Order::where('id', $orderId)->first();
+        $order = Order::where('orders.id', $orderId)
+                    ->leftJoin(
+                        'airport_fbo_details',
+                        'airport_fbo_details.id',
+                        '=',
+                        'orders.airport_fbo_id',
+                        
+                    )
+                    ->leftJoin(
+                        'cart',
+                        'cart.id',
+                        '=',
+                        'orders.cart_id'
+                    )
+                    ->select(
+                        'orders.*',
+                        'airport_fbo_details.name as airport_fbo_name',
+                        'airport_fbo_details.address as airport_fbo_address',
+                        'cart.fbo_additional_notes'
+                    )
+                    ->first();
         
         $categories = DB::table('order_items')
             ->join('products', 'order_items.product_id', '=', 'products.id')
@@ -258,6 +280,8 @@ class InvoicesController extends Controller
             ->where('category_translations.locale', 'en')
             ->select('category_translations.name as category_name', 'order_items.*')
             ->get();
+
+           
 
         $groupedItems = [];
         $addedProducts = [];

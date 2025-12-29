@@ -27,18 +27,21 @@ class GuestNewOrderNotification extends Mailable
     public $fboDetails;
     public $extraData;
 
+    public $fboAdditionalNotes;
+
     /**
      * Create a new message instance.
      *
      * @param array $order
      * @param string $fullName
      */
-    public function __construct($order, $fboDetails, $extraData = [])
+    public function __construct($order, $fboDetails, $extraData = [],$fboAdditionalNotes)
     {
 
         $this->order = $order;
         $this->fboDetails = $fboDetails;
         $this->extraData = $extraData;
+        $this->fboAdditionalNotes = $fboAdditionalNotes;
     }
 
     /**
@@ -46,7 +49,7 @@ class GuestNewOrderNotification extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): GuestNewOrderNotification
     {
         
         log::info('mail succesfully send');
@@ -64,6 +67,7 @@ class GuestNewOrderNotification extends Mailable
                 'order' => $this->order,
                 'fboDetails' => $this->fboDetails,
                 'extraData' => $this->extraData,
+                 'fboAdditionalNotes' => $this->fboAdditionalNotes,
             ]);
     }
 }

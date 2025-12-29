@@ -269,21 +269,32 @@
             var IsCustomer = {{ $IsCustomer }};
             //var result = confirm("Do you want to save card for future ? ");
             // if (IsCustomer) {
-            $('.payment-model-btn').click();
+            // $('.payment-model-btn').click();
+            $('#payment_model').modal('show');
+            $('#payment_model').addClass('show');
+           if ($('#payment_model').hasClass('show')) {
+                $('#payment_model').css('background', 'rgba(0, 0, 0, 0.62)');
+            }
+
+
+
+            //  $('.modal-backdrop').remove();
             let hasClicked = false;
             $('body').on('click', '#payment_model .accept', function() {
+                 $('#payment_model').removeClass('show');
                 console.log('accept payment');
                 hasClicked = true;
                 result = true;
                 save_card(result);
-                $('.payment-model-btn').click();
+                // $('.payment-model-btn').click();
             })
             $('body').on('click', '#payment_model .cancel', function() {
+                 $('#payment_model').removeClass('show');
                 console.log('cancel payment');
                 hasClicked = true;
                 result = false;
                 save_card(result);
-                $('.payment-model-btn').click();
+                // $('.payment-model-btn').click();
             })
 
             console.log('hasClicked', hasClicked);

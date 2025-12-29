@@ -175,7 +175,7 @@
                 </tr>
             </table> --}}
         <p style="font-weight:600;">Order Id: #{{ $order->id }}</p>
-        <P>order date: {{ date('m-d-Y h:i:s A', strtotime($order->created_at)) }}</P>
+        <P>order date: {{ date('m/d/Y', strtotime($order->created_at)) }}</P>
         <span style="font-weight: 600;">Comments: {{ $comment->notes }}</span>
         <div style="margin-top: 20px;">
                     <p style="font-size: 16px;color: #5E5E5E;line-height: 24px;">

@@ -370,13 +370,25 @@ class CheckoutController extends Controller
     {
         log::info('success');
         $order = session('order');
+        $orderId = $order['id'];
 
         if (!$order = session('order')) {
             log::info('no data found');
             return redirect()->route('shop.checkout.cart.index');
         }
 
-        $orderId = $order['id'];
+        $cart_id = $order['cart_id'];
+
+        $fboAdditionalNotes = null;
+
+        if ($cart_id) {
+            $cartRow = DB::table('cart')
+                ->select('fbo_additional_notes')
+                ->where('id', $cart_id)
+                ->first();
+
+            $fboAdditionalNotes = $cartRow?->fbo_additional_notes;
+        }
 
         $token = session('token');
 
@@ -536,8 +548,8 @@ class CheckoutController extends Controller
                     'fbo_phone_number' => $fboDetails->phone_number,
                     'fbo_email_address' => $fboDetails->email_address,
                     'fbo_tail_number' => $fboDetails->tail_number,
-                    'fbo_packaging' => $fboDetails->packaging_section,
-                    'fbo_service_packaging' => $fboDetails->service_packaging,
+                    'fbo_packaging' => $fboDetails->packaging_section,   
+                     'fbo_service_packaging' => $fboDetails->service_packaging,              
                     'delivery_date' => $fboDetails->delivery_date,
                     'delivery_time' => $fboDetails->delivery_time,
                     'airport_fbo_id' => $airport_fbo_id->airport_fbo_id,
@@ -561,7 +573,7 @@ class CheckoutController extends Controller
                     'fbo_email_address' => $fboDetails->email_address,
                     'fbo_tail_number' => $fboDetails->tail_number,
                     'fbo_packaging' => $fboDetails->packaging_section,
-                    'fbo_service_packaging' => $fboDetails->service_packaging,
+                    'fbo_service_packaging' => $fboDetails->service_packaging,                   
                     'status' => 'pending',
                     'status_id' => 1,
                     'customer_id' => $customer->id,
@@ -665,7 +677,7 @@ class CheckoutController extends Controller
                 ]);
                 log::info('17');
                 // Dispatch the job to the queue
-                OrderConfirmationGuestEmailJob::dispatch($order, $fboDetails, $extraData);
+                OrderConfirmationGuestEmailJob::dispatch($order, $fboDetails, $extraData, $fboAdditionalNotes);
                 log::info('18');
                 Log::info('Mail queued successfully for guest order');
             } catch (\Exception $e) {
@@ -677,7 +689,11 @@ class CheckoutController extends Controller
             }
         }else{
             try {
-                OrderConfirmationAuthEmailJob::dispatch($order);
+                log::info('DISPATCH AUTH MAIL', [
+                    'notes' => $fboAdditionalNotes
+                ]);
+
+                OrderConfirmationAuthEmailJob::dispatch($order,$extraData,$fboAdditionalNotes);
                 log::info('mail send to auth user');
             } catch (\Exception $e) {
                 Log::error('Error queuing mail', [
@@ -689,8 +705,9 @@ class CheckoutController extends Controller
 
         // sandeep ||send admin order confirmation mail
             try {
-                log::info('21');
-                OrderConfirmationAdminEmailJob::dispatch($order,$fboDetails, $extraData);
+                // log::info('21' ,$fboAdditionalNotes);
+               
+                OrderConfirmationAdminEmailJob::dispatch($order,$fboDetails, $extraData,$fboAdditionalNotes);
                 log::info('22');
                 Log::info('Email sent successfully to: ');
             } catch (\Exception $e) {
@@ -706,7 +723,7 @@ class CheckoutController extends Controller
         session()->forget('order');
 
 
-        return view($this->_config['view'], compact('order', 'orderDetails','fboDetails'));
+        return view($this->_config['view'], compact('order', 'orderDetails','fboDetails','fboAdditionalNotes'));
 
     }
     
