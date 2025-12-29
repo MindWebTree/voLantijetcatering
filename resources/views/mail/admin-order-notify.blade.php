@@ -240,7 +240,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="
+                <td colspan="3" style="
                 padding: 15px;
             ">
                      @if(!empty($order->fbo_additional_notes) || !empty($fboAdditionalNotes))
