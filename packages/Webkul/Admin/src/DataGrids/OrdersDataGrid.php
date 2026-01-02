@@ -100,7 +100,7 @@ class OrdersDataGrid extends DataGrid
             'filterable' => false,
             // sandeep add date time formate
             'closure' => function ($row) {
-                return date('m-d-Y h:i:s A', strtotime($row->created_at));
+                return date('m/d/Y h:i A', timestamp: strtotime($row->created_at));
             },
         ]);
 

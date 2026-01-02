@@ -97,7 +97,7 @@
                @if(isset($fboDetails))
                     @if(!empty($fboDetails->delivery_date) || !empty($fboDetails->delivery_time))
                     <p class="m-0">
-                        {{ date('m-d-Y', strtotime($fboDetails->delivery_date)) ?? '' }} {{ $fboDetails->delivery_time ?? '' }}
+                        {{ date('m/d/Y', strtotime($fboDetails->delivery_date)) ?? '' }} {{ $fboDetails->delivery_time ?? '' }}
                     </p>
                 @endif
                     @endif

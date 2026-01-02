@@ -130,14 +130,17 @@
                                     <p class="m-0">{{ $order->fbo_full_name }}</p>
                                     <p class="m-0">{{ $order->fbo_email_address }}</p>
                                     <p class="m-0">{{ $order->fbo_phone_number }}</p>
-                                    <p class="m-0"> Date of birth : {{ $dateOfBirth ?  $dateOfBirth : 'Not found'}}</p>
+                                    <p class="m-0">
+                                        Date of birth: {{ $dateOfBirth ? \Carbon\Carbon::parse($dateOfBirth)->format('m/d/Y') : 'N/A' }}
+                                    </p>
+
                                     <h5 class="mt-3">{{ __('shop::app.fbo-detail.aircraft-info') }}</h5>
                                     <p class="m-0">{{ $order->fbo_tail_number }}</p>
                                     <p class="m-0">Packaging: {{ $order->fbo_packaging }}</p>
                                     <p class="m-0">Service Packaging: {{ $order->fbo_service_packaging }}</p>
                                     
                                     <h5 class="mt-3">Delivery Time</h5>
-                                    <p class="m-0">Delivery Date: {{ date('m-d-Y', strtotime($order->delivery_date)) }}</p>
+                                    <p class="m-0">Delivery Date: {{ date('m/d/Y', strtotime($order->delivery_date)) }}</p>
                                     <p>Delivery Time: {{ $order->delivery_time }}</p>
 
                                    
@@ -332,7 +335,7 @@
                                     <h5 class="mt-3">Shipment</h5>
                                     <p class="m-0"> {{ $deliver_partner->name }}</p>
                                     <p class="m-0"> {{ $deliver_partner->email }}</p>
-                                    <p class="m-0"> {{ date('m-d-Y h:i:s A', strtotime($shipment->created_at)) }}</p>
+                                    <p class="m-0"> {{ date('m/d/Y h:i:s A', strtotime($shipment->created_at)) }}</p>
                                     <p class="m-0">
                                         @isset($shipment->carrier_title)
                                         {{ $shipment->carrier_title }}
@@ -1430,7 +1433,7 @@
                             @endif
                         </td>
                         {{-- sandeep change date time formate --}}
-                        <td>{{ date('m-d-Y h:i:s A', strtotime($status->created_at)) }}</td>
+                        <td>{{ date('m/d/Y h:i:s A', strtotime($status->created_at)) }}</td>
                         <td>
                             {{-- sandeep add code --}}
                             @if ($status->status == "cancel")
@@ -1558,7 +1561,7 @@
                                         <td><span class="" style="color: #9d9d9d;">{{ $comment->notes }}</span>
                                         </td>
                                         {{-- sandeep change date time formate --}}
-                                        <td><span class="float-right" style="color: #9d9d9d;">({{ date('m-d-Y h:i:s A', strtotime($comment->created_at)) }})</span>
+                                        <td><span class="float-right" style="color: #9d9d9d;">({{ date('m/d/Y h:i:s A', strtotime($comment->created_at)) }})</span>
                                         </td>
                                     </tr>
                                 </tbody>

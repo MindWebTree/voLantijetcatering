@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
         header {
             position: fixed;
-            top: -220px;
+            top: -240px;
             left: 0px;
             right: 0px;
             /** Extra personal styles **/
@@ -26,6 +26,9 @@ use Carbon\Carbon;
 
         .w-100 {
             width: 100%;
+        }
+        .packaging-section-main {
+            margin-top: 20px !important;
         }
         
          .fbo_additional_notes {
@@ -45,13 +48,13 @@ use Carbon\Carbon;
             margin: 0;
             font-size: 13px;
             line-height: 18px;
-            font-family: sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             text-align: right;
         }
 
         header h2,
         header h1 {
-            font-family: sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             text-align: right;
             font-weight: 400;
             margin: 10px 0;
@@ -61,19 +64,21 @@ use Carbon\Carbon;
         .header-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
         header h2 {
             color: #aa1d25;
         }
+        .header-table tr {
+            margin-bottom: 10px;
+        }
 
         .header-table td {
             border: 1px solid white;
             padding: 5px;
-
-
         }
-  
+
 
         header img {
             max-width: 100px;
@@ -105,7 +110,7 @@ use Carbon\Carbon;
             margin: 0;
             font-size: 13px;
             line-height: 18px;
-            font-family: sans-serif;
+            font-family: 'Times New Roman', Times, serif;
         }
 
         .left p,
@@ -119,11 +124,11 @@ use Carbon\Carbon;
         h2,
         h3,
         th {
-            font-family: sans-serif;
+             font-family: 'Times New Roman', Times, serif;
         }
 
         main p {
-            font-family: sans-serif;
+             font-family: 'Times New Roman', Times, serif;
         }
 
         .left div {
@@ -141,7 +146,7 @@ use Carbon\Carbon;
         }
 
         .intro {
-            margin: auto;
+            margin-bottom: 10px !important;
         }
 
         .intro td {
@@ -154,24 +159,24 @@ use Carbon\Carbon;
         .intro p {
             font-size: 17px;
             font-weight: 700;
-            font-family: sans-serif;
+             font-family: 'Times New Roman', Times, serif;
         }
 
         .red-heading {
             font-size: 15px !important;
             /* font-weight: 600 !important; */
-            /* font-family: sans-serif; */
+            /*  font-family: 'Times New Roman', Times, serif; */
         }
 
         main img {
             max-width: 100px;
-    max-height: 50px;
-    margin: auto;
-    display: flex;
-    margin: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+        max-height: 50px;
+        margin: auto;
+        display: flex;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         }
 
         .notes {
@@ -185,7 +190,7 @@ use Carbon\Carbon;
             padding: 10px;
             background-color: #fbe6e9;
             border-bottom: 2px solid #c80f2e;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .red-para {
@@ -281,7 +286,7 @@ use Carbon\Carbon;
         .list li {
             padding: 5px 0;
             line-height: 23px;
-            font-family: sans-serif;
+             font-family: 'Times New Roman', Times, serif;
         }
 
         .list {
@@ -299,6 +304,7 @@ use Carbon\Carbon;
 
         .pagenum {
             text-align: right;
+            padding-top: 5px;
         }
 
         .button-pay {
@@ -318,10 +324,13 @@ use Carbon\Carbon;
         .notes-table th {
             padding: 0;
         }
+        .packaging-section {
+    margin-top: 0 !important;
+}
         .packaging-section p{
             margin: 0;
-    padding: 10px;
-    margin-bottom: 30px;
+    padding: 6px 10px !important;
+    margin: 0 !important;
     text-align: left !important;
         }
         .intro td,.intro td p,.word-wrap td ,.word-wrap td p{
@@ -460,25 +469,25 @@ use Carbon\Carbon;
                     <p class="red-heading">DELIVERY TIME</p>
                     <p>{{$order->delivery_time}}</p>
                 </td>
-               
+            
                 <td>
                     <p class="red-heading">AIRPORT</p>
                     <p>{{ isset($order->shipping_address->airport_name) ? $order->shipping_address->airport_name : '' }}</p>
 
                 </td>
-                 <td>
+                <td>
                     <p class="red-heading"> FBO DETAILS </p>
                     <p>{{ $order->airport_fbo_name }}</p>
                     <p>{{ $order->airport_fbo_address }}</p>
                 </td>
-               
+            
             </tr>
             <tr class="center-table">
-                 <td>
+                <td>
                     <p class="red-heading">AIRCRAFT</p>
                     <p>{{ $order->fbo_tail_number }}</p>
                 </td>
-               
+            
                 <td>
                     <p class="red-heading">READY TO SERVE</p>
                     <img src="{{$sort_invoice_image['serve']}}"
@@ -496,43 +505,36 @@ use Carbon\Carbon;
                 
             </tr>
         </table>
-      
+    
 
 
-        
-
-
-        <div class="color-heading">
+        <div class="color-heading mt-2 packaging-section-main">
             <p class="red-heading">Packaging</p>
         </div>
         <div class="info-2 packaging-section">
         <p >{{ $order->fbo_packaging }}</p>
 
-       
+    
 
     </div>
- <table class="  w-100 ">
-        <div class="color-heading mt-2" >
-            <p class="red-heading fbo_additional_notes text-left">Additional Notes</p>
-        </div>
-        <div class=" packaging-section">
-        <p >{{ $order->fbo_additional_notes }}</p>
-
+@if(!empty(trim($order->fbo_additional_notes)))
+<table class="w-100">
+    <div class="color-heading mt-2">
+        <p class="red-heading fbo_additional_notes text-left">Additional Notes</p>
     </div>
 
-     
-    </table>
+    <div class="packaging-section">
+        <p>{{ $order->fbo_additional_notes }}</p>
+    </div>
+</table>
+@endif
+
 
 
 
     {{-- <div class="page-break"></div> --}}
 
-
-
-
-
     
-      
         @php
         use ACME\paymentProfile\Models\OrderNotes;
 
@@ -728,21 +730,35 @@ use Carbon\Carbon;
         <table class="agent word-wrap">
             <tr>
             
-              
+            
                 <th>ADDRESS</th>              
                 <th>EMAIL</th>
                 <th>MOBILE</th>
             </tr>
             <tr>
-               
-              
+            
+            
                 <td>
-                    @if (isset($order->billing_address) && $order->billing_address->address1 != null)
+
+            @php
+                $address = $order->billing_address->address1
+                    ? $order->billing_address
+                    : $order->shipping_address;
+            @endphp
+
+            @if($address)
+                {{ $address->address1 ?? '' }},
+                {{ $address->city ?? '' }},
+                {{ $address->postcode ?? '' }},
+                {{ $address->state ?? '' }}
+            @endif
+
+                    {{-- @if (isset($order->billing_address) && $order->billing_address->address1 != null)
                         {{ isset($order->billing_address->address1) ? $order->billing_address->address1 . ',' : '' }}
                         {{ isset($order->billing_address->city) ? $order->billing_address->city . ',' : '' }}
                         {{ isset($order->billing_address->postcode) ? $order->billing_address->postcode . ',' : '' }}
                         {{ isset($order->billing_address->state) ? $order->billing_address->state : '' }}
-                @endif
+                    @endif --}}
                 </td>
                 <td>{{ isset($order->fbo_email_address) ? $order->fbo_email_address : '' }}</td>
                 <td>{{ isset($order->fbo_phone_number) ? $order->fbo_phone_number : '' }}</td>

@@ -57,12 +57,14 @@
                 <div class="profile-info ">
                     {{-- <h6>{{ __('shop::app.customer.account.profile.dob') }}</h6> --}}
                     <img src="/../themes/volantijetcatering/assets/images/calendar.png" alt="">
-                    <p>{{ $customer->date_of_birth ?? '-' }}</p>
+                    <p>
+                        {{ \Carbon\Carbon::parse($customer->date_of_birth)->format('m/d/Y') }}
+                    </p>
                     {!! view_render_event('bagisto.shop.customers.account.profile.view.table.date_of_birth.after', [
                         'customer' => $customer,
                     ]) !!}
                 </div>
-                @endif
+                @endif  
                 @if($customer->phone!='')
                 <div class="profile-info">
                     {{-- <h6>{{ __('shop::app.customer.account.profile.phone') }}</h6> --}}

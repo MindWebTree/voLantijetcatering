@@ -426,7 +426,7 @@
                                         <div class='col-9'><h5 class="card-title child-card-title fw6">Delivery Time</h5></div>
                                             <div class='fbo-body px-3'>
                                                 {{-- sandeep change date formate to usa date formate  --}}
-                                                <h6>{{date('m-d-Y', strtotime( $fboDetails->delivery_date))}}</h6>
+                                                <h6>{{date('m/d/Y', strtotime( $fboDetails->delivery_date))}}</h6>
                                                 <h6>{{$fboDetails->delivery_time}}</h6>
                                             </div>
                                     </div>   

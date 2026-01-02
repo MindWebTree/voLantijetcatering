@@ -33,7 +33,7 @@
                 for <strong>Order <a href="{{ route('shop.customer.orders.view', $order->id) }}"
                         style="color: #0041FF; font-weight: bold;">
                         #{{ $order->increment_id }}
-                    </a>&nbsp;</strong>, placed on {{ core()->formatDate($order->created_at, 'Y-m-d H:i:s') }}, has been
+                    </a>&nbsp;</strong>, placed on {{ core()->formatDate($order->created_at, 'm/d/Y') }}, has been
                 processed successfully.
             </p>
         </div>

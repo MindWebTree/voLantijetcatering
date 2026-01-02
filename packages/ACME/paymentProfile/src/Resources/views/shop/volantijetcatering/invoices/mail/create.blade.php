@@ -254,7 +254,7 @@
             </tr>
 
             <tr>
-                 <td colspan="3" style="font-size:14px;padding-bottom:30px;">
+                 <td colspan="3" style="padding-bottom:30px;">
                 Delivery Date & Time:
                 {{
                     ($order->delivery_date && $order->delivery_time)
@@ -484,13 +484,13 @@
                                             style="color: rgb(157, 157, 157);font-size: 13px;margin:0;">
                                                 Support:
                                                 <span>{{ $comment->notes }}</span>
-                                                <span class="float-right">({{ date('m-d-Y h:i:s A', strtotime($comment->created_at)) }})</span>
+                                                <span class="float-right">({{ date('m/d/Y h:i:s A', strtotime($comment->created_at)) }})</span>
                                             </p>
                                         @else
                                             <p class="w-100" style="color: rgb(157, 157, 157);font-size: 13px;">
                                                 Customer:
                                                 <span>{{ $comment->notes }}</span>
-                                                <span class="float-right">{{ date('m-d-Y h:i:s A', strtotime($comment->created_at)) }}</span>
+                                                <span class="float-right">{{ date('m/d/Y h:i:s A', strtotime($comment->created_at)) }}</span>
                                             </p>
                                         @endif
                                     </li>

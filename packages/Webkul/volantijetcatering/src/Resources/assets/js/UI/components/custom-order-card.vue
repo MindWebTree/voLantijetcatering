@@ -75,10 +75,8 @@ export default {
         //sandeep add Method to format date in m-d-Y h:i:s A format
         formatDate(date) {
         const d = new Date(date);
-        const pad = (num) => String(num).padStart(2, '0');
-        const hours = d.getHours();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        return `${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${d.getFullYear()} ${pad(hours > 12 ? hours - 12 : hours)}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${ampm}`;
+        const pad = (num) => String(num).padStart(2, '0');             
+        return `${pad(d.getMonth() + 1)}/${pad(d.getDate())}/${d.getFullYear()}`;
             },
         },
     computed: {

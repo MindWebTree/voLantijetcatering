@@ -2773,9 +2773,7 @@ __webpack_require__.r(__webpack_exports__);
       var pad = function pad(num) {
         return String(num).padStart(2, '0');
       };
-      var hours = d.getHours();
-      var ampm = hours >= 12 ? 'PM' : 'AM';
-      return "".concat(pad(d.getMonth() + 1), "-").concat(pad(d.getDate()), "-").concat(d.getFullYear(), " ").concat(pad(hours > 12 ? hours - 12 : hours), ":").concat(pad(d.getMinutes()), ":").concat(pad(d.getSeconds()), " ").concat(ampm);
+      return "".concat(pad(d.getMonth() + 1), "/").concat(pad(d.getDate()), "/").concat(d.getFullYear());
     }
   },
   computed: {
@@ -58513,7 +58511,7 @@ if (true) {
             config.warnHandler.call(null, msg, vm, trace);
         }
         else if (hasConsole_1 && !config.silent) {
-            //console.error("[Vue warn]: ".concat(msg).concat(trace));
+            console.error("[Vue warn]: ".concat(msg).concat(trace));
         }
     };
     tip = function (msg, vm) {
@@ -62724,28 +62722,28 @@ Vue.prototype.$mount = function (el, hydrating) {
 };
 // devtools global hook
 /* istanbul ignore next */
-// if (inBrowser) {
-//     setTimeout(function () {
-//         if (config.devtools) {
-//             if (devtools) {
-//                 devtools.emit('init', Vue);
-//             }
-//             else if (true) {
-//                 // @ts-expect-error
-//                 console[console.info ? 'info' : 'log']('Download the Vue Devtools extension for a better development experience:\n' +
-//                     'https://github.com/vuejs/vue-devtools');
-//             }
-//         }
-//         if ( true &&
-//             config.productionTip !== false &&
-//             typeof console !== 'undefined') {
-//             // @ts-expect-error
-//             console[console.info ? 'info' : 'log']("You are running Vue in development mode.\n" +
-//                 "Make sure to turn on production mode when deploying for production.\n" +
-//                 "See more tips at https://vuejs.org/guide/deployment.html");
-//         }
-//     }, 0);
-// }
+if (inBrowser) {
+    setTimeout(function () {
+        if (config.devtools) {
+            if (devtools) {
+                devtools.emit('init', Vue);
+            }
+            else if (true) {
+                // @ts-expect-error
+                console[console.info ? 'info' : 'log']('Download the Vue Devtools extension for a better development experience:\n' +
+                    'https://github.com/vuejs/vue-devtools');
+            }
+        }
+        if ( true &&
+            config.productionTip !== false &&
+            typeof console !== 'undefined') {
+            // @ts-expect-error
+            console[console.info ? 'info' : 'log']("You are running Vue in development mode.\n" +
+                "Make sure to turn on production mode when deploying for production.\n" +
+                "See more tips at https://vuejs.org/guide/deployment.html");
+        }
+    }, 0);
+}
 
 var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;

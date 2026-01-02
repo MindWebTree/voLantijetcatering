@@ -44,6 +44,7 @@
 
 @endphp
 
+
     <div class="account-head text-center">
         <div class="head w-100">
             <div class="back-icon text-left">
@@ -107,7 +108,7 @@
                                             </p>
                                             <span style="font-weight: 600; font-size: 11px;">
                                                 {{-- sandeep change time formate --}}
-                                                {{ $status->updated_at ? date('m-d-Y h:i:s A', strtotime($status->updated_at)) : '' }}
+                                                {{ $status->updated_at ? date('m/d/Y h:i A', strtotime($status->updated_at)) : '' }}
                                             </span>
                                         </div>
                                     </div>
@@ -550,7 +551,7 @@ $today = new DateTime('today');
                                         <td>
                                             {{-- sandeep change date time formate --}}
                                             <span class="float-right"
-                                                style="color: #9d9d9d;">({{ date('m-d-Y h:i:s A', strtotime($admin_notes->created_at)) }})</span>
+                                                style="color: #9d9d9d;">({{ date('m/d/Y h:i A', strtotime($admin_notes->created_at)) }})</span>
                                         </td>
                                     </tr>
                                 </tbody>
