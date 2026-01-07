@@ -1,417 +1,614 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ @php
+        $order = $invoice->order; 
+        $airport_fbo = DB::table('airport_fbo_details')->where('id', $order->airport_fbo_id)->first();
+        $transaction = $order->transactions->first();
+        $isPaid = DB::table('order_status_log')
+                    ->where('order_id', $order->id)
+                    ->where('status_id', 4)
+                    ->exists();
+
+        // Transaction data processing
+        $formattedAccountNumber = 'N/A';
+        if(!empty($transaction)){
+            $transactionData = json_decode($transaction->data, true);
+            $accountNumber = null;
+            $accountType = null;
+
+            if (is_array($transactionData) && count($transactionData) === 2) {
+                $keys = $transactionData[0];
+                $values = $transactionData[1];
+
+                $accountNumberIndex = array_search('accountNumber', $keys);
+                $accountTypeIndex = array_search('accountType', $keys);
+
+                if ($accountNumberIndex !== false) {
+                    $accountNumber = $values[$accountNumberIndex] ?? null;
+                }
+                if ($accountTypeIndex !== false) {
+                    $accountType = $values[$accountTypeIndex] ?? null;
+                }
+            }
+
+            $lastFour = $accountNumber ? substr($accountNumber, -4) : null;
+            $displayAccountType = !empty($accountType) ? $accountType : 'XXXX';
+            $formattedAccountNumber = $lastFour ? $displayAccountType . '****' . $lastFour : 'N/A';
+        }
+
+        // Order Notes
+        use ACME\paymentProfile\Models\OrderNotes;
+        $comments = OrderNotes::orderBy('id', 'desc')->where('order_id', $order->id)->get();
+    @endphp
+
+
+<!DOCTYPE html>
 <html>
-    <head>
-        {{-- meta tags --}}
-        <meta http-equiv="Cache-control" content="no-cache">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Invoice - {{ $order->increment_id }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        {{-- lang supports inclusion --}}
-        <style type="text/css">
-            @font-face {
-                font-family: 'Hind';
-                src: url({{ asset('vendor/webkul/ui/assets/fonts/Hind/Hind-Regular.ttf') }}) format('truetype');
+        body {
+            font-family: DejaVu Sans, Arial, sans-serif;
+            color: #444444;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Logo */
+        .logo-section {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px dashed #000;
+        }
+
+        .logo-section img {
+            max-width: 300px;
+            height: auto;
+        }
+
+        /* Thank You Section */
+        .thank-you-section {
+            background: #f6f6f6;
+            padding: 20px;
+            border-bottom: 1px dashed #000;
+        }
+
+        .thank-you-header {
+            width: 100%;
+        }
+
+        .thank-you-header table {
+            width: 100%;
+        }
+
+        .thank-you-header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin: 0 0 15px 0;
+        }
+
+        .contact-info {
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .contact-info a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .order-number {
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .pay-button {
+            display: inline-block;
+            background: #444444;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* Order Details Title */
+        .section-title {
+            text-align: center;
+            border-top: 1px dotted #000;
+            border-bottom: 1px dotted #000;
+            padding: 15px 0;
+            margin: 20px 0;
+        }
+
+        .section-title h3 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* Order Details Section */
+        .order-details-section {
+            background: #f6f6f6;
+            padding: 20px;
+        }
+
+        .order-meta {
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .order-meta p {
+            margin: 5px 0;
+        }
+
+        /* Three Column Layout */
+        .three-column-table {
+            width: 100%;
+            border-top: 1px solid #ddd;
+            margin-top: 15px;
+        }
+
+        .three-column-table td {
+            width: 33.33%;
+            padding: 15px;
+            vertical-align: top;
+            border-right: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        .three-column-table td:last-child {
+            border-right: none;
+        }
+
+        .three-column-table h4 {
+            font-size: 15px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+        }
+
+        .three-column-table p {
+            margin: 3px 0;
+        }
+
+        /* Additional Notes & Payment */
+        .additional-section {
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+
+        .additional-section table {
+            width: 100%;
+        }
+
+        .additional-section td {
+            padding: 15px;
+            vertical-align: top;
+            font-size: 12px;
+        }
+
+        .additional-section h4 {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* Products Section */
+        .products-section {
+            background: #f6f6f6;
+            padding: 20px 0;
+            border-top: 1px dotted #000;
+            border-bottom: 1px dotted #000;
+            margin-top: 20px;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .products-table thead {
+            background-color: #dfdfdf;
+        }
+
+        .products-table th {
+            text-align: left;
+            padding: 10px 8px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .products-table td {
+            padding: 10px 8px;
+            vertical-align: top;
+            font-size: 12px;
+        }
+
+        .products-table tbody tr:nth-child(even) {
+            background-color: #dfdfdf;
+        }
+
+        .products-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .special-instruction {
+            font-size: 11px;
+            margin-top: 5px;
+            padding: 5px;
+            background: #f9f9f9;
+        }
+
+        /* Footer Section */
+        .footer-section {
+            margin-top: 20px;
+        }
+
+        .footer-table {
+            width: 100%;
+        }
+
+        .footer-table td {
+            vertical-align: top;
+        }
+
+        .order-notes-column {
+            width: 44%;
+            padding-right: 20px;
+        }
+
+        .order-notes-column h4 {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .comment-list {
+            list-style: none;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            font-size: 11px;
+        }
+
+        .comment-list li {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .totals-column {
+            width: 56%;
+            text-align: right;
+        }
+
+        .totals-column p {
+            margin: 8px 0;
+            font-size: 13px;
+        }
+
+        .totals-column strong {
+            font-weight: 700;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
             }
 
-            @font-face {
-                font-family: 'Noto Sans';
-                src: url({{ asset('vendor/webkul/ui/assets/fonts/Noto/NotoSans-Regular.ttf') }}) format('truetype');
-            }
-        </style>
-
-        @php
-            /* main font will be set on locale based */
-            $mainFontFamily = app()->getLocale() === 'ar' ? 'DejaVu Sans' : 'Noto Sans';
-        @endphp
-
-        {{-- main css --}}
-        <style type="text/css">
-            * {
-                font-family: '{{ $mainFontFamily }}';
+            .wrapper {
+                max-width: 100%;
+                padding: 10px;
             }
 
-            body, th, td, h5 {
-                font-size: 12px;
-                color: #000;
+            .pay-button {
+                display: none;
             }
 
-            .container {
-                padding: 20px;
-                display: block;
+            .products-table thead {
+                background-color: #dfdfdf !important;
             }
 
-            .invoice-summary {
-                margin-bottom: 20px;
+            .products-table tbody tr:nth-child(even) {
+                background-color: #dfdfdf !important;
             }
 
-            .table {
-                margin: 20px 6px 0px 6px;
-                border-spacing: 0px 0px 15px 0px;
+            .products-table tbody tr:nth-child(odd) {
+                background-color: #ffffff !important;
             }
 
-            .table table {
-                width: 100%;
-                border-collapse: collapse;
-                text-align: left;
-                table-layout: fixed;
+            @page {
+                margin: 15mm;
             }
+        }
+    </style>
+</head>
+<body>
 
-            .table thead th {
-                font-weight: 700;
-                border-top: solid 1px #d3d3d3;
-                border-bottom: solid 1px #d3d3d3;
-                border-left: solid 1px #d3d3d3;
-                padding: 5px 12px;
-                background: #005aff0d;
-            }
+    <div class="wrapper">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <img src="https://images.squarespace-cdn.com/content/v1/6171dbc44e102724f1ce58cf/eda39336-24c7-499b-9336-c9cee87db776/VolantiStickers-11.jpg?format=1500w"
+                alt="Volantijet Catering" />
+        </div>
 
-            .table thead th:last-child {
-                border-right: solid 1px #d3d3d3;
-            }
-
-            .table tbody td {
-                padding: 5px 10px;
-                color: #3A3A3A;
-                vertical-align: middle;
-                border-bottom: solid 1px #d3d3d3;
-            }
-
-            .table tbody td, p {
-                margin: 0;
-                color: #000;
-            }
-
-            .sale-summary {
-                margin-top: 20px;
-                float: right;
-                background-color: #005aff0d;
-            }
-
-            .sale-summary tr td {
-                padding: 3px 5px;
-            }
-
-            .sale-summary tr.bold {
-                font-weight: 700;
-            }
-
-            .label {
-                color: #000;
-                font-weight: bold;
-            }
-
-            .logo {
-                height: 70px;
-                width: 70px;
-            }
-
-            .merchant-details {
-                margin-bottom: 5px;
-            }
-
-            .merchant-details-title {
-                font-weight: bold;
-            }
-
-            .text-center {
-                text-align: center;
-            }
-
-            .col-6 {
-                width: 42%;
-                display: inline-block;
-                vertical-align: top;
-                margin: 0px 5px;
-            }
-
-            .table-header {
-                color: #0041FF;
-            }
-
-            .align-left {
-                text-align: left;
-            }
-
-            .invoice-text {
-                font-size: 40px; 
-                color: #3c41ff; 
-                font-weight: bold;
-                position: absolute; 
-                width: 100%; 
-                left: 0;
-                text-align: center;
-                top: -6px;
-            }
-
-            .without_logo {
-                height: 35px;
-                width: 35px;
-            }
-            
-            .header {
-                padding: 0px 2px;
-                width: 100%;
-                position: relative;
-                border-bottom: solid 1px #d3d3d3;
-                padding-bottom: 20px;
-            }
-        </style>
-    </head>
-
-    <body style="background-image: none; background-color: #fff;">
-        <div class="container">
-            <div>
-                <div class="row">
-                    <div class="col-12 header">
-                        @if (core()->getConfigData('sales.invoice_settings.invoice_slip_design.logo'))
-                            <div class="image" style="display:inline-block; vertical-align: middle; padding-top:8px">
-                                <img class="logo" src="{{ Storage::url(core()->getConfigData('sales.invoice_settings.invoice_slip_design.logo')) }}" alt=""/>
-                            </div>
-                        @else
-                            <div class="without_logo" style="display:inline-block; vertical-align: middle; padding-top:8px">
-                            </div>
-                        @endif
-                        <div class="invoice-text">
-                            <span>{{ strtoupper(__('admin::app.sales.invoices.invoice')) }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" style="padding: 5px">
-                    <div class="col-12">
-                        <div class="col-6">
-                            <div class="merchant-details">
-                                <div class="row">
-                                    <span class="label">{{ __('admin::app.sales.invoices.invoice-id') }}: </span>
-                                    <span class="value">#{{ $invoice->increment_id ?? $invoice->id }}</span>
-                                </div>
-
-                                <div class="row">
-                                    <span class="label">{{ __('admin::app.sales.invoices.date') }}: </span>
-                                    <span class="value">{{ core()->formatDate($invoice->created_at, 'm-d-Y') }}</span>
-                                </div>
-
-                                <div style="padding-top: 20px">
-                                    <span class="merchant-details-title">{{ core()->getConfigData('sales.shipping.origin.store_name') ? core()->getConfigData('sales.shipping.origin.store_name') : '' }}</span>
-                                </div>
-
-                                <div>{{ core()->getConfigData('sales.shipping.origin.address1') ?? '' }}</div>
-
-                                <div>
-                                    <span>{{ core()->getConfigData('sales.shipping.origin.zipcode') ?? '' }}</span>
-                                    <span>{{ core()->getConfigData('sales.shipping.origin.city') ?? '' }}</span>
-                                </div>
-
-                                <div>{{ core()->getConfigData('sales.shipping.origin.state') ?? '' }}</div>
-
-                                <div>{{ core()->getConfigData('sales.shipping.origin.country') ?? '' }}</div>
-                            </div>
-                            <div class="merchant-details">
-                                @if (core()->getConfigData('sales.shipping.origin.contact'))
-                                    <div><span class="merchant-details-title">{{ __('admin::app.admin.system.contact-number') }}: </span> {{ core()->getConfigData('sales.shipping.origin.contact') }}</div>
-                                @endif
-
-                                @if (core()->getConfigData('sales.shipping.origin.vat_number'))
-                                    <div><span class="merchant-details-title">{{ __('admin::app.admin.system.vat-number') }}: </span> {{ core()->getConfigData('sales.shipping.origin.vat_number') }}</div>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="col-6" style="padding-left: 80px">
-                            <div class="row">
-                                <span class="label">{{ __('admin::app.sales.invoices.order-id') }}: </span>
-                                <span class="value">#{{ $invoice->order->increment_id }}</span>
-                            </div>
-                           
-                            <div class="row">
-                                <span class="label">{{ __('admin::app.sales.invoices.order-date') }}: </span>
-                                <span class="value">{{ core()->formatDate($invoice->order->created_at, 'm-d-Y') }}</span>
-                            </div>
-
-                            @if ($invoice->hasPaymentTerm())
-                                <div class="row">
-                                    <span class="label">{{ __('admin::app.customer.account.order.view.payment-terms') }} -</span>
-                                    <span class="value">{{ $invoice->getFormattedPaymentTerm() }}</span>
-                                </div>
-                            @endif
-
-                            @if (core()->getConfigData('sales.shipping.origin.bank_details'))
-                                <div class="row" style="padding-top: 20px">
-                                    <span class="merchant-details-title">
-                                        {{ __('admin::app.admin.system.bank-details') }}:
-                                    </span> 
-                                    <div>{{ core()->getConfigData('sales.shipping.origin.bank_details') }}</div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="invoice-summary">
-                <div class="table address">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="table-header align-left" style="width: 50%;">{{ ucwords(trans('admin::app.sales.invoices.bill-to')) }}</th>
-                                @if ($invoice->order->shipping_address)
-                                    <th class="table-header align-left">{{ ucwords(trans('admin::app.sales.invoices.ship-to')) }}</th>
-                                @endif
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                @if ($invoice->order->billing_address)
-                                    <td>
-                                        <p>{{ $invoice->order->billing_address->company_name ?? '' }}</p>
-                                        <p>{{ $invoice->order->billing_address->name }}</p>
-                                        <p>{{ $invoice->order->billing_address->address1 }}</p>
-                                        <p>{{ $invoice->order->billing_address->postcode . ' ' .$invoice->order->billing_address->city }} </p>
-                                        <p>{{ $invoice->order->billing_address->state }}</p>
-                                        <p>{{ core()->country_name($invoice->order->billing_address->country) }}</p>
-                                        {{ __('shop::app.checkout.onepage.contact') }} : {{ $invoice->order->billing_address->phone }}
-                                    </td>
-                                @endif
-
-                                @if ($invoice->order->shipping_address)
-                                    <td>
-                                        <p>{{ $invoice->order->shipping_address->company_name ?? '' }}</p>
-                                        <p>{{ $invoice->order->shipping_address->name }}</p>
-                                        <p>{{ $invoice->order->shipping_address->address1 }}</p>
-                                        <p>{{ $invoice->order->shipping_address->postcode . ' ' . $invoice->order->shipping_address->city }}</p>
-                                        <p>{{ $invoice->order->shipping_address->state }}</p>
-                                        <p>{{ core()->country_name($invoice->order->shipping_address->country) }}</p>
-                                        {{ __('shop::app.checkout.onepage.contact') }} : {{ $invoice->order->shipping_address->phone }}
-                                    </td>
-                                @endif
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="table payment-shipment">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="table-header align-left" style="width: 50%;">{{ __('admin::app.sales.orders.payment-method') }}</th>
-
-                                @if ($invoice->order->shipping_address)
-                                    <th class="table-header align-left">{{ __('admin::app.sales.orders.shipping-method') }}</th>
-                                @endif
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {{ core()->getConfigData('sales.paymentmethods.' . $invoice->order->payment->method . '.title') }}
-
-                                    @php $additionalDetails = \Webkul\Payment\Payment::getAdditionalDetails($invoice->order->payment->method); @endphp
-
-                                    @if (! empty($additionalDetails))
-                                        <div>
-                                            <label class="label">{{ $additionalDetails['title'] }}:</label>
-                                            <p class="value">{{ $additionalDetails['value'] }}</p>
-                                        </div>
-                                    @endif
-                                </td>
-
-                                @if ($invoice->order->shipping_address)
-                                    <td>
-                                        {{ $invoice->order->shipping_title }}
-                                    </td>
-                                @endif
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="table items">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="text-center table-header">{{ __('admin::app.sales.orders.SKU') }}</th>
-                                <th class="text-center table-header">{{ __('admin::app.sales.orders.product-name') }}</th>
-                                <th class="text-center table-header">{{ __('admin::app.sales.orders.price') }}</th>
-                                <th class="text-center table-header">{{ __('admin::app.sales.orders.qty') }}</th>
-                                <th class="text-center table-header">{{ __('admin::app.sales.orders.subtotal') }}</th>
-                                <th class="text-center table-header">{{ __('admin::app.sales.orders.tax-amount') }}</th>
-                                <th class="text-center table-header">{{ __('admin::app.sales.orders.grand-total') }}</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach ($invoice->items as $item)
-                                <tr>
-                                    <td class="text-center">{{ $item->getTypeInstance()->getOrderedItem($item)->sku }}</td>
-
-                                    <td class="text-center">
-                                        {{ $item->name }}
-
-                                        @if (isset($item->additional['attributes']))
-                                            <div class="item-options">
-
-                                                @foreach ($item->additional['attributes'] as $attribute)
-                                                    <b>{{ $attribute['attribute_name'] }} : </b>{{ $attribute['option_label'] }}</br>
-                                                @endforeach
-
-                                            </div>
-                                        @endif
-                                    </td>
-
-                                    <td class="text-center">{!! core()->formatBasePrice($item->base_price, true) !!}</td>
-
-                                    <td class="text-center">{{ $item->qty }}</td>
-
-                                    <td class="text-center">{!! core()->formatBasePrice($item->base_total, true) !!}</td>
-
-                                    <td class="text-center">{!! core()->formatBasePrice($item->base_tax_amount, true) !!}</td>
-
-                                    <td class="text-center">{!! core()->formatBasePrice($item->base_total + $item->base_tax_amount, true) !!}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <table class="sale-summary">
+        <!-- Thank You Section -->
+        <div class="thank-you-section">
+            <div class="thank-you-header">
+                <table>
                     <tr>
-                        <td>{{ __('admin::app.sales.orders.subtotal') }}</td>
-                        <td>-</td>
-                        <td>{!! core()->formatBasePrice($invoice->base_sub_total, true) !!}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{{ __('admin::app.sales.orders.shipping-handling') }}</td>
-                        <td>-</td>
-                        <td>{!! core()->formatBasePrice($invoice->base_shipping_amount, true) !!}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{{ __('admin::app.sales.orders.tax') }}</td>
-                        <td>-</td>
-                        <td>{!! core()->formatBasePrice($invoice->base_tax_amount, true) !!}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{{ __('admin::app.sales.orders.discount') }}</td>
-                        <td>-</td>
-                        <td>{!! core()->formatBasePrice($invoice->base_discount_amount, true) !!}</td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="3">
-                            <hr>
+                        <td style="width: 60%; vertical-align: top;">
+                            <h1>Thank you for your order!</h1>
                         </td>
-                    </tr>
-
-                    <tr>
-                        <td>{{ __('admin::app.sales.orders.grand-total') }}</td>
-                        <td>-</td>
-                        <td>{!! core()->formatBasePrice($invoice->base_grand_total, true) !!}</td>
+                        <td style="width: 40%; vertical-align: top;">
+                            <div class="contact-info">
+                                <p>
+                                    Need Help?<br/>
+                                    Call us <a href="tel:480-657-2426">(480.657.2426)</a> or<br/>
+                                    <a href="mailto:jetcatering@volantiscottsdale.com">Email us</a>
+                                </p>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
+
+            <div class="order-number">
+                <p>Order No: <strong>{{ $order->increment_id }}</strong></p>
+            </div>
+
+            @if (!$isPaid && $transaction === null && $order->status !== 'pending')
+            <div style="margin-top: 10px;">
+                <a href="{{ route('order-invoice-view', ['orderid' => $order->id, 'customerid' => $order->customer_id]) }}"
+                    class="pay-button">Pay Now</a>
+                
+                @if(!empty($order->quickbook_invoice_link))
+                <span style="font-weight: 600; margin: 0 10px;">OR</span>
+                <a href="{{ $order->quickbook_invoice_link }}" class="pay-button">Pay with QuickBooks</a>
+                @endif
+            </div>
+            @endif
         </div>
-    </body>
+
+        <!-- Order Details Title -->
+        <div class="section-title">
+            <h3>Order Details</h3>
+        </div>
+
+        <!-- Order Details Section -->
+        <div class="order-details-section">
+            <div class="order-meta">
+                <p><strong>Order No:</strong> {{ $order->increment_id }}</p>
+                <p><strong>Order Date:</strong> {{ $order->created_at->format('m/d/Y') }}</p>
+                <p>
+                    <strong>Delivery Date & Time:</strong>
+                    {{
+                        ($order->delivery_date && $order->delivery_time)
+                        ? date('m/d/Y, g:i A', strtotime($order->delivery_date . ' ' . $order->delivery_time))
+                        : 'N/A'
+                    }}
+                </p>
+            </div>
+
+            <!-- Three Column Layout -->
+            <table class="three-column-table">
+                <tr>
+                    <!-- Client Information -->
+                    <td>
+                        <h4>Account Information</h4>
+                        <p>{{ $order->fbo_full_name ?? 'N/A' }}</p>
+                        <p>{{ $order->fbo_email_address ?? 'N/A' }}</p>
+                        <p>{{ $order->fbo_phone_number ?? 'N/A' }}</p>
+                    </td>
+
+                    <!-- Airport + FBO Details -->
+                    <td>
+                        <h4>Airport</h4>
+                        <p>{{ $order->shipping_address->airport_name ?? 'N/A' }}</p>
+                        <p>{{ $order->shipping_address->address1 ?? 'N/A' }}</p>
+
+                        <h4 style="margin-top: 12px;">FBO Details</h4>
+                        <p>{{ $airport_fbo->name ?? $order->airport_fbo_name ?? 'N/A' }}</p>
+                        <p>{{ $airport_fbo->address ?? $order->airport_fbo_address ?? 'N/A' }}</p>
+                    </td>
+
+                    <!-- Aircraft Information -->
+                    <td>
+                        <h4>Aircraft Information</h4>
+                        <p>{{ $order->fbo_tail_number ?? 'N/A' }}</p>
+                        <p>{{ $order->fbo_packaging ?? 'N/A' }}</p>
+                        <p>{{ $order->fbo_service_packaging ?? 'N/A' }}</p>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Additional Notes and Payment Details -->
+            @if(!empty($order->cart->fbo_additional_notes) || $isPaid)
+            <div class="additional-section">
+                <table>
+                    <tr>
+                        @if(!empty($order->cart->fbo_additional_notes))
+                        <td style="width: {{ $isPaid ? '65%' : '100%' }}; border-right: {{ $isPaid ? '1px solid #ddd' : 'none' }};">
+                            <h4>Additional Notes:</h4>
+                            <p>{{ $order->cart->fbo_additional_notes }}</p>
+                        </td>
+                        @endif
+
+                        @if($isPaid)
+                        <td style="width: {{ !empty($order->cart->fbo_additional_notes) ? '35%' : '100%' }};">
+                            <h4>Payment Details</h4>
+                            @if(!empty($transaction))
+                                <p><strong>Transaction Id:</strong> {{ $transaction->transaction_id }}</p>
+                                <p><strong>Method:</strong> Credit Card</p>
+                                <p><strong>Card:</strong> {{ $formattedAccountNumber }}</p>
+                            @else
+                                <p><strong>Method:</strong> Quickbook</p>
+                            @endif
+                        </td>
+                        @endif
+                    </tr>
+                </table>
+            </div>
+            @endif
+        </div>
+
+        <!-- Products Section -->
+        <div class="products-section">
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Notes</th>
+                        <th style="width: 45%;">Name</th>
+                        <th style="width: 15%;">Qty</th>
+                        <th style="width: 25%;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($order->items as $item)
+                        @php
+                            $optionLabel = null;
+                            $specialInstruction = null;
+                            
+                            if (isset($item->additional['attributes'])) {
+                                foreach ($item->additional['attributes'] as $attribute) {
+                                    if (isset($attribute['option_label']) && $attribute['option_label'] != '') {
+                                        $optionLabel = $attribute['option_label'];
+                                    }
+                                }
+                            }
+
+                            if (isset($item->additional['special_instruction'])) {
+                                $specialInstruction = $item->additional['special_instruction'];
+                            }
+
+                            $notes = DB::table('order_items')
+                                ->where('id', $item->id)
+                                ->where('order_id', $order->increment_id)
+                                ->value('additional_notes');
+                        @endphp
+                        <tr>
+                            <td style="font-size: 11px;">
+                                {{ trim($notes ?? '') !== '' ? $notes : 'N/A' }}
+                            </td>
+                            <td>
+                                <strong>{{ $item->name }}</strong>
+                                @if ($optionLabel)
+                                    <br/><small>({{ $optionLabel }})</small>
+                                @endif
+                                @if (!empty($specialInstruction))
+                                    <div class="special-instruction">
+                                        <strong>Special Instruction:</strong><br/>
+                                        {{ $specialInstruction }}
+                                    </div>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($order->status === 'pending')
+                                    NA
+                                @else
+                                    {{ core()->formatBasePrice($item->price) }}<br/>
+                                    <small>Qty: {{ $item->qty_ordered }}</small>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($order->status === 'pending')
+                                    NA
+                                @else
+                                    {{ core()->formatBasePrice($item->base_total - $item->base_discount_amount) }}
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer: Order Notes and Totals -->
+        <div class="footer-section">
+            <table class="footer-table">
+                <tr>
+                    <!-- Order Notes -->
+                    <td class="order-notes-column">
+                        @if ($comments->count() > 0)
+                            <h4>ORDER NOTES:</h4>
+                            <ul class="comment-list">
+                                @foreach ($comments as $comment)
+                                    <li>
+                                        <strong>{{ $comment->is_admin === 1 ? 'Support' : 'Customer' }}:</strong>
+                                        {{ $comment->notes }}
+                                        <br/>
+                                        <span style="font-size: 10px; color: #999;">
+                                            ({{ date('m/d/Y h:i A', strtotime($comment->created_at)) }})
+                                        </span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </td>
+
+                    <!-- Totals -->
+                    <td class="totals-column">
+                        @if ($order->status === 'pending')
+                            <p>SubTotal: <strong>NA</strong></p>
+                            <p>Tax: <strong>NA</strong></p>
+                            <p>Agent Handler: <strong>NA</strong></p>
+                            <p style="font-size: 15px; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">
+                                <strong>Order Total:</strong> <strong>NA</strong>
+                            </p>
+                        @else
+                            <p>SubTotal: <strong>{{ core()->formatBasePrice($order->sub_total) }}</strong></p>
+                            
+                            @if (isset($order->tax_amount))
+                            <p>Tax: <strong>{{ core()->formatBasePrice($order->tax_amount) }}</strong></p>
+                            @endif
+
+                            <p>
+                                Agent Handler: 
+                                <strong>
+                                    @if (isset($agent))
+                                        {{ core()->formatBasePrice($agent->Handling_charges) }}
+                                    @else
+                                        {{ core()->formatBasePrice(0) }}
+                                    @endif
+                                </strong>
+                            </p>
+
+                            <p style="font-size: 15px; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">
+                                <strong>Order Total:</strong>
+                                <strong>
+                                    @if (isset($agent))
+                                        {{ core()->formatBasePrice($order->grand_total + $agent->Handling_charges) }}
+                                    @else
+                                        {{ core()->formatBasePrice($order->grand_total) }}
+                                    @endif
+                                </strong>
+                            </p>
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
 </html>

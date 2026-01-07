@@ -13,6 +13,7 @@ use Webkul\Checkout\Models\CartProxy;
 use Webkul\Sales\Contracts\Order as OrderContract;
 use Webkul\Sales\Database\Factories\OrderFactory;
 use ACME\paymentProfile\Models\OrderNotes;
+use ACME\paymentProfile\Models\agentHandler;
 
 class Order extends Model implements OrderContract
 {
@@ -148,6 +149,16 @@ class Order extends Model implements OrderContract
     public function orderNotes()
     {
         return $this->hasMany(OrderNotes::class, 'order_id');
+    }
+
+
+    // sandeep || add relation with order handling table
+    public function handlingAgent()
+    {
+        return $this->hasOne(
+            agentHandler::class,
+            'order_id'
+        );
     }
     /**
      * Return base total due amount

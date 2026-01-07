@@ -73,7 +73,7 @@
                                         </span>
 
                                         <span class="value">
-                                            {{ core()->getConfigData('sales.paymentmethods.' . $transaction->payment_method . '.title') }}
+                                            {{ $transaction->payment_method }}
                                         </span>
                                     </div>
 

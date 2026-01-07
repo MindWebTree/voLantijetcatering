@@ -32,7 +32,7 @@ class OrderInvoicesDataGrid extends DataGrid
 
         $queryBuilder = DB::table('invoices')
             ->leftJoin('orders as ors', 'invoices.order_id', '=', 'ors.id')
-            ->select('invoices.id as id', 'ors.increment_id as order_id', 'invoices.state as state', 'invoices.base_grand_total as base_grand_total', 'invoices.created_at as created_at')
+            ->select('invoices.id as id', 'ors.increment_id as order_id', 'ors.status as order_status', 'invoices.base_grand_total as base_grand_total', 'invoices.created_at as created_at')
             ->selectRaw("CASE WHEN {$dbPrefix}invoices.increment_id IS NOT NULL THEN {$dbPrefix}invoices.increment_id ELSE {$dbPrefix}invoices.id END AS increment_id");
 
         $this->addFilter('increment_id', 'invoices.increment_id');
@@ -87,24 +87,36 @@ class OrderInvoicesDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'state',
+            'index'      => 'order_status',
             'label'      => trans('admin::app.datagrid.status'),
             'type'       => 'string',
             'sortable'   => true,
             'searchable' => true,
             'filterable' => true,
             'closure' => function ($value) {
-                if ($value->state == 'paid') {
-                    return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.invoices.status-paid') . '</span>';
-                } elseif (
-                    $value->state == 'pending' 
-                    || $value->state == 'pending_payment'
-                ) {
-                    return '<span class="badge badge-md badge-warning">' . trans('admin::app.sales.invoices.status-pending') . '</span>';
-                } elseif ($value->state == 'overdue') {
-                    return '<span class="badge badge-md badge-info">' . trans('admin::app.sales.invoices.status-overdue') . '</span>';
+                if ($value->order_status == 'paid') {
+                    return '<span class="badge badge-md badge-success"  style="background:#16a34a">' . trans('admin::app.sales.orders.order-status-paid') . '</span>';
+                } elseif ($value->order_status == 'completed') {
+                    return '<span class="badge badge-md badge-success ">' . trans('admin::app.sales.orders.order-status-success') . '</span>';
+                } elseif ($value->order_status == 'ready') {
+                    return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.orders.order-status-ready') . '</span>';
+                } elseif ($value->order_status == 'shipped') {
+                    return '<span class="badge badge-md badge-success" style="background:#ff8f00">' . trans('admin::app.sales.orders.order-status-shipped') . '</span>';
+                } elseif ($value->order_status == 'delivered') {
+                    return '<span class="badge badge-md badge-success" style="background:#059669">' . trans('admin::app.sales.orders.order-status-deliver') . '</span>';
+                } elseif ($value->order_status == 'canceled') {
+                    return '<span class="badge badge-md badge-danger">' . trans('admin::app.sales.orders.order-status-canceled') . '</span>';
+                } elseif ($value->order_status == 'invoice sent') {
+                    return '<span class="badge badge-md badge-info" style="background:#0027ff">' . trans('admin::app.sales.orders.order-status-invoice-sent') . '</span>';
+                } elseif ($value->order_status == 'pending') {
+                    return '<span class="badge badge-md badge-warning">' . trans('admin::app.sales.orders.order-status-pending') . '</span>';
+                } elseif ($value->order_status == 'accepted') {
+                    return '<span class="badge badge-md badge-success" style="background:#10b981">' . trans('admin::app.sales.orders.order-status-accepted') . '</span>';
+                } elseif ($value->order_status == 'rejected') {
+                    return '<span class="badge badge-md badge-danger">' . trans('admin::app.sales.orders.order-status-rejected') . '</span>';
                 }
-                return $value->state;
+
+                return ucfirst($value->order_status);
             },
         ]);
     }

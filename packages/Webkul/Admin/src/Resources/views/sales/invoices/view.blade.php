@@ -26,12 +26,14 @@
             <div class="page-action">
                 {!! view_render_event('sales.invoice.page_action.before', ['order' => $order]) !!}
 
+                @if($order->status != 'pending' && $order->status != 'processing')
                 <a
                     href="javascript:void(0);"
                     class="btn btn-lg btn-primary"
                     @click="showModal('duplicateInvoiceFormModal')">
                     {{ __('admin::app.sales.invoices.send-duplicate-invoice') }}
-                </a>
+                </a>           
+                @endif
 
                 <a href="{{ route('admin.sales.invoices.print', $invoice->id) }}" class="btn btn-lg btn-primary">
                     {{ __('admin::app.sales.invoices.print') }}
@@ -60,7 +62,7 @@
                                                 </span>
 
                                                 <span class="value">
-                                                    <a href="{{ route('admin.sales.orders.view', $order->id) }}">#{{ $order->increment_id }}</a>
+                                                    <a href="{{ route('admin.sale.order.view', $order->id) }}">#{{ $order->increment_id }}</a>
                                                 </span>
                                             </div>
 
@@ -92,16 +94,6 @@
 
                                             <div class="row">
                                                 <span class="title">
-                                                    {{ __('admin::app.sales.invoices.status') }}
-                                                </span>
-
-                                                <span class="value">
-                                                    {{ $invoice->status_label }}
-                                                </span>
-                                            </div>
-
-                                            <div class="row">
-                                                <span class="title">
                                                     {{ __('admin::app.sales.orders.channel') }}
                                                 </span>
 
@@ -111,6 +103,17 @@
                                             </div>
 
                                             {!! view_render_event('sales.invoice.channel_name.after', ['order' => $order]) !!}
+                                            @if ($order->purchase_order_no)
+                                            <div class="row">
+                                                <span class="title">
+                                                    Purchase Order No.
+                                                </span>
+
+                                                <span class="value">
+                                                    {{ $order->purchase_order_no }}
+                                                </span>
+                                            </div>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -118,21 +121,51 @@
                                         <div class="secton-title">
                                             <span>{{ __('admin::app.sales.orders.account-info') }}</span>
                                         </div>
-
                                         <div class="section-content">
                                             <div class="row">
                                                 <span class="title">{{ __('admin::app.sales.orders.customer-name') }}</span>
-                                                <span class="value">{{ $invoice->order->customer_full_name }}</span>
+                                                <span class="value">{{ trim($invoice->order->customer_full_name) !== ''
+                                                        ? trim($invoice->order->customer_full_name)
+                                                        : $invoice->order->fbo_full_name }}</span>
                                             </div>
 
                                             {!! view_render_event('sales.invoice.customer_name.after', ['order' => $order]) !!}
 
                                             <div class="row">
                                                 <span class="title">{{ __('admin::app.sales.orders.email') }}</span>
-                                                <span class="value">{{ $invoice->order->customer_email }}</span>
+                                                <span class="value">{{ $invoice->order->customer_email ?? $invoice->order->fbo_email_address }}</span>
                                             </div>
 
                                             {!! view_render_event('sales.invoice.customer_email.after', ['order' => $order]) !!}
+                                            
+                                            <div class="row">
+                                                <span class="title">Phone No.</span>
+                                                <span class="value">{{ $invoice->order->fbo_phone_number }}</span>
+                                            </div>
+
+                                            <div class="row">
+                                                <span class="title">Tail Number</span>
+                                                <span class="value">{{ $invoice->order->fbo_tail_number }}</span>
+                                            </div>
+
+                                            <div class="row">
+                                                <span class="title">Packaging</span>
+                                                <span class="value">{{ $invoice->order->fbo_packaging }}</span>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <span class="title">Service Packaging</span>
+                                                <span class="value">{{ $invoice->order->fbo_service_packaging }}</span>
+                                            </div>
+
+                                            <div class="row">
+                                                <span class="title">Delivery Date</span>
+                                                <span class="value">{{ $invoice->order->delivery_date }}</span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="title">Delivery Time</span>
+                                                <span class="value">{{ $invoice->order->delivery_time }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -159,7 +192,6 @@
                                                 </div>
                                             </div>
                                         @endif
-
                                         @if ($order->shipping_address)
                                             <div class="sale-section">
                                                 <div class="secton-title">
@@ -173,9 +205,78 @@
                                                 </div>
                                             </div>
                                         @endif
+
                                     </div>
                                 </div>
                             </accordian>
+
+                            <accordian title="Airport Address And Handlig Agent" :active="true">
+                                <div slot="body">
+                                    <div class="sale">
+
+                                        @if (isset($order->shipping_address))
+                                            <div class="sale-section">
+                                                <div class="secton-title">
+                                                    <span>Airport Address</span>
+                                                </div>
+
+                                                <div class="section-content">
+
+                                                <div class="row">
+                                                    <span class="title">Airport Name</span>
+                                                    <span class="value">{{ $invoice->order->shipping_address->airport_name }}</span>
+                                                </div>
+
+                                                <div style="display: flex;word-wrap: break-word;">
+                                                    <span class="title" style="min-width: 200px">Airport Address</span>
+                                                    <span class="value">{{ $invoice->order->shipping_address->address1 }}</span>
+                                                </div>
+
+                                                <div class="row">
+                                                    <span class="title">Airport Fbo Name</span>
+                                                    <span class="value">{{ $airport_fbo->name }}</span>
+                                                </div>
+
+                                                <div class="row">
+                                                    <span class="title">Airport Fbo Address</span>
+                                                    <span class="value">{{ $airport_fbo->address }}</span>
+                                                </div>
+
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @if ($handlingAgent)
+                                            <div class="sale-section">
+                                                <div class="secton-title">
+                                                    <span>Handling Agent</span>
+                                                </div>
+
+                                                <div class="section-content">
+                                                <div class="row">
+                                                    <span class="title">Name</span>
+                                                    <span class="value">{{ $handlingAgent->Name }}</span>
+                                                </div>
+                                                <div style="display: flex;word-wrap: break-word;">
+                                                    <span class="title" style="min-width: 200px">Phone Number</span>
+                                                    <span class="value">{{ $handlingAgent->Mobile }}</span>
+                                                </div>
+                                                <div style="display: flex;word-wrap: break-word;">
+                                                    <span class="title" style="min-width: 200px">PPR Permit</span>
+                                                    <span class="value">{{ $handlingAgent->PPR_Permit }}</span>
+                                                </div>
+                                                <div style="display: flex;word-wrap: break-word;">
+                                                    <span class="title" style="min-width: 200px">Handling Charges</span>
+                                                    <span class="value">{{ $handlingAgent->Handling_charges }}</span>
+                                                </div>
+
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </accordian>
+
                         @endif
 
                         <accordian title="{{ __('admin::app.sales.orders.products-ordered') }}" :active="true">
@@ -304,7 +405,7 @@
                         type="email"
                         name="email"
                         data-vv-as="&quot;{{ __('admin::app.admin.emails.email') }}&quot;"
-                        value="{{ $invoice->order->customer_email }}">
+                        value="{{ $invoice->order->customer_email ?? $invoice->order->fbo_email_address }}" />
 
                     <span
                         class="control-error"

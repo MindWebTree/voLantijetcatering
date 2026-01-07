@@ -75,7 +75,7 @@ abstract class Repository extends BaseRepository implements CacheableInterface {
         return $this->parserResult($model);
     }
 
-     /**
+    /**
      * Count results of repository
      *
      * @param  array  $where

@@ -10,6 +10,10 @@ use Webkul\Admin\DataGrids\OrderInvoicesDataGrid;
 use Webkul\Admin\DataGrids\InvoicesTransactionsDatagrid;
 use Webkul\Admin\Traits\Mails;
 use Webkul\Core\Traits\PDFHandler;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class InvoiceController extends Controller
 {
@@ -130,8 +134,22 @@ class InvoiceController extends Controller
     public function view($id)
     {
         $invoice = $this->invoiceRepository->findOrFail($id);
+        $order = $invoice->order;
 
-        return view($this->_config['view'], compact('invoice'));
+        $airport_fbo = null;
+        if (!empty($order->airport_fbo_id)) {
+            $airport_fbo = DB::table('airport_fbo_details')
+                ->where('id', $order->airport_fbo_id)
+                ->first();
+        }
+
+        $order->load('handlingAgent');
+        $handlingAgent = $order->handlingAgent;
+
+        return view(
+            $this->_config['view'],
+            compact('invoice',  'airport_fbo', 'handlingAgent')
+        );
     }
 
     /**
@@ -146,6 +164,7 @@ class InvoiceController extends Controller
         $request->validate([
             'email' => 'required|email',
         ]);
+
 
         $invoice = $this->invoiceRepository->findOrFail($id);
 
@@ -164,11 +183,30 @@ class InvoiceController extends Controller
      */
     public function printInvoice($id)
     {
-        $invoice = $this->invoiceRepository->findOrFail($id);
+    
+        // $invoice = $this->invoiceRepository->findOrFail($id);
 
-        return $this->downloadPDF(
-            view('admin::sales.invoices.pdf', compact('invoice'))->render(),
-            'invoice-' . $invoice->created_at->format('d-m-Y')
-        );
+        // return $this->downloadPDF(
+        //     view('admin::sales.invoices.pdf', compact('invoice'))->render(),
+        //     'invoice-' . $invoice->created_at->format('d-m-Y')
+        // );
+        $invoice = $this->invoiceRepository->findOrFail($id);
+        $html = view('admin::sales.invoices.pdf', compact('invoice'))->render();
+
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+        $options->set('defaultFont', 'DejaVu Sans');
+
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="invoice-'.$invoice->id.'.pdf"');
     }
+
 }

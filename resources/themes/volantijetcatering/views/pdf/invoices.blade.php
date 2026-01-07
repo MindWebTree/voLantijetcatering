@@ -748,6 +748,7 @@ use Carbon\Carbon;
 
             @if($address)
                 {{ $address->address1 ?? '' }},
+                {{ $address->address2 ?? '' }},
                 {{ $address->city ?? '' }},
                 {{ $address->postcode ?? '' }},
                 {{ $address->state ?? '' }}

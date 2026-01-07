@@ -1,23 +1,23 @@
 <?php
 namespace Webkul\MpAuthorizeNet\Helpers;
 
-use App\Http\Controllers\QuickBookController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Webkul\Checkout\Facades\Cart;
-use net\authorize\api\contract\v1 as AnetAPI;
-use net\authorize\api\controller as AnetController;
 use Webkul\Sales\Models\Order;
-use Webkul\Sales\Repositories\OrderRepository;
-use Webkul\MpAuthorizeNet\Repositories\MpAuthorizeNetCartRepository;
-use Webkul\Sales\Repositories\InvoiceRepository;
-use ACME\paymentProfile\Http\Controllers\Admin\InvoicesController;
-use Illuminate\Support\Facades\Log;
 use Webkul\Sales\Models\Invoice;
-use Webkul\Sales\Repositories\OrderTransactionRepository;
-use ACME\paymentProfile\Jobs\ProcessQuickBooksInvoice;
-use ACME\paymentProfile\Jobs\UpdateQuickbookPayment;
+use Webkul\Checkout\Facades\Cart;
 use App\Jobs\SendOrderFailedEmail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\QuickBookController;
+use net\authorize\api\contract\v1 as AnetAPI;
+use Webkul\Sales\Repositories\OrderRepository;
+use Webkul\Sales\Repositories\InvoiceRepository;
+use net\authorize\api\controller as AnetController;
+use ACME\paymentProfile\Jobs\UpdateQuickbookPayment;
+use ACME\paymentProfile\Jobs\ProcessQuickBooksInvoice;
+use Webkul\Sales\Repositories\OrderTransactionRepository;
+use Webkul\MpAuthorizeNet\Repositories\MpAuthorizeNetCartRepository;
+use Webkul\Admin\Traits\Mails; 
 
 
 /**
@@ -29,6 +29,7 @@ use App\Jobs\SendOrderFailedEmail;
 
 class Helper
 {
+    use Mails;
 
     /**
      * Marketplace Seller Repository object
@@ -181,7 +182,7 @@ class Helper
         // Create the controller and get the response
         $controller = new AnetController\CreateCustomerProfileController($request);
         log::info('controller', ['controller' => $controller]);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
         // dd($response);
         log::info('response', ['response' => $response]);
 
@@ -345,7 +346,7 @@ class Helper
                             $order_id = request()->input('order_id');
                             // $test = app(InvoicesController::class);
                             // $test->createInvoice($order_id);
-                            ProcessQuickBooksInvoice::dispatch($order_id);
+                            ProcessQuickBooksInvoice::dispatch($order_id,true);
                         }
 
                         // sandeep add update payment status in quickbook invoice
@@ -459,7 +460,7 @@ class Helper
             // $request->setRefId($this->refId);
             // $request->setTransactionRequest($transactionRequestType);
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             $profileToCharge = new AnetAPI\CustomerProfilePaymentType();
             $profileToCharge->setCustomerProfileId($decodeUpdatedToken->customerResponse->customerProfileId);
@@ -477,7 +478,7 @@ class Helper
             $request->setRefId($this->refId);
             $request->setTransactionRequest($transactionRequestType);
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             Log::info('Request:', ['response' => json_encode($response)]);
             $transactionResponse = $response->getTransactionResponse();
@@ -507,6 +508,11 @@ class Helper
             }
             if ($transactionResponse != null && $transactionResponse->getMessages() != null) {
                 $transactionId = $transactionResponse->getTransId();
+                Log::info('AuthorizeNet full transaction response', [
+                    'transactionResponse' => json_decode(json_encode($transactionResponse), true),
+                ]);
+log::info("transaction_details",['transactionId'=>$transactionId, 'accountNumber' =>$transactionResponse->getAccountNumber()]);
+                $accountNumber = $transactionResponse->getAccountNumber();
                 $this->orderTransactionRepository->create([
                     'transaction_id' => $transactionId,
                     'status' => "paid",
@@ -515,11 +521,15 @@ class Helper
                     'order_id' => $order_id,
                     'invoice_id' => $invoice->id,
                     'data' => json_encode([
-                        ["paidAmount"],
-                        [$order->base_grand_total]
+                        ["paidAmount", "accountNumber","accountType"],
+                        [$order->base_grand_total, $accountNumber,$transactionResponse->getAccountType()]
                     ]),
                     'amount' => $order->base_grand_total
                 ]);
+
+                $customerEmail = $order->customer_email ?? $order->fbo_email_address;
+                $invoice = $this->invoiceRepository->findOrFail($invoice->id);
+                $this->sendDuplicateInvoiceMail($invoice, $customerEmail);
             }
 
             return $response;
@@ -627,7 +637,7 @@ class Helper
 
             // // Create the controller and get the response
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             // return $response;
             $order_id = request()->input('order_id');
@@ -723,7 +733,7 @@ class Helper
             Log::info('Response123:', ['response' => json_encode($request)]);
             // Create the controller and get the response
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             log::info('response',['response'=>$response]);
 
@@ -756,21 +766,29 @@ class Helper
             }
 
             if ($transactionResponse != null && $transactionResponse->getMessages() != null) {
+                Log::info('AuthorizeNet full transaction response', [
+                    'transactionResponse' => json_decode(json_encode($transactionResponse), true),
+                ]);
                 $transactionId = $transactionResponse->getTransId();
-
+log::info("transaction_details22222",['transactionId'=>$transactionId, 'accountNumber' =>$transactionResponse->getAccountNumber()]);
+                $accountNumber = $transactionResponse->getAccountNumber();
                 $this->orderTransactionRepository->create([
                     'transaction_id' => $transactionId,
                     'status' => "paid",
                     'type' => "mpAuthorize",
-                    'payment_method' => "mpAuthorize",
+                    'payment_method' => "mpAuthorize",  
                     'order_id' => $order_id,
                     'invoice_id' => $invoice->id,
                     'data' => json_encode([
-                        ["paidAmount"],
-                        [$order->base_grand_total]
+                        ["paidAmount", "accountNumber","accountType"],
+                        [$order->base_grand_total, $accountNumber,$transactionResponse->getAccountType()]
                     ]),
                     'amount' => $order->base_grand_total
                 ]);
+
+                $customerEmail = $order->customer_email ?? $order->fbo_email_address;
+                $invoice = $this->invoiceRepository->findOrFail($invoice->id);
+                $this->sendDuplicateInvoiceMail($invoice, $customerEmail);
 
             }
 
@@ -862,7 +880,7 @@ class Helper
     //     $request->setRefId($this->refId);
     //     $request->setTransactionRequest($transactionRequestType);
     //     $controller = new AnetController\CreateTransactionController($request);
-    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
     //     return $response;
     // }

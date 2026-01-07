@@ -189,23 +189,23 @@ class OrdersDataGrid extends DataGrid
             'filterable' => true,
             'closure' => function ($value) {
                 if ($value->status == 'paid') {
-                    return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.orders.order-status-paid') . '</span>';
+                    return '<span class="badge badge-md" style="background:#16a34a">' . trans('admin::app.sales.orders.order-status-paid') . '</span>';
                 } elseif ($value->status == 'completed') {
                     return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.orders.order-status-success') . '</span>';
                 } elseif ($value->status == 'ready') {
                     return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.orders.order-status-ready') . '</span>';
                 } elseif ($value->status == 'shipped') {
-                    return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.orders.order-status-shipped') . '</span>';
+                    return '<span class="badge badge-md" style="background:#ff8f00">' . trans('admin::app.sales.orders.order-status-shipped') . '</span>';
                 } elseif ($value->status == 'delivered') {
-                    return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.orders.order-status-deliver') . '</span>';
+                    return '<span class="badge badge-md" style="background:#059669">' . trans('admin::app.sales.orders.order-status-deliver') . '</span>';
                 } elseif ($value->status == 'canceled') {
                     return '<span class="badge badge-md badge-danger">' . trans('admin::app.sales.orders.order-status-canceled') . '</span>';
                 } elseif ($value->status == 'invoice sent') {
-                    return '<span class="badge badge-md badge-info">' . trans('admin::app.sales.orders.order-status-invoice-sent') . '</span>';
+                    return '<span class="badge badge-md" style="background:#0027ff">' . trans('admin::app.sales.orders.order-status-invoice-sent') . '</span>';
                 } elseif ($value->status == 'pending') {
                     return '<span class="badge badge-md badge-warning">' . trans('admin::app.sales.orders.order-status-pending') . '</span>';
                 } elseif ($value->status == 'accepted') {
-                    return '<span class="badge badge-md badge-success">' . trans('admin::app.sales.orders.order-status-accepted') . '</span>';
+                    return '<span class="badge badge-md" style="background:#10b981">' . trans('admin::app.sales.orders.order-status-accepted') . '</span>';
                 } elseif ($value->status == 'rejected') {
                     return '<span class="badge badge-md badge-danger">' . trans('admin::app.sales.orders.order-status-rejected') . '</span>';
                 }

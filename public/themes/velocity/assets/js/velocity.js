@@ -374,14 +374,78 @@ $(function () {
       window.removeEventListener('resize', this.handleResize);
     },
     mounted: function mounted() {
+      var _this2 = this;
       this.$validator.localize(document.documentElement.lang);
       this.addServerErrors();
       this.loadCategories();
       this.addIntersectionObserver();
+      this.$nextTick(function () {
+        _this2.initializeCaptcha();
+      });
     },
     methods: {
+      loadRecaptchaScript: function loadRecaptchaScript() {
+        return new Promise(function (resolve, reject) {
+          if (typeof grecaptcha !== 'undefined') {
+            resolve(); // If grecaptcha is already loaded, resolve the promise
+          } else {
+            // If grecaptcha is not loaded, dynamically load the script
+            var script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+            script.async = true;
+            script.defer = true;
+            script.onload = function () {
+              resolve(); // Script loaded successfully
+            };
+
+            script.onerror = function () {
+              reject(new Error('Failed to load reCAPTCHA script'));
+            };
+            document.head.appendChild(script); // Append script to head
+          }
+        });
+      },
+      initializeCaptcha: function initializeCaptcha() {
+        var _this3 = this;
+        var siteKey = window.siteKey;
+        if (siteKey) {
+          this.loadRecaptchaScript().then(function () {
+            _this3.$nextTick(function () {
+              var recaptchaElement = document.getElementById('recaptcha');
+              if (recaptchaElement) {
+                console.info('Recaptcha element found');
+                grecaptcha.ready(function () {
+                  grecaptcha.render('recaptcha', {
+                    sitekey: siteKey,
+                    callback: _this3.onCaptchaVerified
+                  });
+                });
+              }
+              var recaptchaRegsiterElement = document.getElementById('recaptcha-register');
+              if (recaptchaRegsiterElement) {
+                console.info('Recaptcha register element found');
+                grecaptcha.ready(function () {
+                  grecaptcha.render('recaptcha-register', {
+                    sitekey: siteKey,
+                    callback: _this3.onCaptchaRegsiterVerified
+                  });
+                });
+              }
+            });
+          })["catch"](function (error) {
+            console.error(error.message);
+          });
+        }
+      },
+      onCaptchaVerified: function onCaptchaVerified(response) {
+        console.log('Captcha verified:', response);
+      },
+      onCaptchaRegsiterVerified: function onCaptchaRegsiterVerified(response) {
+        console.log('Captcha register verified:', response);
+        window.recaptchaRegsiterResponse = response;
+      },
       onSubmit: function onSubmit(event) {
-        var _this2 = this;
+        var _this4 = this;
         this.toggleButtonDisability({
           event: event,
           actionType: true
@@ -391,7 +455,7 @@ $(function () {
           if (result) {
             event.target.submit();
           } else {
-            _this2.toggleButtonDisability({
+            _this4.toggleButtonDisability({
               event: event,
               actionType: false
             });
@@ -406,7 +470,7 @@ $(function () {
         }
       },
       addServerErrors: function addServerErrors() {
-        var _this3 = this;
+        var _this5 = this;
         var scope = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
         var _loop = function _loop() {
           var inputNames = [];
@@ -418,12 +482,12 @@ $(function () {
             }
           });
           var inputName = inputNames.join('');
-          var field = _this3.$validator.fields.find({
+          var field = _this5.$validator.fields.find({
             name: inputName,
             scope: scope
           });
           if (field) {
-            _this3.$validator.errors.add({
+            _this5.$validator.errors.add({
               id: field.id,
               field: inputName,
               msg: serverErrors[key][0],
@@ -442,9 +506,9 @@ $(function () {
         this.$set(this.modalIds, id, true);
       },
       loadCategories: function loadCategories() {
-        var _this4 = this;
+        var _this6 = this;
         this.$http.get("".concat(this.baseUrl, "/categories")).then(function (response) {
-          _this4.sharedRootCategories = response.data.categories;
+          _this6.sharedRootCategories = response.data.categories;
           $("<style type='text/css'> .sub-categories{ min-height:".concat(response.data.categories.length * 30, "px;} </style>")).appendTo('head');
         })["catch"](function (error) {
           console.error("Failed to load categories:", error);

@@ -295,9 +295,80 @@ $(function() {
             this.loadCategories();
 
             this.addIntersectionObserver();
+            this.$nextTick(() => {
+                this.initializeCaptcha();
+            });
         },
 
         methods: {
+                    
+            loadRecaptchaScript() {
+            return new Promise((resolve, reject) => {
+                if (typeof grecaptcha !== 'undefined') {
+                resolve();  // If grecaptcha is already loaded, resolve the promise
+                } else {
+                // If grecaptcha is not loaded, dynamically load the script
+                const script = document.createElement('script');
+                script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+                script.async = true;
+                script.defer = true;
+                
+                script.onload = () => {
+                    resolve();  // Script loaded successfully
+                };
+                
+                script.onerror = () => {
+                    reject(new Error('Failed to load reCAPTCHA script'));
+                };
+                
+                document.head.appendChild(script);  // Append script to head
+                }
+            });
+            },
+            initializeCaptcha() {
+            const siteKey = window.siteKey;
+        
+            if (siteKey) {
+                this.loadRecaptchaScript()
+                .then(() => {
+                    this.$nextTick(() => {
+                    const recaptchaElement = document.getElementById('recaptcha');
+                    if (recaptchaElement) {
+                        console.info('Recaptcha element found');
+                        grecaptcha.ready(() => {
+                        grecaptcha.render('recaptcha', {
+                            sitekey: siteKey,
+                            callback: this.onCaptchaVerified,
+                        });
+                        });
+                    }
+        
+                    const recaptchaRegsiterElement = document.getElementById('recaptcha-register');
+                    if (recaptchaRegsiterElement) {
+                        console.info('Recaptcha register element found');
+                        grecaptcha.ready(() => {
+                        grecaptcha.render('recaptcha-register', {
+                            sitekey: siteKey,
+                            callback: this.onCaptchaRegsiterVerified,
+                        });
+                        });
+                    }
+                    });
+                })
+                .catch((error) => {
+                    console.error(error.message); 
+                });
+            }
+            },
+        
+            onCaptchaVerified(response) {
+            console.log('Captcha verified:', response);
+            },
+        
+            onCaptchaRegsiterVerified(response) {
+            console.log('Captcha register verified:', response);
+            window.recaptchaRegsiterResponse = response;
+            },  
             onSubmit(event) {
                 this.toggleButtonDisability({ event, actionType: true });
 

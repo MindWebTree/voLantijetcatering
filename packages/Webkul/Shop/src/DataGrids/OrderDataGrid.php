@@ -107,30 +107,30 @@ class OrderDataGrid extends DataGrid
                 } elseif ($value->status == 'pending') {
                     return '<span class="badge badge-md badge-warning">' . trans('shop::app.customer.account.order.index.pending') . '</span>';
                 } elseif ($value->status == 'invoice sent') {
-                    return '<span class="badge badge-md badge-primary">' . trans('Invoice-sent') . '</span>';
+                    return '<span class="badge badge-md badge-primary" style="background:#0027ff">' . trans('Invoice-sent') . '</span>';
                 } elseif ($value->status == 'pending_payment') {
                     return '<span class="badge badge-md badge-warning">' . trans('shop::app.customer.account.order.index.pending-payment') . '</span>';
                 } elseif ($value->status == 'fraud') {                    
                     return '<span class="badge badge-md badge-danger">' . trans('shop::app.customer.account.order.index.fraud') . '</span>';
                 }
                 elseif ($value->status == 'paid') {                    
-                    return '<span class="badge badge-md badge-success paid">Paid</span>';
+                    return '<span class="badge badge-md badge-success paid" style="background:#16a34a">Paid</span>';
                 }
                 elseif ($value->status == 'accepted') {           
                   //  sandeep chenge status 
-                    return '<span class="badge badge-md badge-success accept">Accepted</span>';
+                    return '<span class="badge badge-md badge-success accept" style="background:#10b981">Accepted</span>';
                 }
                 elseif ($value->status == 'invoiced') {                    
                     return '<span class="badge badge-md badge-success accept">Accept</span>';
                 }
                 elseif ($value->status == 'delivered') {                    
-                    return '<span class="badge badge-md badge-success accept">Delivered</span>';
+                    return '<span class="badge badge-md badge-success accept" style="background:#059669">Delivered</span>';
                 }
                 elseif ($value->status == 'ready') {                    
                     return '<span class="badge badge-md badge-success accept">Ready</span>';
                 }
                 elseif ($value->status == 'shipped') {                    
-                    return '<span class="badge badge-md badge-success accept">Shipped</span>';
+                    return '<span class="badge badge-md badge-success accept" style="background:#ff8f00">Shipped</span>';
                 }
                 
             },

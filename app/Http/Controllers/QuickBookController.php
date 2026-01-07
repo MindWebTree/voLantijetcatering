@@ -12,10 +12,21 @@ use Webkul\Sales\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use ACME\paymentProfile\Models\agentHandler;
+use Webkul\Admin\Traits\Mails; 
+use Webkul\Sales\Repositories\InvoiceRepository;
+
+
 
 class QuickBookController extends Controller
 {
 
+    use Mails;
+    protected $invoiceRepository;
+
+    public function __construct(InvoiceRepository $invoiceRepository)
+    {
+        $this->invoiceRepository = $invoiceRepository;
+    }
 
     private function getQuickBooksConfig()
     {
@@ -108,8 +119,13 @@ log::info('check invoice');
                                             'created_at' => now(),
                                             'updated_at' => now(),
                                         ]);
+
+                                        $customerEmail = $order->customer_email ?? $order->fbo_email_address;
+                                        $invoice = $this->invoiceRepository->findOrFail($invoiceId);
+                                        $this->sendDuplicateInvoiceMail($invoice, $customerEmail);
+
                                     } else {
-                                        
+                                    
                                     }
                                 }
                             }
@@ -277,7 +293,7 @@ public function updatePaymentInQuickBooks($orderId)
     }
     
             
-                private function refreshAccessToken($client_id, $client_secret, $refreshToken, $companyId)
+    private function refreshAccessToken($client_id, $client_secret, $refreshToken, $companyId)
     {
         $tokenUrl = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
 
