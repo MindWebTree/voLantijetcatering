@@ -119,6 +119,7 @@
             ->get();
     }
 
+
 @endphp
 @extends('shop::layouts.master')
 
@@ -261,8 +262,26 @@
                                 <span class="control-error" v-if="errors.has('servicepackaging')"
                                     v-text="'The packaging section field is required'"></span>
                             </div>
-                      
-                              {{-- additional_notes --}}
+
+
+                            <div class="control-group col-sm-12 col-md-6 mb-3">
+                                    <label class="label-style">
+                                        Cutlery
+                                    </label>
+
+                                    <div class="custom-dropdown">
+                                        <select class="form-control form-control-lg" name="cutlery_option" id="include_cutlery">
+                                            <option value="0" selected>No</option>
+
+                                            <option value="1"
+                                                {{ isset($cart->include_cutlery) && $cart->include_cutlery == 1 ? 'selected' : '' }}>
+                                                Yes
+                                            </option>
+                                        </select>
+                                    </div>
+                            </div>
+                    
+                            {{-- additional_notes --}}
                                     <div  iv class="control-group col-sm-12 col-md-6 mb-3 additional-notes">
 
                                         <label for="additional_notes" class="label-style">
@@ -421,7 +440,7 @@
                                                 <h6>{{$fboDetails->packaging_section}}</h6>
                                                 <h6>{{$fboDetails->service_packaging}}</h6>
                                             </div>
-                                     </div>
+                                    </div>
                                     <div class='row mt-2'>
                                         <div class='col-9'><h5 class="card-title child-card-title fw6">Delivery Time</h5></div>
                                             <div class='fbo-body px-3'>
@@ -549,8 +568,27 @@
                                                     v-text="'The packaging section field is required'"></span>
                                 
                                             </div>
+                                            
+                                        <div class="control-group col-sm-12 col-md-6 mb-3">
+                                                <label class="label-style">
+                                                    Cutlery
+                                                </label>
+
+                                                <div class="custom-dropdown">
+                                                    <select class="form-control form-control-lg" name="cutlery_option" id="include_cutlery">
+                                                        <option value="0" selected>No</option>
+
+                                                        <option value="1"
+                                                            {{ isset($cart->include_cutlery) && $cart->include_cutlery == 1 ? 'selected' : '' }}>
+                                                            Yes
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                        </div>
+
+
                                             {{-- additional_notes --}}
-                                          
+                                        
                                             <div  iv class="control-group col-sm-12 col-md-6 mb-3 additional-notes">
 
                                                 <label for="additional_notes" class="label-style">
@@ -569,7 +607,7 @@
 
                                             </div>
                                         </div>
-                                         
+                                        
                                         <h1 class="text-center fs24 fw6 mt-1 margin-top-2">Delivery Time</h1>
                                         <div class="row">
                                             <div class="control-group col-sm-12 col-md-6 col-lg-6 mb-3" :class="[errors.has('delivery_date') ? 'has-error' : '']">
@@ -615,7 +653,7 @@
                     <div class="modal-content">
                         <div class="modal-header fbo-header">
                             <h1 class="fs24 fw6 mt-1">
-                              Save Card
+                                Save Card
                             </h1>
                             <button type="button" class="close save-payment-close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -725,6 +763,9 @@
                                             <p><strong>Qty: </strong>{{$cartItem->quantity}}</p>
                                         </div>
                                         <div class='col-12' style='margin-top: -10px;font-size:13px'>
+                                            @if (isset($cartItem->additional['persons']) && $cartItem->additional['persons']!='' )
+                                            <p style='margin-top: -17px' class="special-intruction"><strong>Persons: </strong> <span>{{$cartItem->additional['persons']}}</span></p>
+                                            @endif
                                             @if (isset($cartItem->additional['special_instruction']) && $cartItem->additional['special_instruction']!='' )
                                             <p style='margin-top: -17px' class="special-intruction"><strong>Special Instruction: </strong> <span>{{$cartItem->additional['special_instruction']}}</span></p>
                                             @endif
@@ -733,6 +774,19 @@
                                 </li>  
                                 @endforeach 
                             </ol>
+                        <div class="order-cutlery mt-2" style="
+                            font-size: 13px;
+                            letter-spacing: 0.2px;
+                        ">
+                            <span style="font-weight: 600;">
+                                Cutlery Included:
+                            </span>
+                            <span style="font-weight: 400;">
+                                {{ $cart->include_cutlery == 1 ? 'Yes' : 'No' }}
+                            </span>
+                        </div>
+
+
                         </div>
                     </div>
                 </div>

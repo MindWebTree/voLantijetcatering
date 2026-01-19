@@ -68,26 +68,54 @@ if (Auth::check()) {
                 <input type="hidden" name="product_id" value="{{ $product['id'] }}" id="ProductId">
                 @if ($product['isSaleable'])
                     @if ($product['type'] == 'simple')
-                        <quantity-changer :product-id="{{ $product['id'] }}"
-                            :quantity-id="'quantity_' + {{ $product['id'] }}"
-                            quantity-text="{{ __('shop::app.products.quantity') }}">
-                        </quantity-changer> 
+                <div class="person quantity control-group mb-1 person-selector d-flex align-items-center">
+                    {{-- <label class="person-label p-0">Persons</label> --}}
+                    <div class="quantityButton">
+                    <div class="person-icon-div">
+                    <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1">
+                    </div>
+                        <input
+                            type="text"
+                            name="persons"
+                            value="1"
+                            id="person-changer"
+                            class="QuantityInputButton person-input"
+                        >
+                        <div class="input-group-prepend quntity-button">
+                            <button type="button" class="btn btn-minus person-minus">
+                                -
+                            </button>
+                        </div>
+                        <div class="input-group-prepend">
+                            <button type="button" class="btn btn-plus person-plus">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- <label class="person-label p-0">Qty</label> --}}
+                <quantity-changer
+                    :product-id="{{ $product['id'] }}"
+                    :quantity-id="'quantity_' + {{ $product['id'] }}"
+                    quantity-text="{{ __('shop::app.products.quantity') }}">
+                </quantity-changer>
+
                         <div id="quantityError_{{ $product['id'] }}_{{ $cate_id }}" class="text-danger quantityError_message"
                             style="color: red"></div>
 
-                        <div class="AddButton text-center">
+                        <div class="AddButton text-center  d-flex">
                             <button type="submit"
                                     class="add_button AddToCartButton"
                                     id="AddToCartButton"
                                     data="{{ $product['type'] }}"
                                     attr="{{ $cate_id }}"
                                     data-category-slug="{{ $product['product_categories']  }}"
-                                   
-                                   
+
                                 >Add</button>
+                        </div>
                             <span id="successMessage_{{ $product['id'] }}_{{ $cate_id }}"
                                 class="text-success successMessage"></span>
-                        </div>
                     @else
                         <div class="configurable_product">
                             <div class="AddButton text-center">
@@ -119,10 +147,40 @@ if (Auth::check()) {
                                                 id = "ProductName">{{ $product['name'] }}</span>
                                             <br />
                                             <p class="description">{{ $product['description'] }}</p>
-                                            <quantity-changer :product-id="{{ $product['id'] }}"
+                                            <div class="qty-selector">
+                                            <div class="person quantity control-group mb-1 person-selector d-flex align-items-center">
+                                                {{-- <label class="person-label p-0">Persons</label> --}}
+                                                <div class="quantityButton">
+                                                <div class="person-icon-div">
+                                                <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1">
+                                                </div>
+                                                    <input
+                                                        type="text"
+                                                        name="persons"
+                                                        value="1"
+                                                        id="person-changer"
+                                                        class="QuantityInputButton person-input"
+                                                    >
+                                                    <div class="input-group-prepend quntity-button">
+                                                        <button type="button" class="btn btn-minus person-minus">
+                                                            -
+                                                        </button>
+                                                    </div>
+                                                    <div class="input-group-prepend">
+                                                        <button type="button" class="btn btn-plus person-plus">
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- <label class="person-label p-0">Qty</label> --}}
+                                            <quantity-changer
+                                                :product-id="{{ $product['id'] }}"
                                                 :quantity-id="'quantity_' + {{ $product['id'] }}"
                                                 quantity-text="{{ __('shop::app.products.quantity') }}">
                                             </quantity-changer>
+                                            </div>
                                             {{-- <quantity-changer quantity-text="{{ __('shop::app.products.quantity') }}"></quantity-changer> --}}
                                             <div id="quantityError_{{ $product['id'] }}_{{ $cate_id }}"
                                                 class="text-danger quantityError_message" style="color: red"></div>

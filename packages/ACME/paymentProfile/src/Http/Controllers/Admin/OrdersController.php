@@ -367,11 +367,22 @@ class OrdersController extends Controller
                     $output .= "</div>"
                         . "<div class='row justify-content-start product__equi'>"
                         . "<div class='col-12'>"
-                        . "<div class='input-group mb-2' style=' gap: 12px;'>"
+                        . "<div class='input-group mb-2 add-qty-changer' style=' gap: 12px;'>"
+                        . "<img id='minusBtn' src='/themes/volantijetcatering/assets/images/people.png' alt=''>"
                         . "<div class='input-group-prepend'>"
                         . "<img id='minusBtn' src='/themes/volantijetcatering/assets/images/minus.png' alt=''>"
                         . "</div>"
-                        . "<input type='text' class='form-control text-center quantity__inp' aria-label='Quantity' aria-describedby='basic-addon1' value='1' id='quantityInput'/>"
+                        . "<input type='text' class='add-person-input form-control text-center quantity__inp' aria-label='Quantity' aria-describedby='basic-addon1' value='1' id='quantityInput'/>"
+                        . "<div class='input-group-append'>"
+                        . "<img id='plusBtn' src='/themes/volantijetcatering/assets/images/plus-small.png' alt=''>"
+                        . "</div>"
+                        . "</div>"
+                        . "<div class='input-group mb-2 add-qty-changer' style=' gap: 12px;'>"
+                        . "<img id='minusBtn' src='/themes/volantijetcatering/assets/images/quantity.png' alt=''>"
+                        . "<div class='input-group-prepend'>"
+                        . "<img id='minusBtn' src='/themes/volantijetcatering/assets/images/minus.png' alt=''>"
+                        . "</div>"
+                        . "<input type='text' class='add-qty-input form-control text-center quantity__inp' aria-label='Quantity' aria-describedby='basic-addon1' value='1' id='quantityInput'/>"
                         . "<div class='input-group-append'>"
                         . "<img id='plusBtn' src='/themes/volantijetcatering/assets/images/plus-small.png' alt=''>"
                         . "</div>"
@@ -439,6 +450,7 @@ class OrdersController extends Controller
                 'fbo_service_packaging' => $request->servicePackaging,
                 'delivery_date' => $formattedDate,
                 'delivery_time' => $request->delivery_time,
+                'include_cutlery' => $request->cutlery_option ?? 0,
             ]);
 
         // sandeep update quickbook invoice
@@ -656,10 +668,23 @@ class OrdersController extends Controller
         $order->base_tax_amount = Tax::getTaxTotal($order, true);
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);
         $order->base_tax_amount_invoiced = Tax::getTaxTotal($order, true);
-        $order->grand_total = $order->tax_amount + $order->sub_total;
-        $order->base_grand_total = $order->tax_amount + $order->sub_total;
-        $order->grand_total_invoiced = $order->tax_amount + $order->sub_total;
-        $order->base_grand_total_invoiced = $order->tax_amount + $order->sub_total;
+        
+        $newFboFee = 0;
+
+        if ($request->selected_fbo_id) {
+            $newFboFee = DB::table('airport_fbo_details')
+                ->where('id', $request->selected_fbo_id)
+                ->value('fbo_fee') ?? 0;
+        }
+
+        $order->fbo_fee = $newFboFee ?? 0;
+        $deliveryFee = round(($order->sub_total * 10) / 100, 2);
+
+        $grandTotal = $order->sub_total + $order->tax_amount + $newFboFee + $deliveryFee;
+        $order->grand_total = $grandTotal;
+        $order->base_grand_total = $grandTotal;
+        $order->grand_total_invoiced = $grandTotal;
+        $order->base_grand_total_invoiced = $grandTotal;
         $order->save();
 
 
@@ -670,8 +695,7 @@ class OrdersController extends Controller
     }
 
     public function add_orders(Request $request)
-    {
-        // dd($request);   
+    { 
         $order = DB::table('orders')
             ->where('increment_id', $request->order_id)
             ->first();
@@ -733,6 +757,7 @@ class OrdersController extends Controller
                                     '_token' => $request->_token,
                                     'product_id' => $productId['product_id'],
                                     'quantity' => $productId['qty'],
+                                    'persons' => $productId['person'],
                                     'locale' => $productArr->locale,
                                 ]),
                                 'created_at' => now(), // Current timestamp for creation
@@ -1104,6 +1129,46 @@ class OrdersController extends Controller
     }
 
 
+    public function update_fbo_fee(Request $request)
+    {
+        $request->validate([
+            'orderId' => 'required|integer|exists:orders,id',
+            'fbo_fee' => 'required|numeric|min:0',
+        ]);
+
+        // Get order
+        $order = DB::table('orders')->where('id', $request->orderId)->first();
+
+        if (! $order) {
+            return redirect()->back()->with('error', 'Order not found');
+        }
+
+        $oldFboFee = $order->fbo_fee ?? 0;
+        $newFboFee = $request->fbo_fee;
+        log::info("Old FBO Fee: $oldFboFee, New FBO Fee: $newFboFee");
+
+        // Calculate difference
+        $difference = $newFboFee - $oldFboFee;
+        log::info("Difference in FBO Fee: $difference");
+
+        // Update order
+        DB::table('orders')
+            ->where('id', $request->orderId)
+            ->update([
+                'fbo_fee'     => $newFboFee,
+                'grand_total' => $order->grand_total + $difference,
+                'base_grand_total' => $order->grand_total + $difference,
+        ]);
+
+        if ($order->quickbook_invoice_id) {
+            ProcessQuickBooksInvoice::dispatch($request->orderId);
+        }
+
+        log::info('grand_total updated to: ' . ($order->grand_total + $difference));
+        return redirect()->back()->with('success', 'FBO fee & grand total updated');
+    }
+
+
     public function edit_product(Request $request)
     {
 
@@ -1161,7 +1226,20 @@ class OrdersController extends Controller
                         'qty' => $orderInventory->qty + $product['newQty'],
                     ]);
                 }
+            }   
+            
+            $additionalJson = DB::table('order_items')
+                ->where('id', $product['itemId'])
+                ->select('additional')
+                ->first();
+
+            $additional = [];
+
+            if ($additionalJson && $additionalJson->additional) {
+                $additional = json_decode($additionalJson->additional, true);
             }
+
+            $additional['persons'] = $product['persons'];
 
 
             DB::table('order_items')
@@ -1176,7 +1254,9 @@ class OrdersController extends Controller
                     'base_total' => $product['itemprice'] * $product['quantity'],
                     'total_invoiced' => $product['itemprice'] * $product['quantity'],
                     'base_total_invoiced' => $product['itemprice'] * $product['quantity'],
+                    'additional'          => json_encode($additional),
                 ]);
+
             DB::table('order_items')
                 ->where('parent_id', $product['itemId'])
                 ->update([

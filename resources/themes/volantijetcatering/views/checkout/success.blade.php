@@ -94,7 +94,7 @@
                     <p class="m-0"> {{ $orderDetails[0]->fbo_tail_number }} </p>
                     <p class="m-0"> {{ $orderDetails[0]->fbo_packaging }} </p>
                     <p class="m-0"> {{ $orderDetails[0]->fbo_service_packaging }} </p>
-               @if(isset($fboDetails))
+                @if(isset($fboDetails))
                     @if(!empty($fboDetails->delivery_date) || !empty($fboDetails->delivery_time))
                     <p class="m-0">
                         {{ date('m/d/Y', strtotime($fboDetails->delivery_date)) ?? '' }} {{ $fboDetails->delivery_time ?? '' }}
@@ -174,11 +174,15 @@
                                         @php
                                             $additionalData = json_decode($orderDetail->additional, true); // Decode as an associative array
                                             $specialInstruction = isset($additionalData['special_instruction']) ? $additionalData['special_instruction'] : null;
+                                            $persons = isset($additionalData['persons']) ? $additionalData['persons'] : null;
                                         @endphp
-
+                                        @if ($persons)
+                                            <p class="special-intruction" style="margin-top: -10px;overflow: auto;"><strong>Persons:
+                                                </strong>{{ $persons }}</p>
+                                        @endif
                                         @if ($specialInstruction)
                                             <p class="special-intruction" style="margin-top: -10px;overflow: auto;"><strong>Special
-                                                    Instruction:
+                                                Instruction:
                                                 </strong>{{ $specialInstruction }}</p>
                                             {{-- @else
                                             {{ '' }} --}}
@@ -188,6 +192,18 @@
                             </li>
                         @endforeach
                     </ol>
+
+                    <div class="order-cutlery mt-2" style="
+                            font-size: 13px;
+                            letter-spacing: 0.2px;
+                        ">
+                            <span style="font-weight: 600;">
+                                Cutlery Included:
+                            </span>
+                            <span style="font-weight: 400;">
+                                {{ $order['include_cutlery'] == 1 ? 'Yes' : 'No' }}
+                            </span>
+                    </div>
 
                     <div class="col-12 border-top my-3 thank__orderId thank__order p-0">
                         <div class="d-flex gap">

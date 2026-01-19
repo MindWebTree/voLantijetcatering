@@ -130,6 +130,7 @@
                                         {{-- @endif --}}
                                         <th>Price</th>
                                         <th>Qty</th>
+                                        <th>Person</th>
                                         <th>Sub Total</th>
                                     </tr>
                                 </thead>
@@ -207,6 +208,14 @@
                                                 </span>
 
                                             </td>
+                                            <td>
+                                                <span class="qty-row">
+                                                    @if(isset($item->additional['persons']) && $item->additional['persons'] != '')
+                                                        {{ $item->additional['persons'] }}
+                                                    @endif
+                                                </span>
+
+                                            </td>
 
                                             <td>{{ core()->formatBasePrice($item->base_total - $item->base_discount_amount) }}
                                             </td>
@@ -215,6 +224,11 @@
                             </table>
                         </div>
                     </div>
+                            <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;text-align: left;">
+                                    @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                                        <strong>Instruction:</strong> Cutlery included
+                                    @endif
+                            </div>
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-4">
                     <div class="order__view__payment">
@@ -252,6 +266,26 @@
                                 @else
                                     <p class="col-5 total">{{ core()->formatBasePrice(0.0) }} </p>
                                 @endif
+                                <p class="col-7 cart_text m-0">
+                                    Fbo Fee
+                                </p>
+
+                                @if (isset($order->fbo_fee))
+                                    <p class="col-5 tax m-0">{{ core()->formatBasePrice($order->fbo_fee) }}</p>
+                                @else
+                                    <p class="col-5 total m-0">{{ core()->formatBasePrice(0.0) }} </p>
+                                @endif
+
+                                <p class="col-7 cart_text m-0">
+                                    Delivery Charge
+                                </p>
+
+                                @if (isset($order->sub_total))
+                                    <p class="col-5 tax m-0">${{ round(($order->sub_total * 10) / 100, 2) }}</p>
+                                @else
+                                    <p class="col-5 total m-0">{{ core()->formatBasePrice(0.0) }} </p>
+                                @endif
+
                                 <p class="col-7 cart_text fs17" style="color:#f84661 !important">
                                     @if ($order->status === 'paid')
                                         Paid amount
@@ -283,6 +317,7 @@
                 </div>
 
             </div>
+
         </section>  
 
         @php

@@ -8,13 +8,24 @@
     src: url(../fonts/font-awesome/Fino-Sans-Regular.otf);
 }
 
+.quantityButton .quntity-button{
+    width: 130px !important;
+    text-align: center;
+    border: none;
+    border-right: 1px solid #ddd;
+    padding: 0;
+}
+
+
 /* #AcceptUIContainer {
     all: unset !important;
 } */
 #ageModal .modal-footer span {
-
     color: #fff !important;
+}
 
+.custom_modal .modal-body .qty-selector{
+    width: 50%;
 }
 
 .checkout-payment-notes {
@@ -7529,6 +7540,7 @@ ul.footer-links {
     width: 100%;    
     justify-content: center;
     height: 45px;
+    background: #f2f2f36b !important;
 }
 
 
@@ -7562,7 +7574,7 @@ ul.footer-links {
 }
 
 .quantityButton .QuantityInputButton {
-    width: 40px !important;
+    width: 35px !important;
     text-align: center;
     border: none;
     border-left: 1px solid #ddd;
@@ -7702,8 +7714,28 @@ input.product_variant:checked + .single-product-page-button-group-1 span{
 }
 
 
-.custom_modal .modal-body .quantityButton{
-    width: 23% !important;
+#ProductsContainer .custom_modal .modal-body .quantityButton{
+    width: 70% !important;
+}
+
+#search-item-list .custom_modal .modal-body .quantityButton{
+    width: 60% !important;
+}
+
+.quantity .person-icon-div{
+    width: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.person-icon-div img{
+    height: 50% !important;
+    width: auto !important;
+}
+
+.AddToCartButton  .quantity {
+    gap:5px !important;
 }
 
 
@@ -7792,6 +7824,19 @@ input.product_variant:checked + .single-product-page-button-group-1 span{
 
     }
 
+    #product-list .AddToCartButton {
+        padding: 5px !important;
+    }
+
+    .quantityButton .QuantityInputButton{
+        width: 30px !important;
+    }
+
+
+    .custom_modal .modal-body .qty-selector{
+        width: 100% !important;
+    }
+
     .custom_modal .modal-body .quantity{
        width: 100% !important;
         /* margin: auto; */
@@ -7800,7 +7845,7 @@ input.product_variant:checked + .single-product-page-button-group-1 span{
 
     .custom_modal .modal-body .quantityButton{
         width: 100% !important;
-        width: 30% !important;
+        width: 45% !important;
      }
 
      #category_instructions_Div{

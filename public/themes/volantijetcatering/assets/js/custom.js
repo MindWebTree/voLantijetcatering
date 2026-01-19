@@ -143,6 +143,45 @@
 
     $(document).ready(function () {
 
+        
+        $('body').on('click', '.person-plus', function () {
+            let $input = $(this).closest('.person-selector').find('.person-input');
+            let min = parseInt($input.data('min')) || 1;
+            let current = parseInt($input.val()) || min;
+
+            $input.val(current + 1).trigger('input');
+        });
+
+        $('body').on('click', '.person-minus', function () {
+            let $input = $(this).closest('.person-selector').find('.person-input');
+            let min = parseInt($input.data('min')) || 1;
+            let current = parseInt($input.val()) || min;
+
+            if (current > min) {
+                $input.val(current - 1).trigger('input');
+            }
+        });
+
+        $('body').on('keypress', '.person-input', function (e) {
+            if (e.which < 48 || e.which > 57) {
+                e.preventDefault();
+            }
+        });
+
+        $('body').on('input', '.person-input', function () {
+            let min = parseInt($(this).data('min')) || 1;
+
+            // Remove non-numeric characters
+            let value = $(this).val().replace(/[^0-9]/g, '');
+
+            if (value === '' || parseInt(value) < min) {
+                value = min;
+            }
+
+            $(this).val(value);
+        });
+
+
         var address_checkbox = $('.address-container input[type="radio"]');
 
         // sandeep delete code && $('#airport-fbo-input').val() !== ''
@@ -1092,8 +1131,8 @@
     jQuery('body').on('click', '.add_button', function () {
         // check options
     
-        $('.modal-backdrop').remove();
-    jQuery('body').removeClass('modal-open');
+    // $('.modal-backdrop').remove();
+    // jQuery('body').removeClass('modal-open');
 
     ProductId1 = jQuery(this).parents('.AddToCartButton').first().find('input[name="product_id"]').val();
     
@@ -1154,6 +1193,7 @@
         let productId = $(this).closest('.product-card-new').find('#ProductId').val();
         let SpecialInstruction = $(this).closest('.product-card-new').find('#textarea-customize').val();
         let Quantity = $(this).closest('.product-card-new').find('#quantity-changer').val();
+        let persons = $(this).closest('.product-card-new').find('#person-changer').val();
         let token = $('meta[name="csrf-token"]').attr('content'); // Retrieve CSRF token
 
         var successMessageSpan = $('#successMessage_' + productId + '_' + cate_id);
@@ -1171,6 +1211,7 @@
             'product_id': productId,
             'special_instruction': SpecialInstruction,
             'quantity': Quantity,
+            'persons': persons,
         };
 
         if (productType === 'configurable') {
@@ -1505,6 +1546,7 @@
                 '  <div class="col-8 no-padding card-body align-vertical-top" style="padding-right:10px !important">' +
                 '    <div class="no-padding">' +
                 '      <div class="fs16 text-nowrap fw6 product-name pb-1">' + item.name + '</div>' +
+                '      <div class="" style="font-size:11px;"><strong>Persons:</strong> ' + item.additional.persons + '</div>' +
                 '      <div class="row mini-cart-instruction d-block" style="font-size:11px;">' +
                 '        ' + attributesHtml +
                 (item.additional.special_instruction

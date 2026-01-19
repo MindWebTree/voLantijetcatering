@@ -128,6 +128,15 @@
                         <span class="control-error" v-if="errors.has('notes')">@{{ errors.first('notes') }}</span>
                     </div>
 
+                    <div class="control-group" :class="[errors.has('fbo_fee') ? 'has-error' : '']">
+                        {{-- <label for="sort_order">{{ __('admin::app.settings.cateringpackages.name') }}</label> --}}
+                        <label for="sort_order">Fbo Fee</label>
+                        <input type="number" class="control" id="fbo_fee" name="fbo_fee" v-validate="'required'"
+                            value="{{ $airportfbo->fbo_fee }}" />
+                        <span class="control-error" v-if="errors.has('fbo_fee')">@{{ errors.first('fbo_fee') }}</span>
+
+                    </div>
+
                     @php $channels = core()->getAllChannels() @endphp
 
                 </div>

@@ -66,6 +66,15 @@
                         <span class="control-error" v-if="errors.has('notes')">@{{ errors.first('notes') }}</span>
                     </div>
 
+                    <div class="control-group" :class="[errors.has('fbo_fee') ? 'has-error' : '']">
+                        <label for="sort_order">Fbo Fee</label>
+                        <input type="number" class="control" id="sort_order" name="fbo_fee" v-validate="'required'"
+                            value="" />
+                        <span class="control-error" v-if="errors.has('fbo_fee')">@{{ errors.first('fbo_fee') }}</span>
+
+                    </div>
+                    
+
 
 
                     @php $channels = core()->getAllChannels() @endphp

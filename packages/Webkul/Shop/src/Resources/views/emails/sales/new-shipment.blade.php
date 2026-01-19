@@ -1,4 +1,24 @@
 @component('shop::emails.layouts.master')
+@push('css')
+    <style>
+        /* Reset some default styles to ensure consistency */
+        body,
+        table,
+        td,
+        p {
+            font-family: 'Montserrat', arial;
+        }
+
+        /* Set the background color for the entire email */
+        body {
+            background-color: #fff;
+            font-family: 'Montserrat' arial;
+        }
+
+    </style>
+@endpush
+
+
     <div style="text-align: center;">
         <a href="{{ route('shop.home.index') }}">
             @include ('shop::emails.layouts.logo')
@@ -149,6 +169,7 @@
         </div>
 
         <div class="section-content">
+
             <div class="table mb-20">
                 <table style="overflow-x: auto; border-collapse: collapse;
                 border-spacing: 0;width: 100%">
@@ -161,6 +182,8 @@
                             <th style="text-align: left;padding: 8px">
                                 {{ __('shop::app.customer.account.order.view.price') }}</th>
                             <th style="text-align: left;padding: 8px">{{ __('shop::app.customer.account.order.view.qty') }}
+                            </th>
+                            <th style="text-align: left;padding: 8px">Person
                             </th>
                         </tr>
                     </thead>
@@ -193,8 +216,23 @@
 
                                 <td data-value="{{ __('shop::app.customer.account.order.view.qty') }}"
                                     style="text-align: left;padding: 8px">{{ $item->qty }}</td>
+                                <td data-value="Person"
+                                    style="text-align: left;padding: 8px">
+                                    @if(isset($item->additional['persons']))
+                                    {{ $item->additional['persons'] }}
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
+                        <tr>
+                            <td>
+                                <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
+                                    @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                                    <strong>Instruction:</strong> Cutlery included
+                                @endif
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

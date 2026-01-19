@@ -9,13 +9,14 @@
         p {
             margin: 0;
             padding: 0;
-            font-family: montserrat, sans-serif;
+            font-family: 'Montserrat', arial;
             color: #444444;
         }
 
         /* Set the background color for the entire email */
         body {
             background-color: #fff;
+            font-family: 'Montserrat', arial;
         }
 
         /* Add some spacing around the content */
@@ -243,7 +244,7 @@
                 <td colspan="3" style="
                 padding: 15px;
             ">
-                     @if(!empty($order->fbo_additional_notes) || !empty($fboAdditionalNotes))
+                    @if(!empty($order->fbo_additional_notes) || !empty($fboAdditionalNotes))
                         <p><strong>Additional Notes:</strong></p>
                         <p>{{ $order->fbo_additional_notes ?? $fboAdditionalNotes }}</p>
                     @endif
@@ -268,6 +269,7 @@
                     border-top: 1px dotted black;
                     border-bottom: 1px dotted black;
                     margin-top: 20px;">
+
                             <div class="table-responsive" style="max-height: 500px;overflow-x: auto;">
                                 <table style="width: -webkit-fill-available;border-collapse: collapse;" class="order-items-table">
                                     <thead>
@@ -279,6 +281,9 @@
                                             Product Name</th>
                                             <th style="text-align: left;padding: 8px">
                                                 Qty
+                                            </th>
+                                            <th style="text-align: left;padding: 8px">
+                                                Persons
                                             </th>
                                         </tr>
                                     </thead>
@@ -340,6 +345,10 @@
                                                 padding:8px;">
                                                             {{ $item->qty_ordered ?? 0 }}
                                                     </td>
+                                                <td style="
+                                                padding:8px;">  
+                                                            {{ $item->additional['persons'] ?? 'N/A' }}
+                                                    </td>
 
                                                 {{-- <td>
                                                     <span class="qty-row">
@@ -352,6 +361,16 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
+                            @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                            <strong>Instruction:</strong> Cutlery included
+                        @endif
                         </div>
                     </td>
                 </tr>

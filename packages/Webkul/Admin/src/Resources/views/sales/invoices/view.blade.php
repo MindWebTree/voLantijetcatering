@@ -280,8 +280,10 @@
                         @endif
 
                         <accordian title="{{ __('admin::app.sales.orders.products-ordered') }}" :active="true">
+                            
                             <div slot="body">
                                 <div class="table">
+                                    
                                     <div class="table-responsive">
                                         <table>
                                             <thead>
@@ -290,9 +292,10 @@
                                                     <th>{{ __('admin::app.sales.orders.product-name') }}</th>
                                                     <th>{{ __('admin::app.sales.orders.price') }}</th>
                                                     <th>{{ __('admin::app.sales.orders.qty') }}</th>
+                                                    <th>Persons</th>
                                                     <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
                                                     <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
-                                                    @if ($invoice->base_discount_amount > 0)
+                                                    @if ($invoice->order->base_discount_amount > 0)
                                                         <th>{{ __('admin::app.sales.orders.discount-amount') }}</th>
                                                     @endif
                                                     <th>{{ __('admin::app.sales.orders.grand-total') }}</th>
@@ -300,7 +303,7 @@
                                             </thead>
 
                                             <tbody>
-                                                @foreach ($invoice->items as $item)
+                                                @foreach ($invoice->order->items as $item)
                                                     <tr>
                                                         <td>{{ $item->getTypeInstance()->getOrderedItem($item)->sku }}</td>
 
@@ -316,17 +319,21 @@
 
                                                                 </div>
                                                             @endif
+                                                            @if (!empty($item->additional['special_instruction']))
+                                                            <div class="" style="gap:4px;font-size:11px;    margin-top: 10px; max-height: 100px;"><span><b>Special Instruction: </b> </span><br>
+                                                            <span>{{ $item->additional['special_instruction'] }}</span>
+                                                                </div>
+                                                            @endif
                                                         </td>
-
                                                         <td>{{ core()->formatBasePrice($item->base_price) }}</td>
-
-                                                        <td>{{ $item->qty }}</td>
+                                                        <td>{{ $item->qty_ordered }}</td>
+                                                        <td>{{ $item->additional['persons'] }}</td>
 
                                                         <td>{{ core()->formatBasePrice($item->base_total) }}</td>
 
                                                         <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
 
-                                                        @if ($invoice->base_discount_amount > 0)
+                                                        @if ($invoice->order->base_discount_amount > 0)
                                                             <td>{{ core()->formatBasePrice($item->base_discount_amount) }}</td>
                                                         @endif
 
@@ -336,39 +343,58 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px; text-align: left;">
+                                        @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                                                <strong>Instruction:</strong> Cutlery included
+                                        @endif
+                                    </div>
                                 </div>
+
+
 
                                 <table class="sale-summary">
                                     <tr>
                                         <td>{{ __('admin::app.sales.orders.subtotal') }}</td>
                                         <td>-</td>
-                                        <td>{{ core()->formatBasePrice($invoice->base_sub_total) }}</td>
+                                        <td>{{ core()->formatBasePrice($order->base_sub_total) }}</td>
                                     </tr>
 
                                     <tr>
                                         <td>{{ __('admin::app.sales.orders.shipping-handling') }}</td>
                                         <td>-</td>
-                                        <td>{{ core()->formatBasePrice($invoice->base_shipping_amount) }}</td>
+                                        <td>{{ core()->formatBasePrice($order->base_shipping_amount) }}</td>
                                     </tr>
 
                                     <tr>
                                         <td>{{ __('admin::app.sales.orders.tax') }}</td>
                                         <td>-</td>
-                                        <td>{{ core()->formatBasePrice($invoice->base_tax_amount) }}</td>
+                                        <td>{{ core()->formatBasePrice($order->base_tax_amount) }}</td>
                                     </tr>
 
-                                    @if ($invoice->base_discount_amount > 0)
+                                    @if ($order->base_discount_amount > 0)
                                         <tr>
                                             <td>{{ __('admin::app.sales.orders.discount') }}</td>
                                             <td>-</td>
-                                            <td>{{ core()->formatBasePrice($invoice->base_discount_amount) }}</td>
+                                            <td>{{ core()->formatBasePrice($order->base_discount_amount) }}</td>
                                         </tr>
                                     @endif
+
+                                    <tr>
+                                        <td>Fbo Fee</td>
+                                        <td>-</td>
+                                        <td>{{ core()->formatBasePrice($order->fbo_fee) }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Delivery Charge</td>
+                                        <td>-</td>
+                                        <td>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</td>
+                                    </tr>
 
                                     <tr class="bold">
                                         <td>{{ __('admin::app.sales.orders.grand-total') }}</td>
                                         <td>-</td>
-                                        <td>{{ core()->formatBasePrice($invoice->base_grand_total) }}</td>
+                                        <td>{{ core()->formatBasePrice($order->base_grand_total) }}</td>
                                     </tr>
                                 </table>
                             </div>

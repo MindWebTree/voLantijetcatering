@@ -179,12 +179,11 @@ class Cart
             $cart = $this->create($data);
         }
 
-      
+    
         if (! $cart) {
             return ['warning' => __('shop::app.checkout.cart.item.error-add')];
         }
 
-     
 
         $product = $this->productRepository->find($productId);
         
@@ -193,7 +192,7 @@ class Cart
         }
 
         $cartProducts = $product->getTypeInstance()->prepareForCart($data);
-        
+    
         if (is_string($cartProducts)) {
             if ($cart->all_items->count() <= 0) {
                 $this->removeCart($cart);
@@ -224,6 +223,10 @@ class Cart
                             'cart_id' => $cart->id,
                         ]));
                     } else {
+                            $existingPersons = (int) ($cartItem->additional['persons'] ?? 0);
+                            $newPersons      = (int) ($cartProduct['additional']['persons'] ?? 0);
+                            $cartProduct['additional']['persons'] = $existingPersons + $newPersons;
+                            
                             $cartItem = $this->cartItemRepository->update($cartProduct, $cartItem->id);
                                 }
                             }
@@ -539,6 +542,7 @@ class Cart
     
         $cart->refresh();
 
+
         $cart->sub_total = $cart->base_sub_total = 0;
         $cart->grand_total = $cart->base_grand_total = 0;
         $cart->tax_total = $cart->base_tax_total = 0;
@@ -560,7 +564,7 @@ class Cart
 
         $cart->items_count = $cart->items->count();
 
-     
+    
         $cart->tax_total = Tax::getTaxTotal($cart, false);
         $cart->base_tax_total = Tax::getTaxTotal($cart, true);
 
@@ -574,6 +578,21 @@ class Cart
             $cart->discount_amount += $shipping->discount_amount;
             $cart->base_discount_amount += $shipping->base_discount_amount;
         }
+
+        $fboFee = 0;
+
+        if ($cart->shipping_address && $cart->shipping_address->airport_fbo_id) {
+            $fboFee = DB::table('airport_fbo_details')
+                ->where('id', $cart->shipping_address->airport_fbo_id)
+                ->value('fbo_fee') ?? 0;
+        }
+
+        $cart->fbo_fee = $fboFee;
+
+        $deliveryFee = round(($cart->sub_total * 10) / 100, 2);
+
+        $cart->grand_total += ($fboFee + $deliveryFee);
+        $cart->base_grand_total += ($fboFee + $deliveryFee);
 
         $cart->discount_amount = round($cart->discount_amount, 2);
         $cart->base_discount_amount = round($cart->base_discount_amount, 2);
@@ -732,6 +751,8 @@ class Cart
             'sub_total'             => $data['sub_total'],
             'base_sub_total'        => $data['base_sub_total'],
             'tax_amount'            => $data['tax_total'],
+            'fbo_fee'               => $data['fbo_fee'],
+            'include_cutlery'       => $data['include_cutlery'],
             'base_tax_amount'       => $data['base_tax_total'],
             'coupon_code'           => $data['coupon_code'],
             'applied_cart_rule_ids' => $data['applied_cart_rule_ids'],

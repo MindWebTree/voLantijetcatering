@@ -294,13 +294,10 @@ class SignUpController extends Controller
 
     public function add_fbo_details(Request $request)
     {
-       
-       
-
-
         $validate = $request->validate([
             'fullname' => 'required|max:30'
         ]);
+
             $cart = Cart::getCart();
 
                 if ($cart) {
@@ -308,6 +305,7 @@ class SignUpController extends Controller
                         ->where('id', $cart->id)
                         ->update([
                             'fbo_additional_notes' => $request->additional_notes,
+                            'include_cutlery' => $request->cutlery_option ?? 0,
                         ]);
                 }
 
@@ -452,14 +450,15 @@ class SignUpController extends Controller
 
     public function update_fbo_detail(Request $request)
     {
-         
-            $cart = Cart::getCart();
+        
+        $cart = Cart::getCart();
 
         if ($cart) {
             DB::table('cart')
                 ->where('id', $cart->id)
                 ->update([
                     'fbo_additional_notes' => $request->additional_notes,
+                    'include_cutlery' => $request->cutlery_option ?? 0,
                 ]);
         }
 

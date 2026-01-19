@@ -61,13 +61,13 @@ class GuestNewOrderNotification extends Mailable
             core()->getSenderEmailDetails()['name']
         )
             ->to($this->order['customer_email'], $fullName)
-            ->subject(trans('shop::app.mail.order.subject'). ' #' . $increment_id)
+            ->subject('Volanti Jet Catering Order Request #' . $increment_id . ' Submitted')
             ->view('mail.guest-new-order')
             ->with([
                 'order' => $this->order,
                 'fboDetails' => $this->fboDetails,
                 'extraData' => $this->extraData,
-                 'fboAdditionalNotes' => $this->fboAdditionalNotes,
+                'fboAdditionalNotes' => $this->fboAdditionalNotes,
             ]);
     }
 }

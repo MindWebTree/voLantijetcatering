@@ -9,13 +9,14 @@
         p {
             margin: 0;
             padding: 0;
-            font-family: arial;
+            font-family: 'Montserrat', arial;
             color: #444444;
         }
 
         /* Set the background color for the entire email */
         body {
             background-color: #fff;
+            font-family: 'Montserrat', arial;
         }
 
         /* Add some spacing around the content */
@@ -149,7 +150,7 @@
                     Thank you for your order!
                 </h1>
             
-                 <div style="font-size: 20px; color: #242424; line-height: 30px; margin-bottom: 34px;padding-top:5px;">
+                <div style="font-size: 20px; color: #242424; line-height: 30px; margin-bottom: 34px;padding-top:5px;">
                 <p style="font-size: 16px; color: #5E5E5E; line-height: 24px;">
                     {{ __('shop::app.mail.order.dear', [
                         'customer_name' => 
@@ -159,13 +160,25 @@
                     ]) }}
                 </p>
 
-                <p style="font-size: 16px; color: #5E5E5E; line-height: 24px;">
+                <p style="font-size: 16px;color: #5E5E5E;line-height: 24px;">
+                    Thank you for submitting your order
+                    #{{ $order->increment_id }}
+                    request. Our team will get back to you within 24 hours with any questions and order confirmation.
+                    If your order is within 24 hours please give us a call for a quicker response time.
+                </p>
+
+
+                <p style="font-size: 16px;color: #5E5E5E;line-height: 24px;">
+                        Have a great day!   
+                </p>
+
+                {{-- <p style="font-size: 16px; color: #5E5E5E; line-height: 24px;">
                     {!! __('shop::app.mail.order.order_greeting', [
                         'order_id' => '<span style="color: rgb(26, 106, 233); font-weight: bold;">#' . ($order['increment_id'] ?? 'N/A') . '</span>',
                         'created_at' => core()->formatDate($order['created_at'] ?? now(), 'm/d/Y'),
 
                     ]) !!}
-                </p>
+                </p> --}}
             </div>
             </td>
         </tr>
@@ -313,6 +326,9 @@
                                             <th style="padding: 8px">
                                                 Qty
                                             </th>
+                                            <th style="padding: 8px">
+                                                Persons
+                                            </th>
                                         </tr>
                                     </thead>
 
@@ -373,6 +389,10 @@
                                                 padding:8px;">
                                                             {{ $item->qty_ordered ?? 0 }}
                                                     </td>
+                                                <td style="
+                                                padding:8px;">
+                                                            {{ $item->additional['persons'] ?? 'N/A' }}
+                                                    </td>
 
                                                 {{-- <td>
                                                     <span class="qty-row">
@@ -385,6 +405,16 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
+                            @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                            <strong>Instruction:</strong> Cutlery included
+                        @endif
                         </div>
                     </td>
                 </tr>

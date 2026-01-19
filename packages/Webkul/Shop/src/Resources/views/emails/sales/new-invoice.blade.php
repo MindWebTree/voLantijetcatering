@@ -24,13 +24,14 @@
         p {
             margin: 0;
             padding: 0;
-            font-family: arial;
+            font-family: 'Montserrat', arial;
             color: #444444;
         }
 
         /* Set the background color for the entire email */
         body {
             background-color: #fff;
+            font-family: 'Montserrat', arial;
         }
 
 
@@ -257,13 +258,13 @@
             </tr>
 
             <tr>
-                <td colspan="3" >
+                <td colspan="3" style="font-size: 14px;">
                     Order Date: {{ $order->created_at->format('m/d/Y') }}
                 </td>
             </tr>
 
             <tr>
-                <td colspan="3" style="padding-bottom:30px;">
+                <td colspan="3" style="font-size: 14px;padding-bottom:30px;">
                 Delivery Date & Time:
                 {{
                     ($order->delivery_date && $order->delivery_time)
@@ -382,10 +383,12 @@
                 <td colspan="1" style="padding: 15px;">
                     <p><strong>Payment Details</strong></p>
                     @if(!empty($transaction))
+                        <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
                         <p style="margin: 0;"><strong>Transaction Id: </strong>{{ $transaction->transaction_id }}</p>
                         <p style="margin: 0;"><strong>Method: </strong>Credit Card</p>
                         <p style="margin: 0;"><strong>Card: </strong>{{ $formattedAccountNumber }}</p>
                     @else
+                        <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
                         <p style="margin: 0;"><strong>Method: </strong>Quickbook</p>
                     @endif
                 </td>
@@ -423,6 +426,8 @@
                                             <th style="text-align: left;padding: 8px">
                                                 {{ __('shop::app.customer.account.order.view.product-name') }}</th>
                                             <th style="text-align: left;padding: 8px">{{ __('shop::app.customer.account.order.view.qty') }}
+                                            </th>
+                                            <th style="text-align: left;padding: 8px">Persons
                                             </th>
                                             <th style="text-align: left;padding: 8px">
                                                 Price
@@ -489,21 +494,16 @@
                                                 @if ($order->status === 'pending')
                                                     <td style="padding: 8px;">NA</td>
                                                 @else
-                                                    <td>{{ core()->formatBasePrice($item->price) }}
+                                                    <td>
                                                         <p style="margin: 0;padding: 8px;" class="qty-row">
-                                                            Qty:
                                                             {{ $item->qty_ordered }}
                                                         </p>
                                                     </td>
                                                 @endif
 
-                                                {{-- <td>
-                                                    <span class="qty-row">
-                                                        Qty:
-                                                        {{ $item->qty_ordered }}
-                                                    </span>
-
-                                                </td> --}}
+                                                <td>
+                                                    <p>{{ $item->additional['persons'] ?? 'N/A' }}</p>
+                                                </td>
                                                 @if ($order->status === 'pending')
                                                     <td>NA</td>
                                                 @else
@@ -527,6 +527,12 @@
         <tbody class="w-100">
             <tr style="vertical-align:text-top;display:flex;vertical-align:text-top;justify-content: space-around; line-break:anywhere">
                 <td style="width: 44%;">
+                    <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
+                        @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                        <strong>Instruction:</strong> Cutlery included
+                    @endif
+                    </div>
+                    
                     <div>
                     @php
                         use ACME\paymentProfile\Models\OrderNotes;
@@ -599,6 +605,20 @@
                         @endif
 
                         {{-- @endif --}}
+                    </p>
+
+                    <p style="margin-bottom: 10px; text-align: right">
+                        Fbo Fee :
+                        @if (isset($order->fbo_fee))
+                            <strong>{{ core()->formatBasePrice($order->fbo_fee) }}</strong>
+                        @endif
+                    </p>
+
+                    <p style="margin-bottom: 10px; text-align: right">
+                        Delivery Charge :
+                        @if (isset($order->tax_amount))
+                            <strong>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</strong>
+                        @endif
                     </p>
 
                     <p style="margin-bottom: 10px; text-align: right">

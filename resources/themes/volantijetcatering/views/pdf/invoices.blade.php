@@ -12,6 +12,14 @@ use Carbon\Carbon;
             margin: 220px 40px;
         }
 
+        body,
+        table,
+        td,
+        p {
+            font-family: 'Montserrat', arial;
+        }
+
+
         header {
             position: fixed;
             top: -240px;
@@ -550,7 +558,7 @@ use Carbon\Carbon;
    <table class="w-100" style="table-layout: fixed;"> 
      
         @foreach (OrderNotes::orderBy('id', 'desc')->where('order_id', $order->id)->limit(1)->get() as $comment)
-               <tr style="">
+            <tr style="">
                 @if ($comment->is_admin === 1)
                 <td class="p-2">Support</td>
                 <td class="p-2" style="word-break: break-word; overflow-wrap: break-word;">{{ $comment->notes }}</td>
@@ -566,7 +574,6 @@ use Carbon\Carbon;
 @endif
 
 
-       
         <div class="color-heading">
             <p class="red-heading">ORDER REQUEST</p>
         </div>
@@ -575,6 +582,7 @@ use Carbon\Carbon;
                 <th class="left">ITEM</th>
                 <th>NOTES</th>
                 <th>QTY</th>
+                <th>Persons</th>
                 <th>UNIT</th>
                 <th>UNIT COST</th>
                 <th>TOTAL COST</th>
@@ -604,7 +612,7 @@ use Carbon\Carbon;
                         // sandeep add new code 
                         if (isset($item->additional)) {
                         // $additional = json_decode($item->additional, true);
-                      
+                    
                         if (isset($item->additional['attributes'])) {
                             $attributes = $item->additional['attributes'];
 
@@ -654,6 +662,7 @@ use Carbon\Carbon;
                         </td>
                         <td>{{ $specialInstruction }}</td>
                         <td>{{ $item->qty_ordered }}</td>
+                        <td>{{ $item->additional['persons'] }}</td>
                         <td>Piece</td>
                         <td>{{ core()->formatBasePrice($item->price) }}</td>
                         <td>{{ core()->formatBasePrice($item->base_total - $item->base_discount_amount) }}
@@ -662,7 +671,19 @@ use Carbon\Carbon;
                     </tr>
                 @endforeach
 
+                <tr>
+                    <td style="width: 100%; min-width: 200px;">
+                        <div class="customer-notes" style=" min-width: 200px; width:100%; padding: 0px; margin:0; text-align: left; font-size: 15px;color: #c50606;">
+                            @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                            <strong>Instruction:</strong> Cutlery included
+                        @endif
+                        </div>
+                    </td>
+                </tr>
+
         </table>
+
+
         <div class="color-heading-light">
             <p class="">TOTAL COST</p>
         </div>
@@ -695,6 +716,17 @@ use Carbon\Carbon;
                 </td>
                 <td>{{ $order->order_currency_code }}</td>
             </tr>
+            <tr>
+                <td colspan="3">Fbo Fee</td>
+                <td>{{ core()->formatBasePrice($order->fbo_fee) }}</td>
+                <td>{{ $order->order_currency_code }}</td>
+            </tr>
+            <tr>
+                <td colspan="3">Delivery Charge</td>
+                <td>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</td>
+                <td>{{ $order->order_currency_code }}</td>
+            </tr>
+
             <tr>
                 <td colspan="3">Order Total</td>
                 <td>{{ core()->formatBasePrice($order->grand_total + (isset($agent->Handling_charges) ? $agent->Handling_charges : 0)) }}</td>

@@ -5753,7 +5753,7 @@ var render = function render() {
       staticClass: "pb-1"
     }, [_vm._v("\n                  Preference:\n                  "), _vm._l(item.additional.attributes, function (attribute) {
       return [attribute.option_label ? _c("span", [_vm._v("\n                      " + _vm._s(attribute.option_label) + "\n                    ")]) : _vm._e()];
-    })], 2) : _vm._e(), _vm._v(" "), item.additional.special_instruction !== undefined && item.additional.special_instruction !== "" ? _c("div", [_vm._v("Special Instruction "), _c("br"), _c("div", {
+    })], 2) : _vm._e(), _vm._v(" "), item.additional && item.additional.persons ? _c("div", [_c("div", [_c("strong", [_vm._v("Persons :")]), _vm._v("\n                  " + _vm._s(item.additional.persons) + "\n                ")])]) : _vm._e(), _vm._v(" "), item.additional.special_instruction !== undefined && item.additional.special_instruction !== "" ? _c("div", [_vm._v("Special Instruction "), _c("br"), _c("div", {
       staticStyle: {
         "background-color": "#f2f2f3",
         padding: "10px"
@@ -6545,22 +6545,10 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    "class": "quantity control-group mb-1 ".concat(_vm.hasError ? "has-error" : "")
+    "class": "quantity control-group align-items-center mb-1 ".concat(_vm.hasError ? "has-error" : "")
   }, [_c("div", {
     staticClass: "quantityButton"
-  }, [_c("div", {
-    staticClass: "input-group-prepend"
-  }, [_c("button", {
-    staticClass: "btn btn-minus",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: function click($event) {
-        return _vm.decreaseQty();
-      }
-    }
-  }, [_vm._v("\n      -\n    ")])]), _vm._v(" "), _c("input", {
+  }, [_vm._m(0), _vm._v(" "), _c("input", {
     directives: [{
       name: "validate",
       rawName: "v-validate",
@@ -6581,6 +6569,18 @@ var render = function render() {
       }
     }
   }), _vm._v(" "), _c("div", {
+    staticClass: "input-group-prepend quntity-button"
+  }, [_c("button", {
+    staticClass: "btn btn-minus",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.decreaseQty();
+      }
+    }
+  }, [_vm._v("\n      -\n    ")])]), _vm._v(" "), _c("div", {
     staticClass: "input-group-prepend"
   }, [_c("button", {
     staticClass: "btn btn-plus",
@@ -6596,7 +6596,19 @@ var render = function render() {
     staticClass: "control-error"
   }, [_vm._v("\n    " + _vm._s(_vm.errorMessage) + "\n  ")]) : _vm._e()]);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "person-icon-div"
+  }, [_c("img", {
+    staticClass: "person-icon mb-1",
+    attrs: {
+      src: "/themes/volantijetcatering/assets/images/quantity.png",
+      alt: "Person Icon"
+    }
+  })]);
+}];
 render._withStripped = true;
 
 

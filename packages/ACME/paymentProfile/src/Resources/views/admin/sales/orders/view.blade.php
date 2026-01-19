@@ -143,7 +143,7 @@
                                     <p class="m-0">Delivery Date: {{ date('m/d/Y', strtotime($order->delivery_date)) }}</p>
                                     <p>Delivery Time: {{ $order->delivery_time }}</p>
 
-                                   
+                                
 
 
                                 </div>
@@ -462,6 +462,26 @@
                                                 </div>
                                                 <span class="control-error" v-if="errors.has('packagingsection')" v-text="'The packaging section field is required'"></span>
                                             </div>
+
+                                        <div class="control-group col-sm-12 col-md-6 mb-3">
+                                                <label class="label-style">
+                                                    Cutlery
+                                                </label>
+
+                                                <div class="custom-dropdown">
+                                                    <select class="form-control form-control-lg" name="cutlery_option" id="include_cutlery">
+                                                        <option value="0" selected>No</option>
+
+                                                        <option value="1"
+                                                            {{ isset($order->include_cutlery) && $order->include_cutlery == 1 ? 'selected' : '' }}>
+                                                            Yes
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                        </div>
+
+
+
                                         </div>
                                         <h4 class="fs24 fw6 text-dark text-center">Delivery Time</h4>
                                         <div class="row">
@@ -469,16 +489,16 @@
                                                 <label for="tail number" class="required label-style">
                                                     {{ __('shop::app.fbo-detail.fbo-delivery-date') }}
                                                 </label>
-<input type="text"
-       class="form-control form-control-lg js-day-select"
-       value="{{ isset($formattedDate) ? $formattedDate : '' }}"
-       name="delivery_date"
-       readonly
-       v-validate="'required'">
+                                            <input type="text"
+                                                class="form-control form-control-lg js-day-select"
+                                                value="{{ isset($formattedDate) ? $formattedDate : '' }}"
+                                                name="delivery_date"
+                                                readonly
+                                                v-validate="'required'">
 
-<div class="delivery_select_date delivery_select">
-    <ul class="js-day-list"></ul>
-</div>
+                                            <div class="delivery_select_date delivery_select">
+                                                <ul class="js-day-list"></ul>
+                                            </div>
 
                                                 {{-- <span class="control-error" v-if="errors.has('delivery_date')"
                                                         v-text="errors.first('delivery_date')"></span> --}}
@@ -490,16 +510,16 @@
                                                 <label for="tail number" class="required label-style">
                                                     {{ __('shop::app.fbo-detail.fbo-delivery-time') }}
                                                 </label>
-<input type="text"
-       class="form-control form-control-lg js-time-select"
-       value="{{ $order->delivery_time }}"
-       name="delivery_time"
-       readonly
-       v-validate="'required'">
+                                                <input type="text"
+                                                    class="form-control form-control-lg js-time-select"
+                                                    value="{{ $order->delivery_time }}"
+                                                    name="delivery_time"
+                                                    readonly
+                                                    v-validate="'required'">
 
-<div class="delivery_select_time delivery_select">
-    <ul class="js-time-list"></ul>
-</div>
+                                                <div class="delivery_select_time delivery_select">
+                                                    <ul class="js-time-list"></ul>
+                                            </div>
                                                 <span class="fbo_add_error_time text-danger"></span>
                                                 {{-- <span class="control-error" v-if="errors.has('delivery_time')"
                                                         v-text="errors.first('delivery_time')"></span> --}}
@@ -1024,6 +1044,7 @@
                         <th>Special instructions</th>
                         <th>Price</th>
                         <th>Qty</th>
+                        <th>Persons</th>
                         <th>Sub Total</th>
                         @if ($order->status === 'pending' || $order->status === 'accepted')
                         <th>Action</th>
@@ -1036,6 +1057,7 @@
                         <th>Special instructions</th>
                         {{-- <th>Price</th> --}}
                         <th>Qty</th>
+                        <th>Persons</th>
                         {{-- <th>Sub Total</th> --}}
                         {{-- @if ($order->status === 'pending' || $order->status === 'accepted')
                                             <th>Action</th>
@@ -1230,9 +1252,16 @@
                                                     ({{ $optionLabel }})
                                                     @endif
                                                 </p>
-                                                <div class="group__input__field my-2">
+                                                <div class="group__input__field qty-changer my-2">
+                                                <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1">
                                                     <button class="border-0" id="editMinusBtn">-</button>
-                                                    <input type="number" class="text-center w-25 border-0 bg-light p-1" value="{{ $item->qty_ordered }}" id="editQuantityInput">
+                                                    <input type="number" class="person-input text-center w-25 border-0 bg-light p-1" value="{{ $item->additional['persons'] ?? '' }}" id="editQuantityInput">
+                                                    <button class="border-0" id="editPlusBtn">+</button>
+                                                </div>
+                                                <div class="group__input__field qty-changer my-2">
+                                                    <img src="{{ asset('themes/volantijetcatering/assets/images/quantity.png') }}" alt="Person Icon" class="person-icon mb-1">
+                                                    <button class="border-0" id="editMinusBtn">-</button>
+                                                    <input type="number" class="qty-input text-center w-25 border-0 bg-light p-1" value="{{ $item->qty_ordered }}" id="editQuantityInput">
                                                     <button class="border-0" id="editPlusBtn">+</button>
                                                 </div>
                                                 <div class="price">
@@ -1278,8 +1307,16 @@
                             <span class="qty-row">
                                 {{ $item->qty_ordered }}
                             </span>
-
                         </td>
+
+                        <td>
+                        @if(isset($item->additional['persons']))
+                            <span class="qty-row">
+                                {{ $item->additional['persons'] }}
+                            </span>
+                        @endif
+                        </td>
+
                         @if (auth('admin')->user()->role_id == 1)
                         {{-- sandeep comment code --}}
                         {{-- <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }} --}}
@@ -1325,8 +1362,15 @@
                         @endforeach
                     </tr>
             </table>
+
+            
         </div>
     </div>
+                                                <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px; text-align: left;">
+                                                @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                                                <strong>Instruction:</strong> Cutlery included
+                                            @endif
+                                            </div>
     @endif
     <div class="row view__action__button mt-4 d-flex justify-content-start ml-auto">
         @if (!$order->total_item_count < 1) @if ($order->status === 'pending')
@@ -1609,6 +1653,31 @@
                     <p class="col-5 tax">{{ core()->formatBasePrice(0) }}</p>
                     @endif
 
+                    <p class="col-7 tax_text">Fbo Fee</p>
+                    @if (isset($order->fbo_fee))
+                    <p class="col-5 tax gap-2">
+                        <span
+                            class="cursor-pointer product__edits"
+                            data-toggle="modal"
+                            data-target="#Fbo_fee_update"
+                            title="Edit FBO Fee"
+                        >
+                            <img
+                                src="/themes/volantijetcatering/assets/images/pencil.png"
+                                height="10px"
+                                alt="edit"
+                            >
+                        </span>
+
+                        {{ core()->formatBasePrice($order->fbo_fee) }}
+                    </p>
+                    @endif
+                    
+
+                    <p class="col-7 tax_text">Delivery Charge</p>
+                    @if (isset($order) && $order->sub_total != null)
+                    <p class="col-5 tax">{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</p>
+                    @endif
 
 
                     <p class="col-7 cart_text">Order Total</p>
@@ -1624,6 +1693,28 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade product__edit" id="Fbo_fee_update" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title product__modal__title" id="myModalLabel">
+                                    Update Fbo Fee
+                                </h5>
+
+                        <button id="order-fbo-fee" style="border: 0; background: transparent;color:#dc3545" type="button" class="">
+                            <span aria-hidden="true">update</span>
+                            <span class="btn-ring-modal"></span>
+                        </button>
+
+                </div>
+                <div class="modal-body d-flex" id="fbo_fee_body" data="{{ $order->id }}">
+                <input type="number" class="w-100 p-2" name="fbo_fee" id="fbo_fee" value="{{ isset($order->fbo_fee) ? $order->fbo_fee : '' }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
     @endif
 
@@ -2530,9 +2621,8 @@
 
             // Add click event listener to plus button
             jQuery('body').on('click', '#plusBtn', function() {
-
-                var parentContainer = $(this).parent().parent();
-                var quantityInput = parentContainer.find('#quantityInput');
+                let wrapper = $(this).closest('.add-qty-changer');
+                var quantityInput = wrapper.find('#quantityInput');
                 var currentValue = parseInt(quantityInput.val(), 10);
                 var newValue = currentValue + 1;
 
@@ -2542,8 +2632,8 @@
 
             // Add click event listener to minus button
             jQuery('body').on('click', '#minusBtn', function() {
-                var parentContainer = $(this).parent().parent();
-                var quantityInput = parentContainer.find('#quantityInput');
+                let wrapper = $(this).closest('.add-qty-changer');
+                var quantityInput = wrapper.find('#quantityInput');
                 var currentValue = parseInt(quantityInput.val(), 10);
                 if (currentValue > 1) {
                     var newValue = currentValue - 1;
@@ -2562,6 +2652,7 @@
             var integerLength = 0;
 
             jQuery('body').on('click', '#save', function() {
+                
                 var limitExceeded = false;
                 var limitExceededMessage = 'You have exceeded the available quantity for some products.';
                 var QuantityValue = false;
@@ -2573,12 +2664,15 @@
                     var optionsId = $(this).closest('.search_product_list').find(
                         '.options input:checked').attr('id');
                     var quantityInput = $(this).closest('.search_product_list').find(
-                        '#quantityInput');
+                        '.add-qty-input');
+                    var personInput = $(this).closest('.search_product_list').find(
+                        '.add-person-input');
                     var plusButton = $(this).closest('.row').find('.plusBtn');
                     var quantityLimitMessage = $(this).closest('.row').find(
                         '.quantity-limit-message');
                     var productQtyAvailable = $(this).closest('.row').find('#product_qty').val();
                     var quantityInputValue = parseInt(quantityInput.val(), 10) || 0;
+                    var personInputValue = parseInt(personInput.val(), 10) || 0;
 
                     var targetElement1 = $(this).closest('.search_product_list').find('.options');
 
@@ -2635,6 +2729,7 @@
             var obj = {
                 'product_id': checkboxId
                 , 'qty': quantityInputValue
+                , 'person': personInputValue
                 , 'price': productPrice
                 , 'option_id': optionsId
             , };
@@ -2732,6 +2827,39 @@
     });
 
 
+
+    // -----------------------------------------UPdate Fbo fee--------------------------------------------//
+
+        $('body').on('click', '#order-fbo-fee', function() {
+
+        var fbo_fee = $('#Fbo_fee_update').find('#fbo_fee').val();
+
+        $(this).prop('disabled', true);
+        $(this).html('<span class="btn-ring-modal"></span>');
+        $(".btn-ring-modal").show();
+        setTimeout(function() {
+            $(".btn-ring-modal").hide();
+            $(this).prop('disabled', false);
+        }, 20000);
+
+        $.ajax({
+            url: "{{ route('order-view.update-fbo-fee') }}"
+            , type: "POST"
+            , data: {
+                "_token": "{{ csrf_token() }}"
+                , "orderId": orderid
+                , "fbo_fee": fbo_fee,
+
+            }
+            , success: function() {
+                location.reload();
+            }
+
+        })
+    });
+
+
+
     // -----------------------------------------Notes--------------------------------------------//
 
 
@@ -2815,8 +2943,9 @@
     // Add click event listener to plus button
     jQuery('body').on('click', '#editPlusBtn', function() {
 
-        var parentContainer = $(this).parent().parent();
-        var quantityInput = parentContainer.find('#editQuantityInput');
+        // var parentContainer = $(this).parent().parent();
+        let wrapper = $(this).closest('.qty-changer');
+        var quantityInput = wrapper.find('#editQuantityInput');
         var currentValue = parseInt(quantityInput.val(), 10);
         var newValue = currentValue + 1;
         quantityInput.val(newValue);
@@ -2826,8 +2955,9 @@
 
     // Add click event listener to minus button
     jQuery('body').on('click', '#editMinusBtn', function() {
-        var parentContainer = $(this).parent().parent();
-        var quantityInput = parentContainer.find('#editQuantityInput');
+        let wrapper = $(this).closest('.qty-changer');
+        // var parentContainer = $(this).parent().parent();
+        var quantityInput = wrapper.find('#editQuantityInput');
         var currentValue = parseInt(quantityInput.val(), 10);
         if (currentValue > 1) {
             var newValue = currentValue - 1;
@@ -2849,7 +2979,8 @@
         var modalContent = $(this).closest('.modal-content');
         var inventoryQty = modalContent.find('#editHiddenInput').attr('totalQty');
         var oldQuantity = modalContent.find('#editHiddenInput').attr('quantity');
-        var quantity = modalContent.find('#editQuantityInput').val();
+        var quantity = modalContent.find('.qty-input').val();
+        var persons = modalContent.find('.person-input').val();
 
         console.log(oldQuantity, 'old')
         console.log(quantity, 'new')
@@ -2862,6 +2993,7 @@
         updateProductInfo.push({
             'productId': productId
             , 'quantity': quantity
+            , 'persons': persons
             , 'newQty': newQty
             , 'itemId': itemId
             , 'itemprice': itemprice
@@ -3097,7 +3229,7 @@ function parseCustomDate(dateString) {
 
     return new Date(year, month, day);
 }
-
++
 
     $('body').on('click', '.customer-add-new-card', function () {
         $('.order_view_pay_button').removeClass('pay_disable').css('cursor', 'not-allowed');

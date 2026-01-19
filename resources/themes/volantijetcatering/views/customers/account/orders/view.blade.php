@@ -214,6 +214,7 @@
                                                 <span class="fbo-tail-no fbo-data"> {{ $order->fbo_service_packaging }}</span>
                                             @endif
                                             <br>
+                                            <br>
                         
                                             @if (isset($order->delivery_date) && $order->delivery_date != '')
                                                 @php
@@ -395,6 +396,7 @@ $today = new DateTime('today');
                     <th class="order_view_heading">{{ __('shop::app.customer.account.order.view.product-name') }}</th>
                     <th class="order_view_heading">{{ __('shop::app.customer.account.order.view.price') }}</th>
                     <th class="order_view_heading">{{ __('shop::app.customer.account.order.view.qty') }}</th>
+                    <th class="order_view_heading">Persons</th>
                     <!-- <th>{{ __('shop::app.customer.account.order.view.subtotal') }}</th> -->
                     <!-- <th>{{ __('shop::app.customer.account.order.view.tax-amount') }}</th> -->
                     <th class="order_view_heading">{{ __('shop::app.customer.account.order.view.total') }}</th>
@@ -468,7 +470,7 @@ $today = new DateTime('today');
                                                 {{ core()->formatPrice($item->price, $order->order_currency_code) }}
                                             </div>
                                             @else
-                                              <span>N/A</span>
+                                            <span>N/A</span>
                                         @endif
                                     </td>
 
@@ -480,7 +482,14 @@ $today = new DateTime('today');
                                         </div>
 
                                     </td>
-
+                                    <td data-value="Persons"
+                                        class="order-price-col order_view_data" style="border-right: 1px solid #cccccc !important;">
+                                        <div class="order-qty">
+                                            @if(isset($item->additional['persons']))
+                                                {{ $item->additional['persons'] }}
+                                            @endif
+                                        </div>
+                                    </td>
 
                                     <td class="total-col text-right order_view_data"
                                         data-value="{{ __('shop::app.customer.account.order.view.grand-total') }}" style="border-right: 1px solid #cccccc !important;">
@@ -538,6 +547,14 @@ $today = new DateTime('today');
             </div>
 
             <div class="totals price-total-table mt-3">
+                
+                <div class="col-12 col-md-6 col-lg-6 py-3 text-left">
+                <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;">
+                        @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                        <strong>Instruction:</strong> Cutlery included
+                    @endif
+                    </div>
+
                 @if (isset($admin_notes) && $admin_notes !== null)
                     <div class="col-12 col-md-6 col-lg-6 order__view_admin_comments py-3">
                         <h3 class="text-start mt-2" style="text-align: left;">Notes</h3>
@@ -559,6 +576,8 @@ $today = new DateTime('today');
                         </div>
                     </div>
                 @endif
+                </div>
+
                 <div class="col-12 col-md-6 col-lg-6">
                     <table class="sale-summary ml-auto">
                         <tr>
@@ -610,7 +629,7 @@ $today = new DateTime('today');
                             @if ($order->status != 'pending')
                                 <td class="">Agent Handling:
                                     @if (isset($agent) && $agent->Handling_charges != null)
-                                   {{ core()->formatBasePrice($agent->Handling_charges) }}
+                                    {{ core()->formatBasePrice($agent->Handling_charges) }}
                                 @else
                                     {{ core()->formatBasePrice(0) }}
                                 @endif
@@ -623,6 +642,24 @@ $today = new DateTime('today');
 
                             {{-- <td></td> --}}
                         </tr>
+                        <tr>
+                            @if ($order->status != 'pending')
+                            <td colspan="3">Fbo Fee:
+                            {{ core()->formatBasePrice($order->fbo_fee) }}</td>
+                            @else
+                                <td>Fbo Fee: N/A</td>
+                            @endif
+
+                        </tr>
+                        <tr>
+                            @if ($order->status != 'pending')
+                            <td colspan="3">Delivery Charge
+                           {{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</td>
+                            @else
+                                <td>Delivery Charge: N/A</td>
+                            @endif
+                        </tr>
+
 
                         <tr class="fw6">
                             {{-- <td>{{ __('shop::app.customer.account.order.view.grand-total') }}

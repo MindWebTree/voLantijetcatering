@@ -9,13 +9,14 @@
         p {
             margin: 0;
             padding: 0;
-            font-family: arial;
+            font-family: 'Montserrat', arial;
             color: #444444;
         }
 
         /* Set the background color for the entire email */
         body {
             background-color: #fff;
+            font-family: 'Montserrat', arial;
         }
 
         /* Add some spacing around the content */

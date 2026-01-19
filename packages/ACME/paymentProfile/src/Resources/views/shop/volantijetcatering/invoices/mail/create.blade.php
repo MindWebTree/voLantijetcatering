@@ -3,7 +3,13 @@
     use Carbon\Carbon;
     use Illuminate\Support\Facades\Session;
     use Illuminate\Support\Facades\Auth;
+
     // dd($airport_fbo);
+    $transaction = $order->transactions->first();
+    $isPaid = DB::table('order_status_log')
+                ->where('order_id', $order->id)
+                ->where('status_id', 4)
+                ->exists();
 
 @endphp
 @push('css')
@@ -15,13 +21,14 @@
         p {
             margin: 0;
             padding: 0;
-            font-family: arial;
+            font-family: 'Montserrat', arial;
             color: #444444;
         }
 
         /* Set the background color for the entire email */
         body {
             background-color: #fff;
+            font-family: 'Montserrat', arial;
         }
 
 
@@ -183,7 +190,7 @@
                 Order No: <strong>{{ $order->increment_id }}</strong>
             </p>
 
-            @if (!(auth('admin')->check() && auth('admin')->user()->role_id === 1) && $order->status !== 'paid')
+    @if (!(auth('admin')->check() && auth('admin')->user()->role_id === 1) && $order->status !== 'paid' && $transaction === null)
     <p style="display: flex; gap:10px;align-items:center;">
             <a href="{{ route('order-invoice-view', ['orderid' => $order->id, 'customerid' => $order->customer_id]) }}"
                 style="
@@ -248,13 +255,13 @@
             </tr>
 
             <tr>
-                <td colspan="3" >
+                <td colspan="3" style="font-size: 14px;">
                     Order Date: {{ $order->created_at->format('m/d/Y') }}
                 </td>
             </tr>
 
             <tr>
-                 <td colspan="3" style="padding-bottom:30px;">
+                <td colspan="3" style="font-size: 14px;padding-bottom:30px;">
                 Delivery Date & Time:
                 {{
                     ($order->delivery_date && $order->delivery_time)
@@ -323,12 +330,65 @@
 
             <!-- Additional Notes -->
             <tr>
-                <td colspan="3" style="padding: 15px;">
+                <td colspan="2" style="padding: 15px;">
                     @if(!empty($order->fbo_additional_notes) || !empty($fboAdditionalNotes))
                         <p><strong>Additional Notes:</strong></p>
                         <p>{{ $order->fbo_additional_notes ?? $fboAdditionalNotes }}</p>
                     @endif
                 </td>
+
+            @php
+                if(!empty($transaction)){
+                    $transactionData = json_decode($transaction->data, true);
+
+                    $accountNumber = null;
+                    $accountType   = null;
+
+                    if (is_array($transactionData) && count($transactionData) === 2) {
+                        $keys   = $transactionData[0];
+                        $values = $transactionData[1];
+
+                        $accountNumberIndex = array_search('accountNumber', $keys);
+                        $accountTypeIndex   = array_search('accountType', $keys);
+
+                        if ($accountNumberIndex !== false) {
+                            $accountNumber = $values[$accountNumberIndex] ?? null;
+                        }
+
+                        if ($accountTypeIndex !== false) {
+                            $accountType = $values[$accountTypeIndex] ?? null;
+                        }
+                    }
+
+                    // Last 4 digits
+                    $lastFour = $accountNumber ? substr($accountNumber, -4) : null;
+
+                    // Account type fallback
+                    $displayAccountType = !empty($accountType) ? $accountType : 'XXXX';
+
+                    // Final formatted value
+                    $formattedAccountNumber = $lastFour
+                        ? $displayAccountType . '****' . $lastFour
+                        : 'N/A';
+                }
+                @endphp            
+
+
+                @if($isPaid)
+                <td colspan="1" style="padding: 15px;">
+                    <p><strong>Payment Details</strong></p>
+                    @if(!empty($transaction))
+                        <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
+                        <p style="margin: 0;"><strong>Transaction Id: </strong>{{ $transaction->transaction_id }}</p>
+                        <p style="margin: 0;"><strong>Method: </strong>Credit Card</p>
+                        <p style="margin: 0;"><strong>Card: </strong>{{ $formattedAccountNumber }}</p>
+                    @else
+                        <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
+                        <p style="margin: 0;"><strong>Method: </strong>Quickbook</p>
+                    @endif
+                </td>
+
+                @endif
             </tr>
 
         </table>
@@ -362,6 +422,8 @@
                                                 {{ __('shop::app.customer.account.order.view.product-name') }}</th>
                                             <th style="text-align: left;padding: 8px">{{ __('shop::app.customer.account.order.view.qty') }}
                                             </th>
+                                            <th style="text-align: left;padding: 8px">Persons
+                                            </th>
                                             <th style="text-align: left;padding: 8px">
                                                 Price
                                             </th>
@@ -390,7 +452,7 @@
                                                     $specialInstruction = $item->additional['special_instruction'];
                                                 }
 
-                                                $notes = DB::table('order_items')
+                                            $notes = DB::table('order_items')
                                                     ->where('id', $item->id)
                                                     ->where('order_id', $order->increment_id)
                                                     ->value('additional_notes');
@@ -427,13 +489,15 @@
                                                 @if ($order->status === 'pending')
                                                     <td style="padding: 8px;">NA</td>
                                                 @else
-                                                    <td>{{ core()->formatBasePrice($item->price) }}
+                                                    <td>
                                                         <p style="margin: 0;padding: 8px;" class="qty-row">
-                                                            Qty:
                                                             {{ $item->qty_ordered }}
                                                         </p>
                                                     </td>
                                                 @endif
+                                                <td style="padding: 8px;">
+                                                    {{ $item->additional['persons'] ?? 'N/A' }}
+                                                </td>
 
                                                 {{-- <td>
                                                     <span class="qty-row">
@@ -465,6 +529,12 @@
         <tbody class="w-100">
             <tr style="vertical-align:text-top;display:flex;vertical-align:text-top;justify-content: space-around; line-break:anywhere">
                 <td style="width: 44%;">
+                    <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
+                        @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                        <strong>Instruction:</strong> Cutlery included
+                    @endif
+                    </div>
+
                     <div>
                     @php
                         use ACME\paymentProfile\Models\OrderNotes;
@@ -500,7 +570,9 @@
                     @endif
 
                     </div>
+
                 </td>
+
                 <td style="width: 56%;">
                     <p style="margin-bottom: 10px; text-align: right">
                         SubTotal :
@@ -532,6 +604,30 @@
 
                         @if (isset($agent))
                             <strong>{{ core()->formatBasePrice($agent->Handling_charges) }}</strong>
+                        @else
+                            <strong>{{ core()->formatBasePrice(0) }}</strong>
+                        @endif
+
+                        {{-- @endif --}}
+                    </p>
+
+                    <p style="margin-bottom: 10px; text-align: right">
+                        Fbo Fee :
+
+                        @if (isset($order))
+                            <strong>{{ core()->formatBasePrice($order->fbo_fee) }}</strong>
+                        @else
+                            <strong>{{ core()->formatBasePrice(0) }}</strong>
+                        @endif
+
+                        {{-- @endif --}}
+                    </p>
+
+                    <p style="margin-bottom: 10px; text-align: right">
+                        Delivery Charge :
+
+                        @if (isset($order))
+                            <strong>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</strong>
                         @else
                             <strong>{{ core()->formatBasePrice(0) }}</strong>
                         @endif

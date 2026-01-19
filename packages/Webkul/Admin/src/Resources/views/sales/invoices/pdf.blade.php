@@ -54,7 +54,7 @@
         }
 
         body {
-            font-family: DejaVu Sans, Arial, sans-serif;
+            font-family: 'Montserrat', DejaVu Sans, Arial, sans-serif;
             color: #444444;
             font-size: 12px;
             line-height: 1.4;
@@ -459,10 +459,12 @@
                         <td style="width: {{ !empty($order->cart->fbo_additional_notes) ? '35%' : '100%' }};">
                             <h4>Payment Details</h4>
                             @if(!empty($transaction))
+                                <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
                                 <p><strong>Transaction Id:</strong> {{ $transaction->transaction_id }}</p>
                                 <p><strong>Method:</strong> Credit Card</p>
                                 <p><strong>Card:</strong> {{ $formattedAccountNumber }}</p>
                             @else
+                                <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
                                 <p><strong>Method:</strong> Quickbook</p>
                             @endif
                         </td>
@@ -474,6 +476,7 @@
         </div>
 
         <!-- Products Section -->
+        
         <div class="products-section">
             <table class="products-table">
                 <thead>
@@ -481,6 +484,7 @@
                         <th style="width: 15%;">Notes</th>
                         <th style="width: 45%;">Name</th>
                         <th style="width: 15%;">Qty</th>
+                        <th style="width: 15%;">Persons</th>
                         <th style="width: 25%;">Price</th>
                     </tr>
                 </thead>
@@ -532,6 +536,9 @@
                                 @endif
                             </td>
                             <td>
+                                {{ $item->additional['persons'] ?? 'N/A' }}
+                            </td>
+                            <td>
                                 @if ($order->status === 'pending')
                                     NA
                                 @else
@@ -544,12 +551,20 @@
             </table>
         </div>
 
+
+
         <!-- Footer: Order Notes and Totals -->
         <div class="footer-section">
             <table class="footer-table">
                 <tr>
                     <!-- Order Notes -->
                     <td class="order-notes-column">
+                        <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
+                            @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                            <strong>Instruction:</strong> Cutlery included
+                        @endif
+                        </div>
+                        
                         @if ($comments->count() > 0)
                             <h4>ORDER NOTES:</h4>
                             <ul class="comment-list">
@@ -573,6 +588,8 @@
                             <p>SubTotal: <strong>NA</strong></p>
                             <p>Tax: <strong>NA</strong></p>
                             <p>Agent Handler: <strong>NA</strong></p>
+                            <p>Fbo Fee: <strong>NA</strong></p>
+                            <p>Delivery Charge: <strong>NA</strong></p>
                             <p style="font-size: 15px; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">
                                 <strong>Order Total:</strong> <strong>NA</strong>
                             </p>
@@ -593,6 +610,10 @@
                                     @endif
                                 </strong>
                             </p>
+
+                            <p>Fbo Fee: <strong>{{ core()->formatBasePrice($order->fbo_fee) }}</strong></p>
+                            <p>Delivery Charge: <strong>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</strong></p>
+
 
                             <p style="font-size: 15px; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">
                                 <strong>Order Total:</strong>

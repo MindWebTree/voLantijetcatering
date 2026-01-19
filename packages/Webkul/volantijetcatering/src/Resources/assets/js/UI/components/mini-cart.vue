@@ -88,6 +88,17 @@
                     </template>
                   </div>
 
+                <div
+                  v-if="
+                    item.additional &&
+                    item.additional.persons
+                  "
+                >
+                  <div >
+                  <strong>Persons :</strong>
+                    {{ item.additional.persons }}
+                  </div>
+                </div>
                   <div
                     v-if="
                       item.additional.special_instruction !== undefined &&

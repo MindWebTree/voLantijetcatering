@@ -1,5 +1,5 @@
 <template>
-  <div :class="`quantity control-group mb-1 ${hasError ? 'has-error' : ''}`">
+  <div :class="`quantity control-group align-items-center mb-1 ${hasError ? 'has-error' : ''}`">
     <!-- <label
             class="required"
             for="quantity-changer"
@@ -7,12 +7,11 @@
         ></label>-->
 
     <div class="quantityButton">
-      <div class="input-group-prepend">
-      <button type="button" class="btn btn-minus" @click="decreaseQty()">
-        <!-- <img src="/themes/volantijetcatering/assets/images/remove.png"/> -->
-        -
-      </button>
-    </div>
+      <div class="person-icon-div">
+        <img src="/themes/volantijetcatering/assets/images/quantity.png"
+        alt="Person Icon"
+        class="person-icon mb-1">
+      </div>
 
       <input
         ref="quantityChanger"
@@ -25,6 +24,12 @@
         @keyup="setQty($event)"
       />
 
+      <div class="input-group-prepend quntity-button">
+      <button type="button" class="btn btn-minus" @click="decreaseQty()">
+        <!-- <img src="/themes/volantijetcatering/assets/images/remove.png"/> -->
+        -
+      </button>
+    </div>
       <div class="input-group-prepend">
       <button type="button" class="btn btn-plus" @click="increaseQty()">
         <!-- <img src="/themes/volantijetcatering/assets/images/add.png"/> -->

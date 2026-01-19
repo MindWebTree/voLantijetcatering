@@ -1,6 +1,6 @@
 @php
     $cards = collect();
-    if (auth()->guard('customer')->check() || session()->has('token') ) {
+    if ((auth()->guard('customer')->check() || session()->has('token')) && !auth()->guard('admin')->check()) {
         $customer_id = null;
         if (auth()->guard('customer')->check()) {
             $customer_id = auth()->guard('customer')->user()->id;

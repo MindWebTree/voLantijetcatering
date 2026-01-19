@@ -315,6 +315,8 @@
 
                                 <th>{{ __('admin::app.sales.shipments.qty-to-ship') }}</th>
 
+                                <th>Persons</th>
+
                                 <th>{{ __('admin::app.sales.shipments.available-sources') }}</th>
                             </tr>
                         </thead>
@@ -343,13 +345,16 @@
                                                 </div>
                                             @endif
                                         </td>
-
                                         <td>{{ $item->qty_ordered }}</td>
 
                                         <td>{{ $item->qty_invoiced }}</td>
 
                                         <td>{{ $item->qty_to_ship }}</td>
 
+                                        <td>
+                                            @if(isset($item->additional['persons']))
+                                                {{ $item->additional['persons'] }}
+                                            @endif</td>
                                         <td>
                                             <table>
                                                 <thead>

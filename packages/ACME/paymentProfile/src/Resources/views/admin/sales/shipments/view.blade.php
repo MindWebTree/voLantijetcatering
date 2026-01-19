@@ -321,6 +321,7 @@
                                                         <th>Special instructions</th>
                                                         <th>Price</th>
                                                         <th>Qty</th>
+                                                        <th>Persons</th>
                                                         <th>Sub Total</th>
                                                         @if ($order->status === 'pending' || $order->status === 'accepted')
                                                             <th>Action</th>
@@ -332,6 +333,7 @@
                                                         <th>Product</th>
                                                         <th>Special instructions</th>
                                                         <th>Qty</th>
+                                                        <th>Persons</th>
                                                     </tr>
                                                 @endif
 
@@ -616,7 +618,14 @@
                                                             <span class="qty-row">
                                                                 {{ $item->qty_ordered }}
                                                             </span>
-
+                                                        </td>
+                                                        <td>
+                                                            <span class="qty-row">
+                                                                @if(isset($item->additional['persons']))
+                                                                    {{ $item->additional['persons'] ?? '' }}
+                                                                @endif
+                                                            
+                                                            </span>
                                                         </td>
                                                         @if (auth('admin')->user()->role_id == 1)
                                                             <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}
@@ -629,6 +638,11 @@
                                 </div>
                             @endif
                         </section>
+                        <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606; text-align: left;">
+                                @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
+                                    <strong>Instruction:</strong> Cutlery included
+                                @endif
+                        </div>
                     </div>
                 </accordian>
 

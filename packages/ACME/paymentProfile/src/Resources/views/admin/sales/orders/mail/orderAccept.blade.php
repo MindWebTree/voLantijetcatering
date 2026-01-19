@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Montserrat', 'Arial', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
@@ -73,13 +73,17 @@
         </div>
         {{-- <h3>Order Accepted</h3> --}}
         <p>Dear {{ $order->customer_first_name !== '' ? $order->customer_first_name : $order->fbo_full_name }},</p>
-        <p>Thank you for placing an order with <span class="text-info"><a
+        {{-- <p>Thank you for placing an order with <span class="text-info"><a
                     href="{{ route('shop.home.index') }}">Volantijet Catering</a></span>. We are pleased to inform you
             that your order <strong>#{{ $order->increment_id }}</strong>, placed on
             <strong>{{ date('m/d/Y', strtotime($order->created_at)) }}</strong>, has been
             <strong>accepted</strong>.</p>
 
-        <p>Your order is now being prepared. We will notify you once it is ready for delivery or pickup.</p>
+        <p>Your order is now being prepared. We will notify you once it is ready for delivery or pickup.</p> --}}
+
+        <p>Your order request <strong>#{{ $order->increment_id }}</strong> has been approved!</p>
+        <p>Enjoy your flight!</p>
+
 
         {{-- <p>Status: <span class="status">{{ $order->status }}</span></p> --}}
     </div>

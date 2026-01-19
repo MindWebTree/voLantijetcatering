@@ -182,7 +182,7 @@ class Helper
         // Create the controller and get the response
         $controller = new AnetController\CreateCustomerProfileController($request);
         log::info('controller', ['controller' => $controller]);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
         // dd($response);
         log::info('response', ['response' => $response]);
 
@@ -460,7 +460,7 @@ class Helper
             // $request->setRefId($this->refId);
             // $request->setTransactionRequest($transactionRequestType);
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             $profileToCharge = new AnetAPI\CustomerProfilePaymentType();
             $profileToCharge->setCustomerProfileId($decodeUpdatedToken->customerResponse->customerProfileId);
@@ -478,7 +478,7 @@ class Helper
             $request->setRefId($this->refId);
             $request->setTransactionRequest($transactionRequestType);
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             Log::info('Request:', ['response' => json_encode($response)]);
             $transactionResponse = $response->getTransactionResponse();
@@ -637,7 +637,7 @@ log::info("transaction_details",['transactionId'=>$transactionId, 'accountNumber
 
             // // Create the controller and get the response
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             // return $response;
             $order_id = request()->input('order_id');
@@ -733,7 +733,7 @@ log::info("transaction_details",['transactionId'=>$transactionId, 'accountNumber
             Log::info('Response123:', ['response' => json_encode($request)]);
             // Create the controller and get the response
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
             log::info('response',['response'=>$response]);
 
@@ -880,7 +880,7 @@ log::info("transaction_details22222",['transactionId'=>$transactionId, 'accountN
     //     $request->setRefId($this->refId);
     //     $request->setTransactionRequest($transactionRequestType);
     //     $controller = new AnetController\CreateTransactionController($request);
-    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
     //     return $response;
     // }

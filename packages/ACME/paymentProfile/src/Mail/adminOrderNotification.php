@@ -37,13 +37,13 @@ class adminOrderNotification extends Mailable
     public function build()
     {
         log::info('Admin order email BUILD successful', [
-       
+    
         'notes'    => $this->fboAdditionalNotes
     ]);
 
         $increment_id = $this->order['increment_id'];
         log::info('admin page');
-        return $this->subject(trans('shop::app.mail.order.subject'). ' #' . $increment_id)->view('mail.admin-order-notify');
+        return $this->subject('New Order Received #' . $increment_id)->view('mail.admin-order-notify');
 
     }
     
