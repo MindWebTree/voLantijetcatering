@@ -197,8 +197,16 @@
                     {{-- <label class="person-label p-0">Persons</label> --}}
                     <div class="quantityButton">
                     <div class="person-icon-div">
-                    <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1">
+                        PAX
+                    {{-- <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1"> --}}
                     </div>
+
+                        <div class="input-group-prepend quntity-button">
+                            <button type="button" class="btn btn-minus person-minus">
+                                -
+                            </button>
+                        </div>
+
                         <input
                             type="text"
                             name="persons"
@@ -206,11 +214,7 @@
                             id="person-changer"
                             class="QuantityInputButton person-input"
                         >
-                        <div class="input-group-prepend quntity-button">
-                            <button type="button" class="btn btn-minus person-minus">
-                                -
-                            </button>
-                        </div>
+
                         <div class="input-group-prepend">
                             <button type="button" class="btn btn-plus person-plus">
                                 +
@@ -273,8 +277,15 @@
                                             {{-- <label class="person-label p-0">Persons</label> --}}
                                             <div class="quantityButton">
                                             <div class="person-icon-div">
-                                            <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1">
+                                                PAX
+                                            {{-- <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1"> --}}
                                             </div>
+                                                <div class="input-group-prepend quntity-button">
+                                                    <button type="button" class="btn btn-minus person-minus">
+                                                        -
+                                                    </button>
+                                                </div>
+
                                                 <input
                                                     type="text"
                                                     name="persons"
@@ -282,11 +293,7 @@
                                                     id="person-changer"
                                                     class="QuantityInputButton person-input"
                                                 >
-                                                <div class="input-group-prepend quntity-button">
-                                                    <button type="button" class="btn btn-minus person-minus">
-                                                        -
-                                                    </button>
-                                                </div>
+
                                                 <div class="input-group-prepend">
                                                     <button type="button" class="btn btn-plus person-plus">
                                                         +

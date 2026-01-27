@@ -97,6 +97,24 @@
 
     $dateOfBirth = $customer->date_of_birth ?? null;
 
+
+    $status_log = DB::table('order_status_log as sl')
+        ->leftJoin('admins', 'sl.user_id', '=', 'admins.id')
+        ->leftJoin('order_status as os', 'sl.status_id', '=', 'os.id')
+        ->leftJoin('customers', 'sl.user_id', '=', 'customers.id')
+        ->where('sl.order_id', $order->id)
+        ->select(
+            'sl.order_id',
+            'sl.is_admin',
+            'admins.name',
+            'sl.email',
+            'sl.created_at',
+            'os.status',
+            'customers.first_name',
+            )
+        ->get();
+
+
     @endphp
 
     <div class="page-header order_view_header">
@@ -1104,6 +1122,8 @@
                     ->where('order_id', $order->increment_id)
                     ->value('additional_notes');
 
+                    $paidExists = $status_log->contains('status', 'paid');
+
                     @endphp
 
                     <tr class="order_view_table_body">
@@ -1121,7 +1141,7 @@
                             <p class="m-0 display__notes">{!! nl2br(e($notes)) !!}</p>
                             @endif
 
-                            @if ($order->status === 'pending' || $order->status === 'accepted')
+                            @if (!$paidExists)
                             @if (isset($notes))
                             <p class="m-0 add__note mt-2" data-toggle="modal" data-target="#updateNote{{ $item->id }}">edit
                                 Order
@@ -1253,13 +1273,15 @@
                                                     @endif
                                                 </p>
                                                 <div class="group__input__field qty-changer my-2">
-                                                <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1">
+                                                PAX
+                                                {{-- <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1"> --}}
                                                     <button class="border-0" id="editMinusBtn">-</button>
                                                     <input type="number" class="person-input text-center w-25 border-0 bg-light p-1" value="{{ $item->additional['persons'] ?? '' }}" id="editQuantityInput">
                                                     <button class="border-0" id="editPlusBtn">+</button>
                                                 </div>
                                                 <div class="group__input__field qty-changer my-2">
-                                                    <img src="{{ asset('themes/volantijetcatering/assets/images/quantity.png') }}" alt="Person Icon" class="person-icon mb-1">
+                                                    QTY
+                                                    {{-- <img src="{{ asset('themes/volantijetcatering/assets/images/quantity.png') }}" alt="Person Icon" class="person-icon mb-1"> --}}
                                                     <button class="border-0" id="editMinusBtn">-</button>
                                                     <input type="number" class="qty-input text-center w-25 border-0 bg-light p-1" value="{{ $item->qty_ordered }}" id="editQuantityInput">
                                                     <button class="border-0" id="editPlusBtn">+</button>
@@ -1448,23 +1470,6 @@
                     </tr>
                 </thead>
                 <tbody class="table__body">
-                    @php
-                    $status_log = DB::table('order_status_log as sl')
-                    ->leftJoin('admins', 'sl.user_id', '=', 'admins.id')
-                    ->leftJoin('order_status as os', 'sl.status_id', '=', 'os.id')
-                    ->leftJoin('customers', 'sl.user_id', '=', 'customers.id')
-                    ->where('sl.order_id', $order->id)
-                    ->select(
-                    'sl.order_id',
-                    'sl.is_admin',
-                    'admins.name',
-                    'sl.email',
-                    'sl.created_at',
-                    'os.status',
-                    'customers.first_name',
-                    )
-                    ->get();
-                    @endphp
                     @foreach ($status_log as $status)
                     <tr>
                         <td>{{ $status->order_id }}</td>
@@ -1519,7 +1524,7 @@
     {{-- sandeep add code  after piad not show order cancel button--}}
     @if (auth('admin')->user()->role_id == 1)
     @php
-    $paidExists = $status_log->contains('status', 'paid');
+    // $paidExists = $status_log->contains('status', 'paid');
     $excludedStatuses = ['pending', 'canceled', 'rejected'];
     if ($paidExists) {
     $excludedStatuses[] = 'paid';

@@ -200,11 +200,63 @@ null,
 
                         {{-- sandeep delete div --}}
                         {{-- <div class="centered-word center-heading">  --}}
-                            <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>   
+                            <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
+
+
+                    
+                        <p class="note-text">
+                        When adding items, please enter the total number of passengers and the total number of trays.
+
+                        <span class="tooltip-wrapper">
+                            <span class="info-icon">i</span>
+
+                            <div class="custom-tooltip final-tooltip">
+                            <div class="tooltip-block">
+
+                                <div class="tooltip-row">
+                                <div class="tooltip-text">
+                                    If you want <strong>1 tray</strong> for <strong>2 people</strong>, enter:<br>
+                                    Passengers: 2<br>
+                                    Trays: 1
+                                </div>
+
+                                <img 
+                                    src="{{ asset('themes/volantijetcatering/assets/images/pax-qty-image2.svg') }}" 
+                                    alt="Qty Controls"
+                                    class="qty-img"
+                                >
+                                </div>
+
+                                <div class="tooltip-row">
+                                <div class="tooltip-text">
+                                    If you want <strong>3 trays</strong> for <strong>4 people each</strong>, enter:<br>
+                                    Passengers: 12<br>
+                                    Trays: 3
+                                </div>
+
+                                <img 
+                                    src="{{ asset('themes/volantijetcatering/assets/images/pax-qty-image.svg') }}" 
+                                    alt="Qty Controls"
+                                    class="qty-img"
+                                >
+                                </div>
+
+                            </div>
+                            </div>
+                        </span>
+                        </p>
+
+
+
+
+
+
+
+
                         {{-- </div> --}}
                         
                         <div class="container listing-title-section breakfast-image-1 custom-image-background d-none" id="{{$category->slug}}">
-                           {{-- sandeep delete image --}}
+                            {{-- sandeep delete image --}}
                             {{-- <img src="{{ asset('themes/velocity/assets/images/Food-Icon.png') }}" class="left-image"> --}}
         
             
@@ -417,6 +469,49 @@ null,
                         {{-- sandeep add search code --}}
                         <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
                         
+                          <p class="note-text">
+                        When adding items, please enter the total number of passengers and the total number of trays.
+
+                        <span class="tooltip-wrapper">
+                            <span class="info-icon">i</span>
+
+                            <div class="custom-tooltip final-tooltip">
+                            <div class="tooltip-block">
+
+                                <div class="tooltip-row">
+                                <div class="tooltip-text">
+                                    If you want <strong>1 tray</strong> for <strong>2 people</strong>, enter:<br>
+                                    Passengers: 2<br>
+                                    Trays: 1
+                                </div>
+
+                                <img 
+                                    src="{{ asset('themes/volantijetcatering/assets/images/pax-qty-image2.svg') }}" 
+                                    alt="Qty Controls"
+                                    class="qty-img"
+                                >
+                                </div>
+
+                                <div class="tooltip-row">
+                                <div class="tooltip-text">
+                                    If you want <strong>3 trays</strong> for <strong>4 people each</strong>, enter:<br>
+                                    Passengers: 12<br>
+                                    Trays: 3
+                                </div>
+
+                                <img 
+                                    src="{{ asset('themes/volantijetcatering/assets/images/pax-qty-image.svg') }}" 
+                                    alt="Qty Controls"
+                                    class="qty-img"
+                                >
+                                </div>
+
+                            </div>
+                            </div>
+                        </span>
+                        </p>
+
+
                         {{-- <div class="search-product">
                             <input id="tnb-google-search-input" class="search_product" type="text" placeholder="Search for dishes" name = "product_search">
                         </div> --}}
@@ -486,13 +581,14 @@ null,
 
 @endpush
 <style>
-  .hidden-div { display: none !important; }
+.hidden-div { display: none !important; }
 .visible-div { display: block !important; }
 
 
 </style>
 
 @push('scripts')
+
 <script>
 Vue.component('category-component', {
     template: '#category-template',
@@ -554,4 +650,5 @@ Vue.component('category-component', {
     },
 });
 </script>
+
 @endpush

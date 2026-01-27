@@ -143,6 +143,15 @@
 
     $(document).ready(function () {
 
+        $(document).on("mouseenter", ".tooltip-wrapper", function () {
+            $(this).find(".custom-tooltip").fadeIn(150);
+        });
+
+        $(document).on("mouseleave", ".tooltip-wrapper", function () {
+        $(this).find(".custom-tooltip").fadeOut(150);
+        });
+
+
         
         $('body').on('click', '.person-plus', function () {
             let $input = $(this).closest('.person-selector').find('.person-input');

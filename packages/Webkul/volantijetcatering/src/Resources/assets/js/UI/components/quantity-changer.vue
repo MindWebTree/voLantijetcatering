@@ -8,10 +8,18 @@
 
     <div class="quantityButton">
       <div class="person-icon-div">
-        <img src="/themes/volantijetcatering/assets/images/quantity.png"
+        QTY
+        <!-- <img src="/themes/volantijetcatering/assets/images/quantity.png"
         alt="Person Icon"
-        class="person-icon mb-1">
+        class="person-icon mb-1"> -->
       </div>
+
+    <div class="input-group-prepend quntity-button">
+      <button type="button" class="btn btn-minus" @click="decreaseQty()">
+        <!-- <img src="/themes/volantijetcatering/assets/images/remove.png"/> -->
+        -
+      </button>
+    </div>
 
       <input
         ref="quantityChanger"
@@ -24,12 +32,7 @@
         @keyup="setQty($event)"
       />
 
-      <div class="input-group-prepend quntity-button">
-      <button type="button" class="btn btn-minus" @click="decreaseQty()">
-        <!-- <img src="/themes/volantijetcatering/assets/images/remove.png"/> -->
-        -
-      </button>
-    </div>
+
       <div class="input-group-prepend">
       <button type="button" class="btn btn-plus" @click="increaseQty()">
         <!-- <img src="/themes/volantijetcatering/assets/images/add.png"/> -->

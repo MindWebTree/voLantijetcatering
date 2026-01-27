@@ -221,8 +221,50 @@ if (Auth::check()) {
 
             @endif
                     {{-- @endif --}}
-                    
+                      <p class="note-text pl-4 pr-4 pl-lg-3 pr-lg-3">
+                        When adding items, please enter the total number of passengers and the total number of trays.
+
+                        <span class="tooltip-wrapper">
+                            <span class="info-icon">i</span>
+
+                            <div class="custom-tooltip final-tooltip">
+                            <div class="tooltip-block">
+
+                                <div class="tooltip-row">
+                                <div class="tooltip-text">
+                                    If you want <strong>1 tray</strong> for <strong>2 people</strong>, enter:<br>
+                                    Passengers: 2<br>
+                                    Trays: 1
+                                </div>
+
+                                <img 
+                                    src="{{ asset('themes/volantijetcatering/assets/images/pax-qty-image2.svg') }}" 
+                                    alt="Qty Controls"
+                                    class="qty-img"
+                                >
+                                </div>
+
+                                <div class="tooltip-row">
+                                <div class="tooltip-text">
+                                    If you want <strong>3 trays</strong> for <strong>4 people each</strong>, enter:<br>
+                                    Passengers: 12<br>
+                                    Trays: 3
+                                </div>
+
+                                <img 
+                                    src="{{ asset('themes/volantijetcatering/assets/images/pax-qty-image.svg') }}" 
+                                    alt="Qty Controls"
+                                    class="qty-img"
+                                >
+                                </div>
+
+                            </div>
+                            </div>
+                        </span>
+                        </p>
+
                     <div id="search-item-list" class="search-item col-12">
+
                          
                     @foreach ($results as $productFlat)
                         @if ($toolbarHelper->getCurrentMode() == 'grid')
