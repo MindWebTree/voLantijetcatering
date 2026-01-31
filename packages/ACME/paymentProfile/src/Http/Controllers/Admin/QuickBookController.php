@@ -178,8 +178,8 @@ public function checkInvoiceStatus(Request $request)
                                         DB::table('order_status_log')->insert([
                                             'order_id' => $order->id,
                                             'status_id' => $statusId,
-                                            'user_id' => '1',
-                                            'is_admin' => '1',
+                                            'user_id' => '0',
+                                            'is_admin' => '0',  
                                             'email' => $order->customer_email ?? $order->fbo_email_address,
                                             'created_at' => now(),
                                             'updated_at' => now(),
@@ -209,7 +209,7 @@ public function checkInvoiceStatus(Request $request)
                                         'status' => $status,
                                     ]);
 
-                                      $existingStatusLog = DB::table('order_status_log')
+                                    $existingStatusLog = DB::table('order_status_log')
                                         ->where('order_id', $order->id)
                                         ->where('status_id', $statusId)
                                         ->first();
@@ -219,8 +219,8 @@ public function checkInvoiceStatus(Request $request)
                                         DB::table('order_status_log')->insert([
                                             'order_id' => $order->id,
                                             'status_id' => $statusId,
-                                            'user_id' => '1',
-                                            'is_admin' => '1',
+                                            'user_id' => '0',
+                                            'is_admin' => '0',  
                                             'email' => $order->customer_email ?? $order->fbo_email_address,
                                             'created_at' => now(),
                                             'updated_at' => now(),

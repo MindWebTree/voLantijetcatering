@@ -1472,7 +1472,6 @@
                 </thead>
                 <tbody class="table__body">
                     @foreach ($status_log as $status)
-            @dd($status)
                     <tr>
                         <td>{{ $status->order_id }}</td>
                         <td>
