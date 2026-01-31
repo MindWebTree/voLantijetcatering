@@ -1476,10 +1476,14 @@
                         <td>{{ $status->order_id }}</td>
                         <td>
 
+                            @if ($status->user_id == 0 && $status->is_admin == 0)
+                                Quickbook
+                            @else
                             @if ($status->name === null && $status->is_admin === 0)
                             {{ $status->first_name === '' ? $order->fbo_full_name : $status->first_name }}
                             @else
                             {{ $status->name }}
+                            @endif
                             @endif
                         </td>
                         {{-- sandeep change date time formate --}}
@@ -1497,7 +1501,7 @@
                             @elseif ($status->status === 'paid')
                             by
                             @if ($status->user_id == 0 && $status->is_admin == 0)
-                                quickbook
+                                Quickbook
                             @else
                             @if ($status->name === null && $status->is_admin === 0)
                             {{ $status->first_name === '' ? $order->fbo_full_name : $status->first_name }}

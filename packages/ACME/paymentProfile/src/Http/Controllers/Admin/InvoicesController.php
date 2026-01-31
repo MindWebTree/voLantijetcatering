@@ -635,13 +635,23 @@ log::info('all items processed for invoice line items');
                     "PostalCode" => $order->shipping_address->postcode    
                 ],
                 "CustomField" => [
+                    // [
+                    //     "DefinitionId" => "1",
+                    //     "Type" => "StringType",
+                    //     "StringValue" => $order->fbo_tail_number 
+                    // ],
+                    // [
+                    //     "DefinitionId" => "3",
+                    //     "Type" => "StringType",
+                    //     "StringValue" => $order->delivery_time
+                    // ]
                     [
-                        "DefinitionId" => "1",
+                        "DefinitionId" => "2",
                         "Type" => "StringType",
                         "StringValue" => $order->fbo_tail_number 
                     ],
                     [
-                        "DefinitionId" => "3",
+                        "DefinitionId" => "1",
                         "Type" => "StringType",
                         "StringValue" => $order->delivery_time
                     ]
@@ -656,7 +666,7 @@ log::info('all items processed for invoice line items');
 
              // Make the invoice creation request with the access token
             $result = $this->createInvoiceRequest($configData['company_id'], $accessToken, $invoiceData,$orderId);
-log::info('invoice request sent to quickbook');
+            log::info('invoice request sent to quickbook');
 
              //  store inquiery id to orders table
             if ($result) {
