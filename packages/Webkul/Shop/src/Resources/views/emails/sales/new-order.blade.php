@@ -123,12 +123,12 @@
                     </p>
 
                     <p style="font-size: 16px;color: #5E5E5E;line-height: 24px;">
-                        Thank you for submitting your order
+                        Thank you for submitting your order request
                         <a href="{{ route('shop.customer.orders.view', $order->id) }}"
                         style="color: #0041FF; font-weight: bold;">
                             #{{ $order->increment_id }}
                         </a>
-                        request. Our team will get back to you within 24 hours with any questions and order confirmation.
+                        . Our team will get back to you within 24 hours with any questions and order confirmation.
                         If your order is within 24 hours please give us a call for a quicker response time.
                     </p>
 

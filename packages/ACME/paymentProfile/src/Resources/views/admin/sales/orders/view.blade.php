@@ -1141,7 +1141,7 @@
                             <p class="m-0 display__notes">{!! nl2br(e($notes)) !!}</p>
                             @endif
 
-                            @if (!$paidExists)
+                            @if (isset($paidExists) && !$paidExists)
                             @if (isset($notes))
                             <p class="m-0 add__note mt-2" data-toggle="modal" data-target="#updateNote{{ $item->id }}">edit
                                 Order
@@ -1526,7 +1526,7 @@
     @php
     // $paidExists = $status_log->contains('status', 'paid');
     $excludedStatuses = ['pending', 'canceled', 'rejected'];
-    if ($paidExists) {
+    if (isset($paidExists) && $paidExists) {
     $excludedStatuses[] = 'paid';
     }
     @endphp
@@ -1659,7 +1659,6 @@
                     @endif
 
                     <p class="col-7 tax_text">Fbo Fee</p>
-                    @if (isset($order->fbo_fee))
                     <p class="col-5 tax gap-2">
                         <span
                             class="cursor-pointer product__edits"
@@ -1674,9 +1673,8 @@
                             >
                         </span>
 
-                        {{ core()->formatBasePrice($order->fbo_fee) }}
+                        {{ core()->formatBasePrice($order->fbo_fee ?? 0) }}
                     </p>
-                    @endif
                     
 
                     <p class="col-7 tax_text">Delivery Charge</p>
@@ -1688,7 +1686,6 @@
                     <p class="col-7 cart_text">Order Total</p>
 
                     <p class="col-5 total">
-
                         @if (isset($agent->Handling_charges))
                         {{ core()->formatBasePrice($order->grand_total + $agent->Handling_charges) }}
                         @else

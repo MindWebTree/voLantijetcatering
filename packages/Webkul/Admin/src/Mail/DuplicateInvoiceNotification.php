@@ -32,6 +32,7 @@ class DuplicateInvoiceNotification extends Mailable
     public function build()
     {
         $order = $this->invoice->order;
+        
 
         $email = $this->customerEmail ?? $order->customer_email;
 

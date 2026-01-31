@@ -6567,6 +6567,7 @@ display: none !important;
 
 .btn-secondary:not([disabled]):not(.disabled):hover {
     background-color: rgb(0, 0, 0) !important;
+    border-color: rgb(0, 0, 0) !important;
 }
 
 .single-product-page-quantity-button {
@@ -7923,10 +7924,15 @@ input.product_variant:checked + .single-product-page-button-group-1 span{
 
 
 .AddToCartButton .control-error{
-    font-size: 13px;
+    font-size: 13px !important;
     line-height: 17px;
+    text-align: center;
 }
 
+
+.quantity.has-error button{
+    color: #212529 !important;
+}
 
 
 #Add_Button_Popop{
@@ -8759,9 +8765,9 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 
-.AddToCartButton .quantity.has-error .quantityButton{
+/* .AddToCartButton .quantity.has-error .quantityButton{
     border: 1px solid #F05153 !important;
-}
+} */
 
 
 

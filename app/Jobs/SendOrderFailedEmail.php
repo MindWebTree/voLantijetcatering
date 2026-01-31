@@ -28,6 +28,6 @@ class SendOrderFailedEmail implements ShouldQueue
      */
     public function handle(): void
     {
-         Mail::to('info@mindwebtree.com')->send(new OrderFailedMail($this->orderData));
+          Mail::to('sandeep@mindwebtree.com')->send(new OrderFailedMail($this->orderData));
     }
 }

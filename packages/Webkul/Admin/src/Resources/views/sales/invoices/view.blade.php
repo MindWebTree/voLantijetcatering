@@ -74,7 +74,7 @@
                                                 </span>
 
                                                 <span class="value">
-                                                    {{ core()->formatDate($order->created_at, 'Y-m-d H:i:s') }}
+                                                    {{ core()->formatDate($order->created_at, 'm/d/Y h:i A') }}
                                                 </span>
                                             </div>
 
@@ -160,7 +160,11 @@
 
                                             <div class="row">
                                                 <span class="title">Delivery Date</span>
-                                                <span class="value">{{ $invoice->order->delivery_date }}</span>
+                                                <span class="value">
+                                                    {{ $invoice->order && $invoice->order->delivery_date
+                                                        ? \Carbon\Carbon::parse($invoice->order->delivery_date)->format('m/d/Y')
+                                                        : '-' }}
+                                                </span>
                                             </div>
                                             <div class="row">
                                                 <span class="title">Delivery Time</span>
@@ -394,7 +398,13 @@
                                     <tr class="bold">
                                         <td>{{ __('admin::app.sales.orders.grand-total') }}</td>
                                         <td>-</td>
-                                        <td>{{ core()->formatBasePrice($order->base_grand_total) }}</td>
+                                        <td>
+                                            @if (isset($handlingAgent->Handling_charges))
+                                            {{ core()->formatBasePrice($order->grand_total + $handlingAgent->Handling_charges) }}
+                                            @else
+                                            {{ core()->formatBasePrice($order->grand_total) }}
+                                            @endif
+                                        </td>
                                     </tr>
                                 </table>
                             </div>

@@ -469,7 +469,7 @@ null,
                         {{-- sandeep add search code --}}
                         <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
                         
-                          <p class="note-text">
+                        <p class="note-text">
                         When adding items, please enter the total number of passengers and the total number of trays.
 
                         <span class="tooltip-wrapper">

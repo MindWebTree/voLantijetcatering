@@ -912,15 +912,22 @@ class OrdersController extends Controller
             ->sum('base_total');
         // dd($totalPrice);
 
+        $fbo_fee = DB::table('orders')
+                ->where('increment_id', $request->order_id)
+                ->value('fbo_fee');
+
+        $deliveryFee = round(($totalPrice * 10) / 100, 2);
+        $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
+
         DB::table('orders')
             ->where('increment_id', $request->order_id)
             ->update([
                 'total_item_count' => $totalProducts,
                 'total_qty_ordered' => $totalQuantity,
-                'grand_total' => $totalPrice,
-                'base_grand_total' => $totalPrice,
-                'grand_total_invoiced' => $totalPrice,
-                'base_grand_total_invoiced' => $totalPrice,
+                'grand_total' => $orderTotal,
+                'base_grand_total' => $orderTotal,
+                'grand_total_invoiced' => $orderTotal,
+                'base_grand_total_invoiced' => $orderTotal,
 
                 'sub_total' => $totalPrice,
                 'base_sub_total' => $totalPrice,
@@ -937,16 +944,15 @@ class OrdersController extends Controller
         $order->base_tax_amount = Tax::getTaxTotal($order, true);
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);
         $order->base_tax_amount_invoiced = Tax::getTaxTotal($order, true);
-        $order->grand_total = $order->tax_amount + $totalPrice;
-        $order->base_grand_total = $order->tax_amount + $totalPrice;
-        $order->grand_total_invoiced = $order->tax_amount + $totalPrice;
-        $order->base_grand_total_invoiced = $order->tax_amount + $totalPrice;
+        $order->grand_total = $order->tax_amount + $orderTotal;
+        $order->base_grand_total = $order->tax_amount + $orderTotal;
+        $order->grand_total_invoiced = $order->tax_amount + $orderTotal;
+        $order->base_grand_total_invoiced = $order->tax_amount + $orderTotal;
         $order->save();
 
         // sandeep update quickbook invoice
-        // if($order->quickbook_invoice_id){
-        //  $quickbookInvoice = app(InvoicesController::class);
-        //  $quickbookInvoice->createInvoice($request->order_id);
+        // if ($order->quickbook_invoice_id) {
+        //     ProcessQuickBooksInvoice::dispatch($request->order_id);
         // }
 
     }
@@ -1173,7 +1179,6 @@ class OrdersController extends Controller
 
     public function edit_product(Request $request)
     {
-
         foreach ($request['productInfo'] as $product) {
 
             if ($product['itemType'] === 'simple') {
@@ -1281,22 +1286,31 @@ class OrdersController extends Controller
             ->where('order_id', $request['orderID'])
             ->count();
 
+        $fbo_fee = DB::table('orders')
+                ->where('increment_id', $request['orderID'])
+                ->value('fbo_fee');
+
+        $deliveryFee = round(($totalPrice * 10) / 100, 2);
+        $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
+
         // dd($totalPrice);
         DB::table('orders')
             ->where('increment_id', $request['orderID'])
             ->update([
                 'total_item_count' => $totalItems,
                 'total_qty_ordered' => $totalQuantity,
-                'grand_total' => $totalPrice,
-                'base_grand_total' => $totalPrice,
-                'grand_total_invoiced' => $totalPrice,
-                'base_grand_total_invoiced' => $totalPrice,
-
+                'grand_total' => $orderTotal,
+                'base_grand_total' => $orderTotal,
+                'grand_total_invoiced' => $orderTotal,
+                'base_grand_total_invoiced' => $orderTotal,
                 'sub_total' => $totalPrice,
                 'base_sub_total' => $totalPrice,
                 'sub_total_invoiced' => $totalPrice,
                 'base_sub_total_invoiced' => $totalPrice,
             ]);
+
+
+
 
         // sandeep add code for tax add 
         $cartInstance = app(Cart::class);
@@ -1308,17 +1322,16 @@ class OrdersController extends Controller
         $order->base_tax_amount = Tax::getTaxTotal($order, true);
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);
         $order->base_tax_amount_invoiced = Tax::getTaxTotal($order, true);
-        $order->grand_total = $order->tax_amount + $totalPrice;
-        $order->base_grand_total = $order->tax_amount + $totalPrice;
-        $order->grand_total_invoiced = $order->tax_amount + $totalPrice;
-        $order->base_grand_total_invoiced = $order->tax_amount + $totalPrice;
+        $order->grand_total = $order->tax_amount + $orderTotal;
+        $order->base_grand_total = $order->tax_amount + $orderTotal;
+        $order->grand_total_invoiced = $order->tax_amount + $orderTotal;
+        $order->base_grand_total_invoiced = $order->tax_amount + $orderTotal;
         $order->save();
 
         // sandeep update quickbook invoice
-        // if($order->quickbook_invoice_id){
-        //  $quickbookInvoice = app(InvoicesController::class);
-        //  $quickbookInvoice->createInvoice($request['orderID']);
-        // }
+        if ($order->quickbook_invoice_id) {
+            ProcessQuickBooksInvoice::dispatch($request['orderID']);
+        }
 
     }
     public function remove_product($order_id, $id)
@@ -1392,15 +1405,22 @@ class OrdersController extends Controller
                 ->where('parent_id', null)
                 ->count();
 
+            $fbo_fee = DB::table('orders')
+                ->where('increment_id', $order_id)
+                ->value('fbo_fee');
+
+            $deliveryFee = round(($totalPrice * 10) / 100, 2);
+            $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
+
             DB::table('orders')
                 ->where('increment_id', $order_id)
                 ->update([
                     'total_item_count' => $totalItems,
                     'total_qty_ordered' => $totalQuantity,
-                    'grand_total' => $totalPrice,
-                    'base_grand_total' => $totalPrice,
-                    'grand_total_invoiced' => $totalPrice,
-                    'base_grand_total_invoiced' => $totalPrice,
+                    'grand_total' => $orderTotal,
+                    'base_grand_total' => $orderTotal,
+                    'grand_total_invoiced' => $orderTotal,
+                    'base_grand_total_invoiced' => $orderTotal,
 
                     'sub_total' => $totalPrice,
                     'base_sub_total' => $totalPrice,
@@ -1430,16 +1450,15 @@ class OrdersController extends Controller
         $order->base_tax_amount = Tax::getTaxTotal($order, true);
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);
         $order->base_tax_amount_invoiced = Tax::getTaxTotal($order, true);
-        $order->grand_total = $order->tax_amount + $totalPrice;
-        $order->base_grand_total = $order->tax_amount + $totalPrice;
-        $order->grand_total_invoiced = $order->tax_amount + $totalPrice;
-        $order->base_grand_total_invoiced = $order->tax_amount + $totalPrice;
+        $order->grand_total = $order->tax_amount + $orderTotal;
+        $order->base_grand_total = $order->tax_amount + $orderTotal;
+        $order->grand_total_invoiced = $order->tax_amount + $orderTotal;
+        $order->base_grand_total_invoiced = $order->tax_amount + $orderTotal;
         $order->save();
 
         // sandeep update quickbook invoice
-        // if($order->quickbook_invoice_id){
-        // $quickbookInvoice = app(InvoicesController::class);
-        // $quickbookInvoice->createInvoice($order_id);
+        // if ($order->quickbook_invoice_id) {
+        //     ProcessQuickBooksInvoice::dispatch($order_id);
         // }
 
         return redirect()->back();

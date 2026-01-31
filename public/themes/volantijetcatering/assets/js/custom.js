@@ -965,6 +965,7 @@
             if (!searchTerm) {
                 $('.product-item').removeClass('hidden');
                 $('.childCategoryheading, #categoryheading').show();
+                $('.note-text').show();
                 return;
             }
         
@@ -1026,16 +1027,20 @@
         
             // Adjust heading visibility
             if (mainVisible && childVisible) {
+                $('.note-text').show();
                 $('.childCategoryheading, #categoryheading').show();
             } else if (mainVisible) {
                 $('.childCategoryheading').hide();
                 $('#categoryheading').show();
+                $('.note-text').show();
                 $('.pagination-wrapper').show();
             } else if (childVisible) {
+                $('.note-text').show();
                 $('.childCategoryheading').show();
                 $('#categoryheading').hide();
                 $('.pagination-wrapper').show();
             } else {
+                $('.note-text').hide();
                 $('.childCategoryheading, #categoryheading').hide();
                 $('.search_not_found_message').append('<div class="no-results-message text-center">No results found!</div>');
                 $('.pagination-wrapper').hide();

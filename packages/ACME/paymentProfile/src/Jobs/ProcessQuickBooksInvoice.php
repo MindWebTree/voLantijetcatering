@@ -14,14 +14,14 @@ class ProcessQuickBooksInvoice implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $orderId;
-    public $fromPayment;
+    public $fromsendInvoiceButton;
     /**
      * Create a new job instance.
      */
-    public function __construct($orderId, $fromPayment = false)
+    public function __construct($orderId, $fromsendInvoiceButton = false)
     {
         $this->orderId = $orderId;
-        $this->fromPayment = $fromPayment;
+        $this->fromsendInvoiceButton = $fromsendInvoiceButton;
     }
 
     /**
@@ -36,7 +36,7 @@ class ProcessQuickBooksInvoice implements ShouldQueue
             // Call the createInvoice function from your class
             $quickbookInvoice->createInvoice($this->orderId);
 
-            if (! $this->fromPayment) {
+            if ($this->fromsendInvoiceButton) {
                 $quickbookInvoice->createInvoicePdf($this->orderId);
             }
 

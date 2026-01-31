@@ -603,8 +603,8 @@
                             <p>
                                 Agent Handler: 
                                 <strong>
-                                    @if (isset($agent))
-                                        {{ core()->formatBasePrice($agent->Handling_charges) }}
+                                    @if (isset($order->handlingAgent->Handling_charges))
+                                        {{ core()->formatBasePrice($order->handlingAgent->Handling_charges) }}
                                     @else
                                         {{ core()->formatBasePrice(0) }}
                                     @endif
@@ -618,8 +618,8 @@
                             <p style="font-size: 15px; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">
                                 <strong>Order Total:</strong>
                                 <strong>
-                                    @if (isset($agent))
-                                        {{ core()->formatBasePrice($order->grand_total + $agent->Handling_charges) }}
+                                    @if (isset($order->handlingAgent->Handling_charges))
+                                        {{ core()->formatBasePrice( $order->grand_total + $order->handlingAgent->Handling_charges) }}
                                     @else
                                         {{ core()->formatBasePrice($order->grand_total) }}
                                     @endif

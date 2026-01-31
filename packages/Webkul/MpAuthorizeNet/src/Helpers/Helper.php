@@ -346,7 +346,7 @@ class Helper
                             $order_id = request()->input('order_id');
                             // $test = app(InvoicesController::class);
                             // $test->createInvoice($order_id);
-                            ProcessQuickBooksInvoice::dispatch($order_id,true);
+                            ProcessQuickBooksInvoice::dispatch($order_id);
                         }
 
                         // sandeep add update payment status in quickbook invoice
