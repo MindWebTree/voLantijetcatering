@@ -106,6 +106,7 @@
         ->select(
             'sl.order_id',
             'sl.is_admin',
+            'sl.user_id',
             'admins.name',
             'sl.email',
             'sl.created_at',
@@ -1471,6 +1472,7 @@
                 </thead>
                 <tbody class="table__body">
                     @foreach ($status_log as $status)
+            @dd($status)
                     <tr>
                         <td>{{ $status->order_id }}</td>
                         <td>
@@ -1495,10 +1497,14 @@
                             {{-- sandeep add code --}}
                             @elseif ($status->status === 'paid')
                             by
+                            @if ($status->user_id == 0 && $status->is_admin == 0)
+                                quickbook
+                            @else
                             @if ($status->name === null && $status->is_admin === 0)
                             {{ $status->first_name === '' ? $order->fbo_full_name : $status->first_name }}
                             @else
                             {{ $status->name }}
+                            @endif
                             @endif
 
                             @endif
