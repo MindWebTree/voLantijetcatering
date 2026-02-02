@@ -1669,6 +1669,7 @@
 
                     <p class="col-7 tax_text">Fbo Fee</p>
                     <p class="col-5 tax gap-2">
+                        @if (isset($paidExists) && !$paidExists)
                         <span
                             class="cursor-pointer product__edits"
                             data-toggle="modal"
@@ -1681,6 +1682,7 @@
                                 alt="edit"
                             >
                         </span>
+                        @endif
 
                         {{ core()->formatBasePrice($order->fbo_fee ?? 0) }}
                     </p>
