@@ -14,7 +14,7 @@ class ProcessQuickBooksInvoice implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $orderId;
-    public $fromsendInvoiceButton;
+    public $fromsendInvoiceButton;   
     /**
      * Create a new job instance.
      */
@@ -36,6 +36,7 @@ class ProcessQuickBooksInvoice implements ShouldQueue
             // Call the createInvoice function from your class
             $quickbookInvoice->createInvoice($this->orderId);
 
+            // version 2 add code for create invoice and pdf when send invoice button clicked
             if ($this->fromsendInvoiceButton) {
                 $quickbookInvoice->createInvoicePdf($this->orderId);
             }

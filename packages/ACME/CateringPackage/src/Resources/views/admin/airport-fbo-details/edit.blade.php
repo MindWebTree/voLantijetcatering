@@ -128,6 +128,7 @@
                         <span class="control-error" v-if="errors.has('notes')">@{{ errors.first('notes') }}</span>
                     </div>
 
+                    {{-- version 2 add fbo fee field --}}
                     <div class="control-group" :class="[errors.has('fbo_fee') ? 'has-error' : '']">
                         {{-- <label for="sort_order">{{ __('admin::app.settings.cateringpackages.name') }}</label> --}}
                         <label for="sort_order">Fbo Fee</label>

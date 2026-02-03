@@ -81,6 +81,7 @@
 
         <p>Your order is now being prepared. We will notify you once it is ready for delivery or pickup.</p> --}}
 
+        {{-- version 2 change email content --}}
         <p>Your order request <strong>#{{ $order->increment_id }}</strong> has been approved!</p>
         <p>Enjoy your flight!</p>
 

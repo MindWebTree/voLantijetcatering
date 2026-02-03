@@ -264,6 +264,7 @@
                             </div>
 
 
+                            {{-- version 2 add cutlery option field --}}
                             <div class="control-group col-sm-12 col-md-6 mb-3">
                                     <label class="label-style">
                                         Cutlery
@@ -569,6 +570,7 @@
                                 
                                             </div>
                                             
+                                        {{-- version 2 add cutlery option field --}}
                                         <div class="control-group col-sm-12 col-md-6 mb-3">
                                                 <label class="label-style">
                                                     Cutlery
@@ -762,7 +764,9 @@
                                         <div class='col-4 text-right'>
                                             <p><strong>Qty: </strong>{{$cartItem->quantity}}</p>
                                         </div>
+
                                         <div class='col-12' style='margin-top: -10px;font-size:13px'>
+                                            {{-- version 2 show persons in order summary  --}}
                                             @if (isset($cartItem->additional['persons']) && $cartItem->additional['persons']!='' )
                                             <p style='margin-top: -17px' class="special-intruction"><strong>Persons: </strong> <span>{{$cartItem->additional['persons']}}</span></p>
                                             @endif
@@ -774,6 +778,8 @@
                                 </li>  
                                 @endforeach 
                             </ol>
+
+                            {{-- version 2 show cutlery option in order summary --}}
                         <div class="order-cutlery mt-2" style="
                             font-size: 13px;
                             letter-spacing: 0.2px;

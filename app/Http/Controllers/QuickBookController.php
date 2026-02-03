@@ -256,6 +256,8 @@ public function updatePaymentInQuickBooks($orderId)
         $companyId = $configData['company_id'];
         $customerRefId = $orderDetails['0']->quickbook_customer_id;
         $invoiceId = $orderDetails['0']->quickbook_invoice_id;
+
+        // Version 2: Get total amount from order total
         $totalAmount = $orderDetails['0']->orderTotal;
 
 

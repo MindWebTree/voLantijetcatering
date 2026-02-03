@@ -183,6 +183,7 @@
                                 {{ __('shop::app.customer.account.order.view.price') }}</th>
                             <th style="text-align: left;padding: 8px">{{ __('shop::app.customer.account.order.view.qty') }}
                             </th>
+                            {{-- versiosn 2 add persons column --}}
                             <th style="text-align: left;padding: 8px">Person
                             </th>
                         </tr>
@@ -216,6 +217,7 @@
 
                                 <td data-value="{{ __('shop::app.customer.account.order.view.qty') }}"
                                     style="text-align: left;padding: 8px">{{ $item->qty }}</td>
+                                    {{-- version 2 add persons column --}}
                                 <td data-value="Person"
                                     style="text-align: left;padding: 8px">
                                     @if(isset($item->additional['persons']))
@@ -226,6 +228,7 @@
                         @endforeach
                         <tr>
                             <td>
+                                {{-- version 2 show cutlery instruction if included --}}
                                 <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
                                     @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                                     <strong>Instruction:</strong> Cutlery included

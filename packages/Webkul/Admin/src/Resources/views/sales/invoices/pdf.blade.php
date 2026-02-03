@@ -459,6 +459,7 @@
                         <td style="width: {{ !empty($order->cart->fbo_additional_notes) ? '35%' : '100%' }};">
                             <h4>Payment Details</h4>
                             @if(!empty($transaction))
+                            {{-- version 2 add order status --}}
                                 <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
                                 <p><strong>Transaction Id:</strong> {{ $transaction->transaction_id }}</p>
                                 <p><strong>Method:</strong> Credit Card</p>
@@ -484,6 +485,7 @@
                         <th style="width: 15%;">Notes</th>
                         <th style="width: 45%;">Name</th>
                         <th style="width: 15%;">Qty</th>
+                        {{-- version 2 add persons column --}}
                         <th style="width: 15%;">Persons</th>
                         <th style="width: 25%;">Price</th>
                     </tr>
@@ -536,6 +538,7 @@
                                 @endif
                             </td>
                             <td>
+                                {{-- version 2 add persons data --}}
                                 {{ $item->additional['persons'] ?? 'N/A' }}
                             </td>
                             <td>
@@ -559,6 +562,7 @@
                 <tr>
                     <!-- Order Notes -->
                     <td class="order-notes-column">
+                        {{-- version 2 show Cutlery option --}}
                         <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
                             @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                             <strong>Instruction:</strong> Cutlery included
@@ -588,7 +592,8 @@
                             <p>SubTotal: <strong>NA</strong></p>
                             <p>Tax: <strong>NA</strong></p>
                             <p>Agent Handler: <strong>NA</strong></p>
-                            <p>Fbo Fee: <strong>NA</strong></p>
+                            {{-- version 2 show fbo fee and delivery fee if order pending  --}}
+                            <p>Fbo Fee: <strong>NA</strong></p>  
                             <p>Delivery Charge: <strong>NA</strong></p>
                             <p style="font-size: 15px; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">
                                 <strong>Order Total:</strong> <strong>NA</strong>
@@ -610,7 +615,7 @@
                                     @endif
                                 </strong>
                             </p>
-
+                            {{-- version 2 show fbo fee and delivery fee if order not pending --}}
                             <p>Fbo Fee: <strong>{{ core()->formatBasePrice($order->fbo_fee) }}</strong></p>
                             <p>Delivery Charge: <strong>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</strong></p>
 

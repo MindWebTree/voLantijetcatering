@@ -83,6 +83,7 @@ class InvoicesController extends Controller
 
             // sandeep add code for invoice send using queue
             try{
+                // version 2 add attribute true for send invoice
                 ProcessQuickBooksInvoice::dispatch($orderId, true);
                 // OrderInvoiceJob::dispatch($orderId, $agent, $pdfPath);
                 // $appNotifications = DB::table('app_notifications')->insert([
@@ -481,6 +482,8 @@ log::info('token data', ['tokenData' => $tokenData]);
                     $itemsData->push($agent);
                 }
 
+                // version 2 add fbo fee and delivery charge in quickbook invoice
+                 // Check if the order has FBO fee
                 if (isset($order->fbo_fee) && $order->fbo_fee > 0) {
                     $fboFeeAmount = $order->fbo_fee;
                     $fboFee = (object)[
@@ -529,6 +532,8 @@ log::info('token data', ['tokenData' => $tokenData]);
     
                 $responseData  = json_decode(json_encode(simplexml_load_string($existingItemResponse->body())), true);
                 $existingItems = $responseData['QueryResponse']['Item'] ?? [];
+
+                // version 2 get persons from additional
                 $additional = null;
 
                 if (isset($item->additional) && !empty($item->additional)) {
@@ -546,7 +551,7 @@ log::info('token data', ['tokenData' => $tokenData]);
                     $lines[] = [
                         "DetailType" => "SalesItemLineDetail",
                         "Amount" => $item->total ?? $Handling_charges ?? "0", 
-                        "Description" => $persons ? 'Total Persons: ' . $persons : '',
+                        "Description" => $persons ? 'Total Persons: ' . $persons : '',      // version 2 add persons in description
                         "SalesItemLineDetail" => [
                             "ItemRef" => [
                                 "name" => $existingItems['Name'], 
@@ -579,7 +584,7 @@ log::info('create item response', ['response' => $createItemResponse->body()]);
                             $lines[] = [
                                 "DetailType" => "SalesItemLineDetail",
                                 "Amount" => $item->total ?? $Handling_charges ?? "0", 
-                                "Description" => $persons ? 'Total Persons: ' . $persons : '',
+                                "Description" => $persons ? 'Total Persons: ' . $persons : '',     // version 2 add persons in description
                                 "SalesItemLineDetail" => [
                                     "ItemRef" => [
                                         "name" => $existingItems['Name'], 
@@ -602,6 +607,9 @@ log::info('create item response', ['response' => $createItemResponse->body()]);
             }
 
 log::info('all items processed for invoice line items');
+Log::info('tax amount', [
+    'tax_amount' => $order->tax_amount
+]);
 
             $invoiceData = [
                 "Line" => $lines, 

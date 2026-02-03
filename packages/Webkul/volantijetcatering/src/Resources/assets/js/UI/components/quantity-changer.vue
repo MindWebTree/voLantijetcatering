@@ -6,6 +6,7 @@
             v-text="quantityText"
         ></label>-->
 
+<!-- version 2 change qty design  -->
     <div class="quantityButton">
       <div class="person-icon-div">
         QTY

@@ -1,5 +1,6 @@
 @php
     $cards = collect();
+    // version 2 change if condtion to check admin session also
     if ((auth()->guard('customer')->check() || session()->has('token')) && !auth()->guard('admin')->check()) {
         $customer_id = null;
         if (auth()->guard('customer')->check()) {

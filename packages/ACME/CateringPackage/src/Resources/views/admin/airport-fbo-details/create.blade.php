@@ -66,6 +66,8 @@
                         <span class="control-error" v-if="errors.has('notes')">@{{ errors.first('notes') }}</span>
                     </div>
 
+
+                    {{-- version 2 add fbo fee field --}}
                     <div class="control-group" :class="[errors.has('fbo_fee') ? 'has-error' : '']">
                         <label for="sort_order">Fbo Fee</label>
                         <input type="number" class="control" id="sort_order" name="fbo_fee" v-validate="'required'"

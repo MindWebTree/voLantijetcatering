@@ -61,7 +61,7 @@ class GuestNewOrderNotification extends Mailable
             core()->getSenderEmailDetails()['name']
         )
             ->to($this->order['customer_email'], $fullName)
-            ->subject('Volanti Jet Catering Order Request #' . $increment_id . ' Submitted')
+            ->subject('Volanti Jet Catering Order Request #' . $increment_id . ' Submitted')  // version 2 change subject
             ->view('mail.guest-new-order')
             ->with([
                 'order' => $this->order,

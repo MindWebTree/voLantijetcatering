@@ -305,7 +305,7 @@ class SignUpController extends Controller
                         ->where('id', $cart->id)
                         ->update([
                             'fbo_additional_notes' => $request->additional_notes,
-                            'include_cutlery' => $request->cutlery_option ?? 0,
+                            'include_cutlery' => $request->cutlery_option ?? 0, //version 2 add cutlery option
                         ]);
                 }
 
@@ -458,7 +458,7 @@ class SignUpController extends Controller
                 ->where('id', $cart->id)
                 ->update([
                     'fbo_additional_notes' => $request->additional_notes,
-                    'include_cutlery' => $request->cutlery_option ?? 0,
+                    'include_cutlery' => $request->cutlery_option ?? 0, //version 2 update cutlery option
                 ]);
         }
 

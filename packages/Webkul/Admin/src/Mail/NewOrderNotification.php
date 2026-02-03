@@ -42,7 +42,7 @@ class NewOrderNotification extends Mailable
         $increment_id = $this->order->increment_id;
         return $this->from(core()->getSenderEmailDetails()['email'], core()->getSenderEmailDetails()['name'])
             ->to($this->order->customer_email, $this->order->customer_full_name)
-            ->subject('Volanti Jet Catering Order Request #' . $increment_id . ' Submitted')
+            ->subject('Volanti Jet Catering Order Request #' . $increment_id . ' Submitted')   // version 2 change subject
             ->view('shop::emails.sales.new-order')
                 ->with([
                 

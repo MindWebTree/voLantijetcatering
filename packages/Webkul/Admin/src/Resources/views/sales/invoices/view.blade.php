@@ -299,6 +299,7 @@
                                                     <th>Persons</th>
                                                     <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
                                                     <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
+                                                    {{-- version 2 get discoutn from order  --}}
                                                     @if ($invoice->order->base_discount_amount > 0)
                                                         <th>{{ __('admin::app.sales.orders.discount-amount') }}</th>
                                                     @endif
@@ -307,6 +308,7 @@
                                             </thead>
 
                                             <tbody>
+                                                {{-- version 2 get items from order --}}
                                                 @foreach ($invoice->order->items as $item)
                                                     <tr>
                                                         <td>{{ $item->getTypeInstance()->getOrderedItem($item)->sku }}</td>
@@ -323,6 +325,7 @@
 
                                                                 </div>
                                                             @endif
+                                                            {{-- version 2 add special instruction --}}
                                                             @if (!empty($item->additional['special_instruction']))
                                                             <div class="" style="gap:4px;font-size:11px;    margin-top: 10px; max-height: 100px;"><span><b>Special Instruction: </b> </span><br>
                                                             <span>{{ $item->additional['special_instruction'] }}</span>
@@ -330,13 +333,14 @@
                                                             @endif
                                                         </td>
                                                         <td>{{ core()->formatBasePrice($item->base_price) }}</td>
+                                                        {{-- version 2 change qty to qty_ordered and show persons --}}
                                                         <td>{{ $item->qty_ordered }}</td>
                                                         <td>{{ $item->additional['persons'] }}</td>
 
                                                         <td>{{ core()->formatBasePrice($item->base_total) }}</td>
 
                                                         <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
-
+                                                        {{-- version 2 get discount from order --}}
                                                         @if ($invoice->order->base_discount_amount > 0)
                                                             <td>{{ core()->formatBasePrice($item->base_discount_amount) }}</td>
                                                         @endif
@@ -347,6 +351,7 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    {{-- version 2 show cutlery instruction if included --}}
                                     <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px; text-align: left;">
                                         @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                                                 <strong>Instruction:</strong> Cutlery included
@@ -356,6 +361,7 @@
 
 
 
+                                {{-- version 2 add fbo fee and delivery charge and get price data from order --}}
                                 <table class="sale-summary">
                                     <tr>
                                         <td>{{ __('admin::app.sales.orders.subtotal') }}</td>

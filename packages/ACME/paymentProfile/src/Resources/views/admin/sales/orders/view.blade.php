@@ -482,6 +482,7 @@
                                                 <span class="control-error" v-if="errors.has('packagingsection')" v-text="'The packaging section field is required'"></span>
                                             </div>
 
+                                        {{-- version 2 add cutlery option field --}}
                                         <div class="control-group col-sm-12 col-md-6 mb-3">
                                                 <label class="label-style">
                                                     Cutlery
@@ -986,7 +987,7 @@
 
         {{-- airport modal end --}}
 
-        @if (auth('admin')->user()->role_id == 1 && ($order->status === 'pending' || $order->status === 'accepted'))
+        @if (auth('admin')->user()->role_id == 1 && (isset($paidExists) && !$paidExists || !in_array($order->status, ['shipped', 'delivered'])))
         <div class="search__product mt-5">
             <div class="search__title d-md-flex">
                 <h3>Products</h3>
@@ -1063,9 +1064,10 @@
                         <th>Special instructions</th>
                         <th>Price</th>
                         <th>Qty</th>
-                        <th>Persons</th>
+                        {{-- version 2 add persons heading in table heading --}}
+                        <th>Persons</th> 
                         <th>Sub Total</th>
-                        @if ($order->status === 'pending' || $order->status === 'accepted')
+                        @if (!in_array($order->status, ['shipped', 'delivered']) || isset($paidExists) && !$paidExists)
                         <th>Action</th>
                         @endif
                     </tr>
@@ -1076,6 +1078,7 @@
                         <th>Special instructions</th>
                         {{-- <th>Price</th> --}}
                         <th>Qty</th>
+                        {{-- version 2 add persons heading in table heading --}}
                         <th>Persons</th>
                         {{-- <th>Sub Total</th> --}}
                         {{-- @if ($order->status === 'pending' || $order->status === 'accepted')
@@ -1142,7 +1145,7 @@
                             <p class="m-0 display__notes">{!! nl2br(e($notes)) !!}</p>
                             @endif
 
-                            @if (isset($paidExists) && !$paidExists)
+                            @if (isset($paidExists) && !$paidExists || !in_array($order->status, ['shipped', 'delivered']))
                             @if (isset($notes))
                             <p class="m-0 add__note mt-2" data-toggle="modal" data-target="#updateNote{{ $item->id }}">edit
                                 Order
@@ -1266,6 +1269,7 @@
                                             <!-- <img src="/cache/medium/product/278/s09QJX1kqQwX8zLXByqS8gU836SU5oPgp47G7ov3.png"
                                                                     alt="Product" style="height: 70px" /> -->
 
+
                                             <div class="w-100 pl-2">
                                                 <p class="m-0 product__name">
                                                     {{ $item->name }}
@@ -1273,6 +1277,8 @@
                                                     ({{ $optionLabel }})
                                                     @endif
                                                 </p>
+
+                                                {{-- version 2 add persons input in edit product modal --}}
                                                 <div class="group__input__field qty-changer my-2">
                                                 PAX
                                                 {{-- <img src="{{ asset('themes/volantijetcatering/assets/images/people.png') }}" alt="Person Icon" class="person-icon mb-1"> --}}
@@ -1333,6 +1339,7 @@
                         </td>
 
                         <td>
+                        {{-- version 2 add persons column in order view table --}}
                         @if(isset($item->additional['persons']))
                             <span class="qty-row">
                                 {{ $item->additional['persons'] }}
@@ -1347,7 +1354,7 @@
                         </td>
                         @endif
 
-                        @if (in_array($order->status, ['pending', 'accepted']) && auth('admin')->user()->role_id == 1)
+                        @if ((!in_array($order->status, ['shipped', 'delivered']) || isset($paidExists) && !$paidExists) && auth('admin')->user()->role_id == 1)
                         <td>
                             <div class="delete_order_item text-center">
                                 <i data-toggle="modal" data-target="#remove-item{{ $item->id }}" class="remove__icon">
@@ -1390,6 +1397,7 @@
         </div>
     </div>
                                                 <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px; text-align: left;">
+                                                {{-- version 2 display cutlery instruction in order view page --}}
                                                 @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                                                 <strong>Instruction:</strong> Cutlery included
                                             @endif
@@ -1476,6 +1484,7 @@
                         <td>{{ $status->order_id }}</td>
                         <td>
 
+                            {{-- version 2 add condition for quickbook --}}
                             @if ($status->user_id == 0 && $status->is_admin == 0)
                                 Quickbook
                             @else
@@ -1500,6 +1509,8 @@
                             {{-- sandeep add code --}}
                             @elseif ($status->status === 'paid')
                             by
+
+                            {{-- add condtion for quickbook --}}
                             @if ($status->user_id == 0 && $status->is_admin == 0)
                                 Quickbook
                             @else
@@ -1667,9 +1678,10 @@
                     <p class="col-5 tax">{{ core()->formatBasePrice(0) }}</p>
                     @endif
 
+                    {{--  version 2 fbo fee edit modal --}}
                     <p class="col-7 tax_text">Fbo Fee</p>
                     <p class="col-5 tax gap-2">
-                        @if (isset($paidExists) && !$paidExists)
+                        @if (!in_array($order->status, ['shipped', 'delivered']) || isset($paidExists) && !$paidExists)
                         <span
                             class="cursor-pointer product__edits"
                             data-toggle="modal"
@@ -1707,6 +1719,7 @@
             </div>
         </div>
 
+        {{-- version 2 add modal for update fbo fee --}}
         <div class="modal fade product__edit" id="Fbo_fee_update" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -2634,6 +2647,7 @@
 
             // Add click event listener to plus button
             jQuery('body').on('click', '#plusBtn', function() {
+                // version 2 change qty selector
                 let wrapper = $(this).closest('.add-qty-changer');
                 var quantityInput = wrapper.find('#quantityInput');
                 var currentValue = parseInt(quantityInput.val(), 10);
@@ -2645,6 +2659,7 @@
 
             // Add click event listener to minus button
             jQuery('body').on('click', '#minusBtn', function() {
+                // version 2 change qty selector 
                 let wrapper = $(this).closest('.add-qty-changer');
                 var quantityInput = wrapper.find('#quantityInput');
                 var currentValue = parseInt(quantityInput.val(), 10);
@@ -2678,6 +2693,7 @@
                         '.options input:checked').attr('id');
                     var quantityInput = $(this).closest('.search_product_list').find(
                         '.add-qty-input');
+                // version 2 get person input
                     var personInput = $(this).closest('.search_product_list').find(
                         '.add-person-input');
                     var plusButton = $(this).closest('.row').find('.plusBtn');
@@ -2685,6 +2701,7 @@
                         '.quantity-limit-message');
                     var productQtyAvailable = $(this).closest('.row').find('#product_qty').val();
                     var quantityInputValue = parseInt(quantityInput.val(), 10) || 0;
+                    // version 2 get person input value
                     var personInputValue = parseInt(personInput.val(), 10) || 0;
 
                     var targetElement1 = $(this).closest('.search_product_list').find('.options');
@@ -2742,7 +2759,7 @@
             var obj = {
                 'product_id': checkboxId
                 , 'qty': quantityInputValue
-                , 'person': personInputValue
+                , 'person': personInputValue   // version 2 add person value in payload
                 , 'price': productPrice
                 , 'option_id': optionsId
             , };
@@ -2843,6 +2860,7 @@
 
     // -----------------------------------------UPdate Fbo fee--------------------------------------------//
 
+        // version 2 add code for update fbo fee
         $('body').on('click', '#order-fbo-fee', function() {
 
         var fbo_fee = $('#Fbo_fee_update').find('#fbo_fee').val();
@@ -2956,6 +2974,7 @@
     // Add click event listener to plus button
     jQuery('body').on('click', '#editPlusBtn', function() {
 
+        // version 2 change qty selector
         // var parentContainer = $(this).parent().parent();
         let wrapper = $(this).closest('.qty-changer');
         var quantityInput = wrapper.find('#editQuantityInput');
@@ -2968,6 +2987,7 @@
 
     // Add click event listener to minus button
     jQuery('body').on('click', '#editMinusBtn', function() {
+        // version 2 change qty selector
         let wrapper = $(this).closest('.qty-changer');
         // var parentContainer = $(this).parent().parent();
         var quantityInput = wrapper.find('#editQuantityInput');
@@ -2993,6 +3013,7 @@
         var inventoryQty = modalContent.find('#editHiddenInput').attr('totalQty');
         var oldQuantity = modalContent.find('#editHiddenInput').attr('quantity');
         var quantity = modalContent.find('.qty-input').val();
+        // version 2 get person input value
         var persons = modalContent.find('.person-input').val();
 
         console.log(oldQuantity, 'old')
@@ -3006,7 +3027,7 @@
         updateProductInfo.push({
             'productId': productId
             , 'quantity': quantity
-            , 'persons': persons
+            , 'persons': persons       // version 2 add persons in paylaod
             , 'newQty': newQty
             , 'itemId': itemId
             , 'itemprice': itemprice

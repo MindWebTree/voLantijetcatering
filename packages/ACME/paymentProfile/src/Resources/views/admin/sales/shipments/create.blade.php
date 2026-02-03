@@ -315,6 +315,7 @@
 
                                 <th>{{ __('admin::app.sales.shipments.qty-to-ship') }}</th>
 
+                                {{-- version 2 add person table heading  --}}
                                 <th>Persons</th>
 
                                 <th>{{ __('admin::app.sales.shipments.available-sources') }}</th>
@@ -351,6 +352,7 @@
 
                                         <td>{{ $item->qty_to_ship }}</td>
 
+                                        {{-- version 2 add person table data --}}
                                         <td>
                                             @if(isset($item->additional['persons']))
                                                 {{ $item->additional['persons'] }}

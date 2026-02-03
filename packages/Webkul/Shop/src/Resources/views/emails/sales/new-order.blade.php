@@ -122,6 +122,7 @@
                         {{ __('shop::app.mail.order.dear', ['customer_name' => $order->customer_full_name == '' ? $order->fbo_full_name : $order->customer_full_name]) }},
                     </p>
 
+                    {{-- version 2 change order confirmation message --}}
                     <p style="font-size: 16px;color: #5E5E5E;line-height: 24px;">
                         Thank you for submitting your order request
                         <a href="{{ route('shop.customer.orders.view', $order->id) }}"
@@ -319,6 +320,7 @@
                                             <th style="text-align: left;padding: 8px">
                                                 Qty
                                             </th>
+                                            {{-- version 2 add persons column --}}
                                             <th style="text-align: left;padding: 8px">
                                                 Persons
                                             </th>
@@ -382,6 +384,7 @@
                                                 padding:8px;">
                                                             {{ $item->qty_ordered ?? 0 }}
                                                     </td>
+                                                    {{-- version 2 add persons column --}}
                                                 <td style="
                                                 padding:8px;">  
                                                             {{ $item->additional['persons'] ?? 'N/A' }}
@@ -403,6 +406,7 @@
                 </tr>
                 <tr>
                     <td>       
+                        {{-- version 2 show cutlery instruction if included --}}
                     <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
                         @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                         <strong>Instruction:</strong> Cutlery included

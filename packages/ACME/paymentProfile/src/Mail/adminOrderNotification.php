@@ -43,6 +43,7 @@ class adminOrderNotification extends Mailable
 
         $increment_id = $this->order['increment_id'];
         log::info('admin page');
+        // version 2 change subject
         return $this->subject('New Order Received #' . $increment_id)->view('mail.admin-order-notify');
 
     }

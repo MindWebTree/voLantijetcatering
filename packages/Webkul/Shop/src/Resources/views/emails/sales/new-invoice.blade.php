@@ -258,12 +258,14 @@
             </tr>
 
             <tr>
+                {{-- version 2 change font size --}}
                 <td colspan="3" style="font-size: 14px;">
                     Order Date: {{ $order->created_at->format('m/d/Y') }}
                 </td>
             </tr>
 
             <tr>
+                {{-- version 2 chnage font size --}}
                 <td colspan="3" style="font-size: 14px;padding-bottom:30px;">
                 Delivery Date & Time:
                 {{
@@ -383,6 +385,7 @@
                 <td colspan="1" style="padding: 15px;">
                     <p><strong>Payment Details</strong></p>
                     @if(!empty($transaction))
+                    {{-- version 2 add order status --}}
                         <p style="margin: 0;"><strong>Status: </strong>{{ $order->status }}</p>
                         <p style="margin: 0;"><strong>Transaction Id: </strong>{{ $transaction->transaction_id }}</p>
                         <p style="margin: 0;"><strong>Method: </strong>Credit Card</p>
@@ -427,6 +430,7 @@
                                                 {{ __('shop::app.customer.account.order.view.product-name') }}</th>
                                             <th style="text-align: left;padding: 8px">{{ __('shop::app.customer.account.order.view.qty') }}
                                             </th>
+                                            {{-- version 2 add persons column --}}
                                             <th style="text-align: left;padding: 8px">Persons
                                             </th>
                                             <th style="text-align: left;padding: 8px">
@@ -501,6 +505,7 @@
                                                     </td>
                                                 @endif
 
+                                                {{-- version 2 add persons column --}}
                                                 <td>
                                                     <p>{{ $item->additional['persons'] ?? 'N/A' }}</p>
                                                 </td>
@@ -528,6 +533,7 @@
             <tr style="vertical-align:text-top;display:flex;vertical-align:text-top;justify-content: space-around; line-break:anywhere">
                 <td style="width: 44%;">
                     <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
+                        {{-- version 2 show cutlery instrcution if included --}}
                         @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                         <strong>Instruction:</strong> Cutlery included
                     @endif
@@ -607,6 +613,7 @@
                         {{-- @endif --}}
                     </p>
 
+                    {{-- version 2 show fbo fee and delivery charges --}}
                     <p style="margin-bottom: 10px; text-align: right">
                         Fbo Fee :
                         @if (isset($order->fbo_fee))

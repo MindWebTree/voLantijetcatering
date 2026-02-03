@@ -5,6 +5,7 @@
     use Illuminate\Support\Facades\Auth;
 
     // dd($airport_fbo);
+    // version 2 get order transaction details
     $transaction = $order->transactions->first();
     $isPaid = DB::table('order_status_log')
                 ->where('order_id', $order->id)
@@ -190,6 +191,7 @@
                 Order No: <strong>{{ $order->increment_id }}</strong>
             </p>
 
+    {{-- version 2 change if condition to show pay now button only for non admin users and unpaid orders --}}
     @if (!(auth('admin')->check() && auth('admin')->user()->role_id === 1) && $order->status !== 'paid' && $transaction === null)
     <p style="display: flex; gap:10px;align-items:center;">
             <a href="{{ route('order-invoice-view', ['orderid' => $order->id, 'customerid' => $order->customer_id]) }}"
@@ -255,12 +257,14 @@
             </tr>
 
             <tr>
+                {{-- version 2 change font size --}}
                 <td colspan="3" style="font-size: 14px;">
                     Order Date: {{ $order->created_at->format('m/d/Y') }}
                 </td>
             </tr>
 
             <tr>
+                {{-- version 2 change font size --}}
                 <td colspan="3" style="font-size: 14px;padding-bottom:30px;">
                 Delivery Date & Time:
                 {{
@@ -337,6 +341,7 @@
                     @endif
                 </td>
 
+            {{-- version 2 show transaction details if order is paid --}}
             @php
                 if(!empty($transaction)){
                     $transactionData = json_decode($transaction->data, true);
@@ -422,6 +427,7 @@
                                                 {{ __('shop::app.customer.account.order.view.product-name') }}</th>
                                             <th style="text-align: left;padding: 8px">{{ __('shop::app.customer.account.order.view.qty') }}
                                             </th>
+                                            {{-- version 2 add person table heading --}}
                                             <th style="text-align: left;padding: 8px">Persons
                                             </th>
                                             <th style="text-align: left;padding: 8px">
@@ -495,6 +501,7 @@
                                                         </p>
                                                     </td>
                                                 @endif
+                                                {{-- version 2 add person table data --}}
                                                 <td style="padding: 8px;">
                                                     {{ $item->additional['persons'] ?? 'N/A' }}
                                                 </td>
@@ -529,6 +536,7 @@
         <tbody class="w-100">
             <tr style="vertical-align:text-top;display:flex;vertical-align:text-top;justify-content: space-around; line-break:anywhere">
                 <td style="width: 44%;">
+                    {{-- version 2 show Cutlery option --}}
                     <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606;">
                         @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                         <strong>Instruction:</strong> Cutlery included
@@ -611,6 +619,7 @@
                         {{-- @endif --}}
                     </p>
 
+                    {{-- version 2 show fbo fee and delivery fee --}}
                     <p style="margin-bottom: 10px; text-align: right">
                         Fbo Fee :
 

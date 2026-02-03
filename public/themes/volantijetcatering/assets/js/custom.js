@@ -143,6 +143,7 @@
 
     $(document).ready(function () {
 
+        // version 2 add tooltip code mouse enter and mouse leave then show hide tooltip
         $(document).on("mouseenter", ".tooltip-wrapper", function () {
             $(this).find(".custom-tooltip").fadeIn(150);
         });
@@ -153,6 +154,7 @@
 
 
         
+        // version 2 add code click on plus button and increase persosn input value
         $('body').on('click', '.person-plus', function () {
             let $input = $(this).closest('.person-selector').find('.person-input');
             let min = parseInt($input.data('min')) || 1;
@@ -161,6 +163,7 @@
             $input.val(current + 1).trigger('input');
         });
 
+        // version 2 add code click on minus button and minus inpout value
         $('body').on('click', '.person-minus', function () {
             let $input = $(this).closest('.person-selector').find('.person-input');
             let min = parseInt($input.data('min')) || 1;
@@ -171,12 +174,14 @@
             }
         });
 
+        // veriosn 2 add code for only insert integare value
         $('body').on('keypress', '.person-input', function (e) {
             if (e.which < 48 || e.which > 57) {
                 e.preventDefault();
             }
         });
 
+        // verion 2 add code for removbe non numberic charcters
         $('body').on('input', '.person-input', function () {
             let min = parseInt($(this).data('min')) || 1;
 
@@ -1145,6 +1150,7 @@
     jQuery('body').on('click', '.add_button', function () {
         // check options
     
+    // version 2 comment backdrop code
     // $('.modal-backdrop').remove();
     // jQuery('body').removeClass('modal-open');
 
@@ -1207,6 +1213,7 @@
         let productId = $(this).closest('.product-card-new').find('#ProductId').val();
         let SpecialInstruction = $(this).closest('.product-card-new').find('#textarea-customize').val();
         let Quantity = $(this).closest('.product-card-new').find('#quantity-changer').val();
+        // version 2 get person value
         let persons = $(this).closest('.product-card-new').find('#person-changer').val();
         let token = $('meta[name="csrf-token"]').attr('content'); // Retrieve CSRF token
 
@@ -1225,7 +1232,7 @@
             'product_id': productId,
             'special_instruction': SpecialInstruction,
             'quantity': Quantity,
-            'persons': persons,
+            'persons': persons,    // version 2 add person in paylaod
         };
 
         if (productType === 'configurable') {
@@ -1560,6 +1567,7 @@
                 '  <div class="col-8 no-padding card-body align-vertical-top" style="padding-right:10px !important">' +
                 '    <div class="no-padding">' +
                 '      <div class="fs16 text-nowrap fw6 product-name pb-1">' + item.name + '</div>' +
+                // veriosn 2 show persons in minicart
                 '      <div class="" style="font-size:11px;"><strong>Persons:</strong> ' + item.additional.persons + '</div>' +
                 '      <div class="row mini-cart-instruction d-block" style="font-size:11px;">' +
                 '        ' + attributesHtml +

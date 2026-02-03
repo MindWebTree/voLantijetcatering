@@ -138,6 +138,8 @@ Route::group([
 
     Route::post('admin/order/add-note', [OrdersController::class, 'add_note'])->name('order-view.add-note');
 
+
+    // version 2 add route for update fbo fee
     Route::post('admin/order/update-fbo-fee', [OrdersController::class, 'update_fbo_fee'])->name('order-view.update-fbo-fee');
 
     /**

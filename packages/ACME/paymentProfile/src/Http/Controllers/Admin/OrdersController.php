@@ -364,6 +364,8 @@ class OrdersController extends Controller
                             // }
                         }
                     }
+
+                    // version 2 add persons button in admin side
                     $output .= "</div>"
                         . "<div class='row justify-content-start product__equi'>"
                         . "<div class='col-12'>"
@@ -452,7 +454,7 @@ class OrdersController extends Controller
                 'fbo_service_packaging' => $request->servicePackaging,
                 'delivery_date' => $formattedDate,
                 'delivery_time' => $request->delivery_time,
-                'include_cutlery' => $request->cutlery_option ?? 0,
+                'include_cutlery' => $request->cutlery_option ?? 0,  // version  2 update cutlery option from admin side
             ]);
 
         // sandeep update quickbook invoice
@@ -671,6 +673,7 @@ class OrdersController extends Controller
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);
         $order->base_tax_amount_invoiced = Tax::getTaxTotal($order, true);
         
+        // version 2 add & update fbo fee and delivery fee 
         $newFboFee = 0;
 
         if ($request->selected_fbo_id) {
@@ -759,7 +762,7 @@ class OrdersController extends Controller
                                     '_token' => $request->_token,
                                     'product_id' => $productId['product_id'],
                                     'quantity' => $productId['qty'],
-                                    'persons' => $productId['person'],
+                                    'persons' => $productId['person'],    // version 2 add persons in admin side
                                     'locale' => $productArr->locale,
                                 ]),
                                 'created_at' => now(), // Current timestamp for creation
@@ -912,6 +915,7 @@ class OrdersController extends Controller
             ->sum('base_total');
         // dd($totalPrice);
 
+        // version 2 get fbo fee and delivery fee and recalculate order total
         $fbo_fee = DB::table('orders')
                 ->where('increment_id', $request->order_id)
                 ->value('fbo_fee');
@@ -928,12 +932,13 @@ class OrdersController extends Controller
                 'base_grand_total' => $orderTotal,
                 'grand_total_invoiced' => $orderTotal,
                 'base_grand_total_invoiced' => $orderTotal,
-
                 'sub_total' => $totalPrice,
                 'base_sub_total' => $totalPrice,
                 'sub_total_invoiced' => $totalPrice,
                 'base_sub_total_invoiced' => $totalPrice,
             ]);
+
+
         // sandeep add code for tax add 
         $cartInstance = app(Cart::class);
         $cartInstance->calculateItemsTax($request->order_id);
@@ -1137,6 +1142,7 @@ class OrdersController extends Controller
     }
 
 
+    // version 2 add function for update fbo fee
     public function update_fbo_fee(Request $request)
     {
         $request->validate([
@@ -1235,6 +1241,7 @@ class OrdersController extends Controller
                 }
             }   
             
+            // version 2 edit persons in orders table
             $additionalJson = DB::table('order_items')
                 ->where('id', $product['itemId'])
                 ->select('additional')
@@ -1286,6 +1293,7 @@ class OrdersController extends Controller
             ->where('order_id', $request['orderID'])
             ->count();
 
+        // version 2 get fbo fee and delivery fee and recalculate order total
         $fbo_fee = DB::table('orders')
                 ->where('increment_id', $request['orderID'])
                 ->value('fbo_fee');
@@ -1328,6 +1336,7 @@ class OrdersController extends Controller
         $order->base_grand_total_invoiced = $order->tax_amount + $orderTotal;
         $order->save();
 
+        // version 2 add code for update quickbook invoice
         // sandeep update quickbook invoice
         if ($order->quickbook_invoice_id) {
             ProcessQuickBooksInvoice::dispatch($request['orderID']);
@@ -1405,6 +1414,7 @@ class OrdersController extends Controller
                 ->where('parent_id', null)
                 ->count();
 
+            // version 2 get fbo fee and delivery fee and recalculate order total
             $fbo_fee = DB::table('orders')
                 ->where('increment_id', $order_id)
                 ->value('fbo_fee');

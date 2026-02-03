@@ -223,6 +223,7 @@ class Cart
                             'cart_id' => $cart->id,
                         ]));
                     } else {
+                            // version 2 update persons in cart table
                             $existingPersons = (int) ($cartItem->additional['persons'] ?? 0);
                             $newPersons      = (int) ($cartProduct['additional']['persons'] ?? 0);
                             $cartProduct['additional']['persons'] = $existingPersons + $newPersons;
@@ -579,6 +580,7 @@ class Cart
             $cart->base_discount_amount += $shipping->base_discount_amount;
         }
 
+        // version 2 add fbo fee and delivery charges
         $fboFee = 0;
 
         if ($cart->shipping_address && $cart->shipping_address->airport_fbo_id) {
@@ -751,8 +753,8 @@ class Cart
             'sub_total'             => $data['sub_total'],
             'base_sub_total'        => $data['base_sub_total'],
             'tax_amount'            => $data['tax_total'],
-            'fbo_fee'               => $data['fbo_fee'],
-            'include_cutlery'       => $data['include_cutlery'],
+            'fbo_fee'               => $data['fbo_fee'],    // version 2 add fbo fee
+            'include_cutlery'       => $data['include_cutlery'],     // version 2 add include cutlery
             'base_tax_amount'       => $data['base_tax_total'],
             'coupon_code'           => $data['coupon_code'],
             'applied_cart_rule_ids' => $data['applied_cart_rule_ids'],

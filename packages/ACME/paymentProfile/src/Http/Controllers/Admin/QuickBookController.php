@@ -178,7 +178,7 @@ public function checkInvoiceStatus(Request $request)
                                         DB::table('order_status_log')->insert([
                                             'order_id' => $order->id,
                                             'status_id' => $statusId,
-                                            'user_id' => '0',
+                                            'user_id' => '0',    // version 2 change user id and is_admin for quickbook
                                             'is_admin' => '0',  
                                             'email' => $order->customer_email ?? $order->fbo_email_address,
                                             'created_at' => now(),
@@ -219,7 +219,7 @@ public function checkInvoiceStatus(Request $request)
                                         DB::table('order_status_log')->insert([
                                             'order_id' => $order->id,
                                             'status_id' => $statusId,
-                                            'user_id' => '0',
+                                            'user_id' => '0',     // version 2 change user id and is_admin for quickbook
                                             'is_admin' => '0',  
                                             'email' => $order->customer_email ?? $order->fbo_email_address,
                                             'created_at' => now(),
@@ -328,6 +328,7 @@ public function updatePaymentInQuickBooks($orderId)
         $companyId = $configData['company_id'];
         $customerRefId = $orderDetails['0']->quickbook_customer_id;
         $invoiceId = $orderDetails['0']->quickbook_invoice_id;
+        // Version 2: Get total amount from order total
         $totalAmount = $orderDetails['0']->orderTotal;
 
         log::info('total amount',$totalAmount);

@@ -321,6 +321,7 @@
                                                         <th>Special instructions</th>
                                                         <th>Price</th>
                                                         <th>Qty</th>
+                                                        {{-- version 2 add person table heading --}}
                                                         <th>Persons</th>
                                                         <th>Sub Total</th>
                                                         @if ($order->status === 'pending' || $order->status === 'accepted')
@@ -333,6 +334,7 @@
                                                         <th>Product</th>
                                                         <th>Special instructions</th>
                                                         <th>Qty</th>
+                                                        {{-- version 2 add person table heading --}}
                                                         <th>Persons</th>
                                                     </tr>
                                                 @endif
@@ -619,6 +621,7 @@
                                                                 {{ $item->qty_ordered }}
                                                             </span>
                                                         </td>
+                                                        {{-- version 2 add person table data --}}
                                                         <td>
                                                             <span class="qty-row">
                                                                 @if(isset($item->additional['persons']))
@@ -638,6 +641,7 @@
                                 </div>
                             @endif
                         </section>
+                        {{-- version 2 add cutlery instruction --}}
                         <div class="customer-notes" style="padding: 10px;padding-left: 0px;font-size: 15px;color: #c50606; text-align: left;">
                                 @if(isset($order->include_cutlery) && $order->include_cutlery ==1)
                                     <strong>Instruction:</strong> Cutlery included

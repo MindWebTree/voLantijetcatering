@@ -88,6 +88,7 @@
                     </template>
                   </div>
 
+<!-- version 2 add persons in mini cart -->
                 <div
                   v-if="
                     item.additional &&

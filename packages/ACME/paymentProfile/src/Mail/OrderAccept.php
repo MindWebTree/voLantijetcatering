@@ -29,6 +29,7 @@ class OrderAccept extends Mailable
     public function build()
     {
         $increment_id = $this->order->increment_id;
+        // version 2 change subject
         return $this->subject('Volanti Jet Catering Order Request #' . $increment_id . ' Approved')->view('paymentprofile::admin.sales.orders.mail.orderAccept');
     
     }
