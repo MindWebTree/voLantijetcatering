@@ -1,1 +1,1 @@
-Error creating QuickBooks invoice: Undefined property: stdClass::$additional
+Error creating QuickBooks invoice: cURL error 28: Resolving timed out after 10011 milliseconds (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://sandbox-quickbooks.api.intuit.com/v3/company/9341453997124960/query?query=SELECT+%2A+FROM+Item+WHERE+Name+%3D+%27YOGURT+PARFAIT%27&minorversion=73

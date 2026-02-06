@@ -271,7 +271,7 @@
                                                 </div>
                                                 <div style="display: flex;word-wrap: break-word;">
                                                     <span class="title" style="min-width: 200px">Handling Charges</span>
-                                                    <span class="value">{{ $handlingAgent->Handling_charges }}</span>
+                                                    <span class="value">{{ core()->formatBasePrice($handlingAgent->Handling_charges) }}</span>
                                                 </div>
 
                                                 </div>
@@ -357,6 +357,15 @@
                                                 <strong>Instruction:</strong> Cutlery included
                                         @endif
                                     </div>
+                                            @if($order->fbo_additional_notes)
+            <div class="Additional_Notes">
+                <h4>Additional Notes</h4>
+            <span style="
+        overflow-wrap: break-word;
+    " >{{ $order->fbo_additional_notes }}</span>
+
+        </div>
+        @endif
                                 </div>
 
 

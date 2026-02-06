@@ -159,7 +159,7 @@ null,
             </div> 
 
 
-                   <div class="search_not_found_message pt-5"></div>
+                   
                <div class='col-md-12' id="products_header">
 
 
@@ -200,11 +200,9 @@ null,
 
                         {{-- sandeep delete div --}}
                         {{-- <div class="centered-word center-heading">  --}}
-                            <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
-
 
                     
-                        <p class="note-text">
+                        <p class="note-text pt-4">
                         When adding items, please enter the total number of passengers and the total number of trays.
 
                         <span class="tooltip-wrapper">
@@ -246,6 +244,8 @@ null,
                         </span>
                         </p>
 
+                        <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
+                        <div class="search_not_found_message"></div>
 
 
 
@@ -351,6 +351,7 @@ null,
    
             {{-- <div class="centered-word center-heading">  --}}
                 <h1 class ="childCategoryheading mt-4"> {{ $childSubCategory->name }}</h1>   
+                <div class="" id="child_catgory_erorr_message"></div>
             {{-- </div> --}}
         {{-- <img src="{{ asset('themes/velocity/assets/images/Food-Icon.png') }}" class="right-image"> --}}
    
@@ -467,9 +468,9 @@ null,
                         </div> --}}
 
                         {{-- sandeep add search code --}}
-                        <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
+
                         
-                        <p class="note-text">
+                        <p class="note-text pt-4">
                         When adding items, please enter the total number of passengers and the total number of trays.
 
                         <span class="tooltip-wrapper">
@@ -510,6 +511,9 @@ null,
                             </div>
                         </span>
                         </p>
+
+                        <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
+                        <div class="search_not_found_message"></div>
 
 
                         {{-- <div class="search-product">

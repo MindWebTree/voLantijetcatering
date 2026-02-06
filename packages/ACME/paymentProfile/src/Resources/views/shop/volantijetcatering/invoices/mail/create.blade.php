@@ -532,7 +532,7 @@
         </td>
     </tr>
 
-    <table style="margin: auto;width:100%;max-width:90%" class="table-width">
+    <table style="margin: auto;width:100%; max-width: 90%;" class="table-width">
         <tbody class="w-100">
             <tr style="vertical-align:text-top;display:flex;vertical-align:text-top;justify-content: space-around; line-break:anywhere">
                 <td style="width: 44%;">

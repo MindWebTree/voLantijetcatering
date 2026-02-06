@@ -287,9 +287,9 @@
                 <td colspan="3" style="
     padding: 15px;
 ">
-                    @if(!empty($fboAdditionalNotes))
+                    @if(!empty($fboDetails->fbo_additional_notes))
                     <p><strong>Additional Notes:</strong></p>
-                    <p>{{ $fboAdditionalNotes }}</p>
+                    <p>{{ $fboDetails->fbo_additional_notes }}</p>
                 @endif
                 </td>
             </tr>

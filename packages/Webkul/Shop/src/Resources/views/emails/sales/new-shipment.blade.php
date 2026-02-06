@@ -199,7 +199,7 @@
                                     style="text-align: left;padding: 8px">
                                     {{ $item->name }}
 
-                                    @if (isset($item->additional['attributes']))
+                                    @if (isset($item->additional['attributes']) && !empty($item->additional['attributes']))
                                         <div class="item-options">
 
                                             @foreach ($item->additional['attributes'] as $attribute)

@@ -369,13 +369,15 @@ class CheckoutController extends Controller
     public function success()
     {
         log::info('success');
-        $order = session('order');
-        $orderId = $order['id'];
 
         if (!$order = session('order')) {
             log::info('no data found');
             return redirect()->route('shop.checkout.cart.index');
         }
+        
+        $order = session('order');
+        $orderId = $order['id'];
+
 
         $cart_id = $order['cart_id'];
 
@@ -549,7 +551,9 @@ class CheckoutController extends Controller
                     'fbo_email_address' => $fboDetails->email_address,
                     'fbo_tail_number' => $fboDetails->tail_number,
                     'fbo_packaging' => $fboDetails->packaging_section,   
-                     'fbo_service_packaging' => $fboDetails->service_packaging,              
+                    'fbo_service_packaging' => $fboDetails->service_packaging,   
+                    'include_cutlery' => $fboDetails->include_cutlery,
+                    'fbo_additional_notes' => $fboDetails->fbo_additional_notes,            
                     'delivery_date' => $fboDetails->delivery_date,
                     'delivery_time' => $fboDetails->delivery_time,
                     'airport_fbo_id' => $airport_fbo_id->airport_fbo_id,
@@ -573,8 +577,10 @@ class CheckoutController extends Controller
                     'fbo_email_address' => $fboDetails->email_address,
                     'fbo_tail_number' => $fboDetails->tail_number,
                     'fbo_packaging' => $fboDetails->packaging_section,
-                    'fbo_service_packaging' => $fboDetails->service_packaging,                   
-                    'status' => 'pending',
+                    'fbo_service_packaging' => $fboDetails->service_packaging, 
+                    'include_cutlery' => $fboDetails->include_cutlery,
+                    'fbo_additional_notes' => $fboDetails->fbo_additional_notes,                  
+                    'status' => 'pending',          
                     'status_id' => 1,
                     'customer_id' => $customer->id,
                     'delivery_date' => $fboDetails->delivery_date,
@@ -634,6 +640,7 @@ class CheckoutController extends Controller
                 'airport_fbo_details.address as fbo_airport_address',
                 'orders.fbo_phone_number',
                 'orders.fbo_email_address',
+                'orders.fbo_additional_notes',
                 'orders.fbo_tail_number',
                 'orders.fbo_packaging',
                 'orders.fbo_service_packaging'

@@ -115,6 +115,7 @@
             )
         ->get();
 
+         $paidExists = $status_log->contains('status', 'paid');
 
     @endphp
 
@@ -987,7 +988,7 @@
 
         {{-- airport modal end --}}
 
-        @if (auth('admin')->user()->role_id == 1 && (isset($paidExists) && !$paidExists || !in_array($order->status, ['shipped', 'delivered'])))
+        @if (auth('admin')->user()->role_id == 1 && isset($paidExists) && !$paidExists && !in_array($order->status, ['shipped', 'delivered']))
         <div class="search__product mt-5">
             <div class="search__title d-md-flex">
                 <h3>Products</h3>
@@ -1032,14 +1033,14 @@
             </div>
         </div>
 
-        @if($fboAdditionalNotes)
-         <div class="Additional_Notes" style="    padding-top: 15px;">
-            <h4>Additional Notes</h4>
-         <p style="
-    overflow-wrap: break-word;
-" >{{ $fboAdditionalNotes }}</p>
+        @if($order->fbo_additional_notes)
+            <div class="Additional_Notes" style="    padding-top: 15px;">
+                <h4>Additional Notes</h4>
+            <p style="
+        overflow-wrap: break-word;
+    " >{{ $order->fbo_additional_notes }}</p>
 
-         </div>
+        </div>
         @endif
 
         {{-- Products modal end --}}
@@ -1067,7 +1068,7 @@
                         {{-- version 2 add persons heading in table heading --}}
                         <th>Persons</th> 
                         <th>Sub Total</th>
-                        @if (!in_array($order->status, ['shipped', 'delivered']) || isset($paidExists) && !$paidExists)
+                        @if (isset($paidExists) && !$paidExists && !in_array($order->status, ['shipped', 'delivered']))
                         <th>Action</th>
                         @endif
                     </tr>
@@ -1126,7 +1127,6 @@
                     ->where('order_id', $order->increment_id)
                     ->value('additional_notes');
 
-                    $paidExists = $status_log->contains('status', 'paid');
 
                     @endphp
 
@@ -1145,7 +1145,7 @@
                             <p class="m-0 display__notes">{!! nl2br(e($notes)) !!}</p>
                             @endif
 
-                            @if (isset($paidExists) && !$paidExists || !in_array($order->status, ['shipped', 'delivered']))
+                            @if (isset($paidExists) && !$paidExists && !in_array($order->status, ['shipped', 'delivered']))
                             @if (isset($notes))
                             <p class="m-0 add__note mt-2" data-toggle="modal" data-target="#updateNote{{ $item->id }}">edit
                                 Order
@@ -1354,7 +1354,7 @@
                         </td>
                         @endif
 
-                        @if ((!in_array($order->status, ['shipped', 'delivered']) || isset($paidExists) && !$paidExists) && auth('admin')->user()->role_id == 1)
+                        @if (!in_array($order->status, ['shipped', 'delivered']) && isset($paidExists) && !$paidExists && auth('admin')->user()->role_id == 1)
                         <td>
                             <div class="delete_order_item text-center">
                                 <i data-toggle="modal" data-target="#remove-item{{ $item->id }}" class="remove__icon">
@@ -1681,7 +1681,7 @@
                     {{--  version 2 fbo fee edit modal --}}
                     <p class="col-7 tax_text">Fbo Fee</p>
                     <p class="col-5 tax gap-2">
-                        @if (!in_array($order->status, ['shipped', 'delivered']) || isset($paidExists) && !$paidExists)
+                        @if (!in_array($order->status, ['shipped', 'delivered']) && isset($paidExists) && !$paidExists)
                         <span
                             class="cursor-pointer product__edits"
                             data-toggle="modal"
@@ -2684,6 +2684,8 @@
                 var limitExceeded = false;
                 var limitExceededMessage = 'You have exceeded the available quantity for some products.';
                 var QuantityValue = false;
+                var personError = false;
+                var priceError = false;
                 $('.checkboxName').each(function() {
                     var checkboxId = $(this).attr('id');
                     checkboxName = $(this).attr('name');
@@ -2725,11 +2727,19 @@
     if ($(this).prop('checked')) {
         // alert(quantityInputValue)
         if (quantityInputValue <= 0 || quantityInputValue === '') {
-
             QuantityValue = true;
         }
 
+        if (personInputValue <= 0 || personInputValue === '') {
+            personError = true;
+        }
+
+
         var productPrice = $(this).closest('.row').find('#productPrice').val();
+        if (productPrice <= 0 || productPrice === '') {
+            priceError = true;
+        }
+
         var productExists = checkedCheckboxIds.some(item => item.product_id ===
             checkboxId);
 
@@ -2781,6 +2791,11 @@
 
     if (QuantityValue) {
         displayErrorMessage('Quantity cannot be less than 1');
+    } else if(personError){
+        displayErrorMessage('Number of persons cannot be less than 1');
+    }
+    else if (priceError) {
+        displayErrorMessage('Product price cannot be less than 1');
     } else if (integerLength > 6) {
         displayErrorMessage('Product price digits cannot be more than 5');
     } else if (optionsMissing) {
@@ -2863,15 +2878,15 @@
         // version 2 add code for update fbo fee
         $('body').on('click', '#order-fbo-fee', function() {
 
+        $(".fbo_fee_error").remove();
         var fbo_fee = $('#Fbo_fee_update').find('#fbo_fee').val();
 
-        $(this).prop('disabled', true);
-        $(this).html('<span class="btn-ring-modal"></span>');
+        let btn = $(this);
+        let originalText = btn.html();
+
+        btn.prop('disabled', true);
+        btn.html('<span class="btn-ring-modal"></span>');
         $(".btn-ring-modal").show();
-        setTimeout(function() {
-            $(".btn-ring-modal").hide();
-            $(this).prop('disabled', false);
-        }, 20000);
 
         $.ajax({
             url: "{{ route('order-view.update-fbo-fee') }}"
@@ -2884,7 +2899,25 @@
             }
             , success: function() {
                 location.reload();
+            },
+            error: function(xhr) {
+            if (xhr.status == 422) {
+                let errors = xhr.responseJSON.errors;
+
+                if (errors.fbo_fee) {
+                    $("#fbo_fee_body").after(`
+                        <div class="fbo_fee_error text-danger mt-1" style="padding: 0px 30px 15px 20px;">
+                            ${errors.fbo_fee[0]}
+                        </div>
+                    `);
+                }
             }
+        },
+        complete: function() {
+            $(".btn-ring-modal").hide();
+            btn.prop('disabled', false);
+            btn.html(originalText);
+        }
 
         })
     });
@@ -3040,6 +3073,17 @@
             displayError('Quantity cannot be less than 1');
             return false;
         }
+
+        if (persons <= 0 || persons === '') {
+            displayError('Number of persons cannot be less than 1');
+            return false;
+        }
+
+        if (itemprice <= 0 || itemprice === '') {
+            displayError('Item price cannot be less than 1');
+            return false;
+        }
+
         // if (newQty > inventoryQty) {
         //     displayError('Quantity limit exceed');
         //     return false;

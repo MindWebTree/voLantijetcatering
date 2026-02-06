@@ -176,7 +176,7 @@ log::info('check invoice');
 
     private function getPaymentDetails($paymentId, $companyId, $accessToken)
     {
-        $url = "https://sandbox-quickbooks.api.intuit.com/v3/company/{$companyId}/payment/{$paymentId}";
+        $url = "https://quickbooks.api.intuit.com/v3/company/{$companyId}/payment/{$paymentId}";
 
         $response = Http::withToken($accessToken)
             ->withHeaders(['Content-Type' => 'application/json'])
@@ -196,7 +196,7 @@ log::info('check invoice');
 
     private function getInvoiceDetails($invoiceId, $companyId, $accessToken){
 
-        $url = "https://sandbox-quickbooks.api.intuit.com/v3/company/{$companyId}/invoice/{$invoiceId}";
+        $url = "https://quickbooks.api.intuit.com/v3/company/{$companyId}/invoice/{$invoiceId}";
 
         
         $response = Http::withToken($accessToken)
@@ -258,11 +258,14 @@ public function updatePaymentInQuickBooks($orderId)
         $invoiceId = $orderDetails['0']->quickbook_invoice_id;
 
         // Version 2: Get total amount from order total
-        $totalAmount = $orderDetails['0']->orderTotal;
 
+        $totalAmount = $orderDetails['0']->orderTotal;
+        if (isset($agent->Handling_charges) && is_numeric($agent->Handling_charges)) {
+            $totalAmount += $agent->Handling_charges;
+        }
 
     
-        $url = "https://sandbox-quickbooks.api.intuit.com/v3/company/{$companyId}/payment";
+        $url = "https://quickbooks.api.intuit.com/v3/company/{$companyId}/payment";
 
             $response = Http::withToken($accessToken)
                 ->withHeaders(['Content-Type' => 'application/json'])

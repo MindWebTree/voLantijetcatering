@@ -47,7 +47,7 @@
                                         </span>
 
                                         <span class="value">
-                                            <a href="{{ route('admin.sales.orders.view', $transaction->order_id)}}">
+                                            <a href="{{ route('admin.sale.order.view', $transaction->order_id)}}">
                                                 {{ $transaction->order_id }}
                                             </a>
                                         </span>

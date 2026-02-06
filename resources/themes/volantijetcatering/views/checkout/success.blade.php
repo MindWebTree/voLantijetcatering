@@ -105,9 +105,9 @@
                     <p class="m-0"> {{ $orderDetails[0]->fbo_airport_name }} </p>
                     <p class="m-0"> {{ $orderDetails[0]->fbo_airport_address }} </p>
 
-                    @if(!empty($fboAdditionalNotes))
+                    @if(!empty($orderDetails[0]->fbo_additional_notes))
                     <h5 class="my-2 fs23 fw6">Additional Notes</h5>
-                    <p class="m-0">{{ $fboAdditionalNotes }}</p>
+                    <p class="m-0">{{ $orderDetails[0]->fbo_additional_notes }}</p>
                 @endif
 
                     

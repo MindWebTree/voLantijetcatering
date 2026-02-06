@@ -970,7 +970,7 @@
             if (!searchTerm) {
                 $('.product-item').removeClass('hidden');
                 $('.childCategoryheading, #categoryheading').show();
-                $('.note-text').show();
+                // $('.note-text').show();
                 return;
             }
         
@@ -1032,24 +1032,33 @@
         
             // Adjust heading visibility
             if (mainVisible && childVisible) {
-                $('.note-text').show();
-                $('.childCategoryheading, #categoryheading').show();
+                // $('.note-text').show();
+                $('.search_not_found_message, #child_catgory_erorr_message').hide();
             } else if (mainVisible) {
-                $('.childCategoryheading').hide();
-                $('#categoryheading').show();
-                $('.note-text').show();
+                $('#child_catgory_erorr_message')
+                .show()
+                .html('<div class="no-results-message text-center">No results found!</div>');
+                $('.search_not_found_message').hide();
+                // $('.note-text').show();
                 $('.pagination-wrapper').show();
             } else if (childVisible) {
-                $('.note-text').show();
-                $('.childCategoryheading').show();
-                $('#categoryheading').hide();
+                $('.search_not_found_message')
+                .show()
+                .html('<div class="no-results-message text-center">No results found!</div>');
+                $('#child_catgory_erorr_message').hide();
+                // $('.note-text').show();
                 $('.pagination-wrapper').show();
-            } else {
-                $('.note-text').hide();
-                $('.childCategoryheading, #categoryheading').hide();
-                $('.search_not_found_message').append('<div class="no-results-message text-center">No results found!</div>');
-                $('.pagination-wrapper').hide();
             }
+            else {
+                    // $('.note-text').hide();
+                    $('.search_not_found_message')
+                    .show()
+                    .html('<div class="no-results-message text-center">No results found!</div>');
+                    $('#child_catgory_erorr_message')
+                    .show()
+                    .html('<div class="no-results-message text-center">No results found!</div>');
+                    $('.pagination-wrapper').hide();
+                }
         });
         
 

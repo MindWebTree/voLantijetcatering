@@ -79,19 +79,6 @@ class OrderController extends Controller
             ->where('id', $id)
             ->first();
 
-        $fboAdditionalNotes = null;
-
-        if ($orderRow && $orderRow->cart_id) {
-            $cartRow = DB::table('cart')
-                ->select('fbo_additional_notes')
-                ->where('id', $orderRow->cart_id)
-                ->first();
-
-            $fboAdditionalNotes = $cartRow?->fbo_additional_notes;
-        }
-
-        // 🔥 attach to order object
-        $order->fbo_additional_notes = $fboAdditionalNotes;
         // dd($order);
 
         if (!$order) {

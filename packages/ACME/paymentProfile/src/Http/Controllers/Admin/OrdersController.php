@@ -704,7 +704,7 @@ class OrdersController extends Controller
         $order = DB::table('orders')
             ->where('increment_id', $request->order_id)
             ->first();
-
+        
         // dd(($request->product_info));
 
         $totalQuantity = 0;
@@ -727,16 +727,15 @@ class OrdersController extends Controller
                     ->orwhere('id', $productId['option_id'])
                     ->get();
             } else {
-
                 $productsArray = DB::table('product_flat')
                     ->where('id', $productId['product_id'])
                     // ->orwhereNull('product_id')
                     ->get();
             }
 
+            log::info('Fetched products ' . json_encode($productsArray) . ' for product_id: ' . $productId['product_id'] . ' and option_id: ' . ($productId['option_id'] ?? 'No option_id'));
 
             foreach ($productsArray as $productArr) {
-
                 // $totalPrice += $productId['price'] * $productId['qty'];
                 if ($productArr->parent_id === null) {
                     if ($productArr->type === 'simple') {
@@ -769,7 +768,6 @@ class OrdersController extends Controller
                                 'updated_at' => now(), // Current timestamp for update
                             ]);
                     } else {
-
                         DB::table('order_items')
                             ->insert([
                                 'sku' => $productArr->sku,
@@ -794,12 +792,15 @@ class OrdersController extends Controller
                 } else {
                     $attr = DB::table('product_flat')
                         ->join('attribute_options', 'product_flat.name', '=', 'attribute_options.admin_name')
+                        ->join('attributes', 'attribute_options.attribute_id', '=', 'attributes.id')
                         ->where('product_flat.name', $productArr->name)
-                        ->select('attribute_options.*')
+                            ->select(
+                            'attribute_options.*',
+                            'attributes.admin_name as attribute_name' 
+                        )
                         ->first();
-                    // dd($attr);
-                    DB::table('order_items')
-                        ->insert([
+                    $id= DB::table('order_items')
+                        ->insertGetId([
                             'sku' => $productArr->sku,
                             'name' => $productArr->name,
                             'order_id' => $request->order_id,
@@ -819,25 +820,31 @@ class OrdersController extends Controller
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
+
                     $parent_id = DB::table('order_items')
                         ->select('id')
                         ->where('product_id', $productId['product_id'])
                         ->latest('created_at')
                         ->first();
+
+
+                        log::info('Fetched parent_id: ' . ($parent_id ? $parent_id->id : 'No parent_id found') . ' for product_id: ' . $productId['product_id']);
                     // dd($parent_id->id);
                     $latest_created_at = DB::table('order_items')
                         ->where('product_id', $productId['product_id'])
                         ->max('created_at');
                     if ($parent_id) {
+                        log::info('Updating order_items with parent_id: ' . $parent_id->id . ' for product_id: ' . $productId['option_id']);
                         // Update the latest record with the specified option_id
                         DB::table('order_items')
                             ->where('product_id', $productId['option_id'])
-                            ->where('created_at', $latest_created_at)
+                            ->where('id', $id)
                             ->update([
                                 'parent_id' => $parent_id->id
                             ]);
                     }
 
+                    log::info('Updating order_items with additional data for parent_id: ' . $parent_id->id . ' and product_id: ' . $productId['option_id']);
                     DB::table('order_items')
                         ->where('id', $parent_id->id)
                         ->update([
@@ -847,8 +854,10 @@ class OrdersController extends Controller
                                 'product_id' => $productId['product_id'],
                                 'super_attribute' => [$attr->attribute_id => $attr->id],
                                 'quantity' => $productId['qty'],
+                                'persons' => $productId['person'], 
                                 'attributes' => [
                                     'options' => [
+                                        'attribute_name' => $attr->attribute_name,
                                         'option_id' => $attr->id,
                                         'option_label' => $attr->admin_name,
                                     ]
@@ -866,7 +875,10 @@ class OrdersController extends Controller
                 ->where('product_id', $productId['product_id'])
                 ->first();
 
+                log::info('Fetched product inventory for product_id: ' . $productId['product_id'] . ' with qty: ' . ($product_inventory ? $product_inventory->qty : 'No inventory record found'));
+
             if ($product_inventory->qty === 0 && isset($productId['option_id'])) {
+                log::info('Product inventory is 0 for product_id: ' . $productId['product_id']);
                 $option_inventory = DB::table('product_inventory_indices')
                     ->where('product_id', $productId['option_id'])
                     ->first();
@@ -874,6 +886,7 @@ class OrdersController extends Controller
                 // dd($productId['qty']);
                 // dd($productId['qty']);
                 if ($orderInventory) {
+                    log::info('Updating ordered inventory for option_id: ' . $productId['option_id'] . ' with qty: ' . $productId['qty']);
                     $orderInventory->update([
                         'qty' => $orderInventory->qty + $productId['qty'],
                     ]);
@@ -884,11 +897,14 @@ class OrdersController extends Controller
                         'qty' => $option_inventory->qty - $productId['qty']
                     ]);
             } else {
+                log::info('Product inventory is sufficient for product_id: ' . $productId['product_id'] . ' with qty: ' . $product_inventory->qty);
                 // dd($productId['qty']);
                 $orderInventory = ProductOrderedInventory::where('product_id', $productId['product_id'])->first();
+                log::info('Fetched ordered inventory for product_id: ' . $productId['product_id'] . ' with qty: ' . ($orderInventory ? $orderInventory->qty : 'No ordered inventory record found'));
                 // dd($productId['qty']);
                 // dd($productId['qty']);
                 if ($orderInventory) {
+                    log::info('Updating ordered inventory for product_id: ' . $productId['product_id'] . ' with qty: ' . $productId['qty']);
                     $orderInventory->update([
                         'qty' => $orderInventory->qty + $productId['qty'],
                     ]);
@@ -928,10 +944,6 @@ class OrdersController extends Controller
             ->update([
                 'total_item_count' => $totalProducts,
                 'total_qty_ordered' => $totalQuantity,
-                'grand_total' => $orderTotal,
-                'base_grand_total' => $orderTotal,
-                'grand_total_invoiced' => $orderTotal,
-                'base_grand_total_invoiced' => $orderTotal,
                 'sub_total' => $totalPrice,
                 'base_sub_total' => $totalPrice,
                 'sub_total_invoiced' => $totalPrice,
@@ -956,9 +968,9 @@ class OrdersController extends Controller
         $order->save();
 
         // sandeep update quickbook invoice
-        // if ($order->quickbook_invoice_id) {
-        //     ProcessQuickBooksInvoice::dispatch($request->order_id);
-        // }
+        if ($order->quickbook_invoice_id) {
+            ProcessQuickBooksInvoice::dispatch($request->order_id);
+        }
 
     }
 
@@ -1150,6 +1162,7 @@ class OrdersController extends Controller
             'fbo_fee' => 'required|numeric|min:0',
         ]);
 
+        
         // Get order
         $order = DB::table('orders')->where('id', $request->orderId)->first();
 
@@ -1307,10 +1320,6 @@ class OrdersController extends Controller
             ->update([
                 'total_item_count' => $totalItems,
                 'total_qty_ordered' => $totalQuantity,
-                'grand_total' => $orderTotal,
-                'base_grand_total' => $orderTotal,
-                'grand_total_invoiced' => $orderTotal,
-                'base_grand_total_invoiced' => $orderTotal,
                 'sub_total' => $totalPrice,
                 'base_sub_total' => $totalPrice,
                 'sub_total_invoiced' => $totalPrice,
@@ -1427,11 +1436,6 @@ class OrdersController extends Controller
                 ->update([
                     'total_item_count' => $totalItems,
                     'total_qty_ordered' => $totalQuantity,
-                    'grand_total' => $orderTotal,
-                    'base_grand_total' => $orderTotal,
-                    'grand_total_invoiced' => $orderTotal,
-                    'base_grand_total_invoiced' => $orderTotal,
-
                     'sub_total' => $totalPrice,
                     'base_sub_total' => $totalPrice,
                     'sub_total_invoiced' => $totalPrice,
@@ -1467,9 +1471,9 @@ class OrdersController extends Controller
         $order->save();
 
         // sandeep update quickbook invoice
-        // if ($order->quickbook_invoice_id) {
-        //     ProcessQuickBooksInvoice::dispatch($order_id);
-        // }
+        if ($order->quickbook_invoice_id) {
+            ProcessQuickBooksInvoice::dispatch($order_id);
+        }
 
         return redirect()->back();
     }

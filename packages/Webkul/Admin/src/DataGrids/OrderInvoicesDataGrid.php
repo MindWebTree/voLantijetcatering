@@ -32,12 +32,17 @@ class OrderInvoicesDataGrid extends DataGrid
 
         $queryBuilder = DB::table('invoices')
             ->leftJoin('orders as ors', 'invoices.order_id', '=', 'ors.id')
-            ->select('invoices.id as id', 'ors.increment_id as order_id', 'ors.status as order_status', 'invoices.base_grand_total as base_grand_total', 'invoices.created_at as created_at')
-            ->selectRaw("CASE WHEN {$dbPrefix}invoices.increment_id IS NOT NULL THEN {$dbPrefix}invoices.increment_id ELSE {$dbPrefix}invoices.id END AS increment_id");
-
+            ->leftJoin('handling-agent as ha', 'ha.order_id', '=', 'ors.id')
+            ->select('invoices.id as id', 'ors.increment_id as order_id', 'ors.status as order_status', 'invoices.created_at as created_at')
+            ->selectRaw("CASE WHEN {$dbPrefix}invoices.increment_id IS NOT NULL THEN {$dbPrefix}invoices.increment_id ELSE {$dbPrefix}invoices.id END AS increment_id")
+            ->selectRaw("
+                (
+                    {$dbPrefix}ors.base_grand_total + IFNULL({$dbPrefix}ha.Handling_charges, 0)
+                ) as base_grand_total
+            ");
         $this->addFilter('increment_id', 'invoices.increment_id');
         $this->addFilter('order_id', 'ors.increment_id');
-        $this->addFilter('base_grand_total', 'invoices.base_grand_total');
+        $this->addFilter('base_grand_total', 'ors.base_grand_total');
         $this->addFilter('created_at', 'invoices.created_at');
 
         $this->setQueryBuilder($queryBuilder);

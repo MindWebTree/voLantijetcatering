@@ -51,8 +51,7 @@ class OrderInvoiceJob implements ShouldQueue
                     ->select(
                         'orders.*',
                         'airport_fbo_details.name as airport_fbo_name',
-                        'airport_fbo_details.address as airport_fbo_address',
-                        'cart.fbo_additional_notes'
+                        'airport_fbo_details.address as airport_fbo_address'
                     )
                     ->first();
 

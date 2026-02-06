@@ -47,7 +47,7 @@
 
                                         <span class="value">
                                             <a
-                                                href="{{ route('admin.sales.orders.view', $order->id) }}">#{{ $order->increment_id }}</a>
+                                                href="{{ route('admin.sale.order.view', $order->id) }}">#{{ $order->increment_id }}</a>
                                         </span>
                                     </div>
 
@@ -647,6 +647,15 @@
                                     <strong>Instruction:</strong> Cutlery included
                                 @endif
                         </div>
+                                @if($order->fbo_additional_notes)
+            <div class="Additional_Notes" style="    padding-top: 15px;">
+                <h4>Additional Notes</h4>
+            <p style="
+        overflow-wrap: break-word;
+    " >{{ $order->fbo_additional_notes }}</p>
+
+        </div>
+        @endif
                     </div>
                 </accordian>
 

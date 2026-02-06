@@ -284,10 +284,7 @@ class SignUpController extends Controller
     public function fbo_details()
     
     {
-        $cart = Cart::getCart();
-        $oldAdditionalNotes = $cart ? $cart->fbo_additional_notes : null;
-
-        return view('cateringpackage::shop.customer.fbo', compact('oldAdditionalNotes'));
+        return view('cateringpackage::shop.customer.fbo');
     }
 
 
@@ -297,17 +294,6 @@ class SignUpController extends Controller
         $validate = $request->validate([
             'fullname' => 'required|max:30'
         ]);
-
-            $cart = Cart::getCart();
-
-                if ($cart) {
-                    DB::table('cart')
-                        ->where('id', $cart->id)
-                        ->update([
-                            'fbo_additional_notes' => $request->additional_notes,
-                            'include_cutlery' => $request->cutlery_option ?? 0, //version 2 add cutlery option
-                        ]);
-                }
 
         $customer_token = $request->_token;
         $dateString = $request->delivery_date;
@@ -343,7 +329,9 @@ class SignUpController extends Controller
                         'email_address' => $request->email,
                         'tail_number' => $request->tailnumber,
                         'packaging_section' => $request->packagingsection,
-                        'service_packaging' => $request->servicepackaging,                        
+                        'service_packaging' => $request->servicepackaging,  
+                        'fbo_additional_notes' => $request->additional_notes,
+                        'include_cutlery' => $request->cutlery_option ?? 0,                      
                         'delivery_time' => $request->delivery_time,
                         'delivery_date' => $formattedDate,
                     ]);
@@ -357,6 +345,8 @@ class SignUpController extends Controller
                     'tail_number' => $request->tailnumber,
                     'packaging_section' => $request->packagingsection,
                     'service_packaging' => $request->servicepackaging,                   
+                    'fbo_additional_notes' => $request->additional_notes,
+                    'include_cutlery' => $request->cutlery_option ?? 0,
                     'delivery_time' => $request->delivery_time,
                     'delivery_date' => $formattedDate,
                 ]);
@@ -400,7 +390,9 @@ class SignUpController extends Controller
                         'email_address' => $request->email,
                         'tail_number' => $request->tailnumber,
                         'packaging_section' => $request->packagingsection,
-                        'service_packaging' => $request->servicepackaging,                       
+                        'service_packaging' => $request->servicepackaging,  
+                                        'fbo_additional_notes' => $request->additional_notes,
+                'include_cutlery' => $request->cutlery_option ?? 0,                        
                         'delivery_time' => $request->delivery_time,
                         'delivery_date' => $formattedDate,
                     ]);
@@ -414,6 +406,8 @@ class SignUpController extends Controller
                     'tail_number' => $request->tailnumber,
                     'packaging_section' => $request->packagingsection,
                     'service_packaging' => $request->servicepackaging,
+                                    'fbo_additional_notes' => $request->additional_notes,
+                'include_cutlery' => $request->cutlery_option ?? 0,   
                     'delivery_time' => $request->delivery_time,
                     'delivery_date' => $formattedDate,
                 ]);
@@ -450,17 +444,6 @@ class SignUpController extends Controller
 
     public function update_fbo_detail(Request $request)
     {
-        
-        $cart = Cart::getCart();
-
-        if ($cart) {
-            DB::table('cart')
-                ->where('id', $cart->id)
-                ->update([
-                    'fbo_additional_notes' => $request->additional_notes,
-                    'include_cutlery' => $request->cutlery_option ?? 0, //version 2 update cutlery option
-                ]);
-        }
 
         $dateString = $request->delivery_date;
         // dd($dateString);
@@ -495,10 +478,13 @@ class SignUpController extends Controller
                 'tail_number' => $request->tailnumber,
                 'packaging_section' => $request->packagingsection,
                 'service_packaging' => $request->servicepackaging,
+                'fbo_additional_notes' => $request->additional_notes,
+                'include_cutlery' => $request->cutlery_option ?? 0,                      
                 'delivery_date' => $formattedDate,
                 'delivery_time' => $request->delivery_time,
             ]);
         }else{
+        //   dd($request->all());
         DB::table('fbo_details')
             ->where('customer_token', $customer_token)
             ->orderBy('id', 'DESC')
@@ -510,6 +496,8 @@ class SignUpController extends Controller
                 'tail_number' => $request->tailnumber,
                 'packaging_section' => $request->packagingsection,
                 'service_packaging' => $request->servicepackaging,
+                'fbo_additional_notes' => $request->additional_notes,
+                'include_cutlery' => $request->cutlery_option ?? 0,
                 'delivery_date' => $formattedDate,
                 'delivery_time' => $request->delivery_time,
             ]);

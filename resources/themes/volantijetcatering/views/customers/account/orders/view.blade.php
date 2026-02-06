@@ -282,9 +282,7 @@ $today = new DateTime('today');
                                              </p>
                                             </span>
 
-                                            {{-- @dd($order); --}}
-
-                                                                            @if(!empty($order->fbo_additional_notes))
+                                @if(!empty($order->fbo_additional_notes))
                                 <span class="fbo-tail-no fbo-data">
                                     <b>Additional Notes:</b>
                                     <p style="

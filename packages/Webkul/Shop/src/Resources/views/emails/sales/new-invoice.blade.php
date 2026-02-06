@@ -336,10 +336,10 @@
 
             <!-- Additional Notes -->
             <tr>
-                @if(!empty($order->cart->fbo_additional_notes))
+                @if(!empty($order->fbo_additional_notes))
                 <td colspan="2" style="padding: 15px; border-right:1px solid #ddd;">
                         <p><strong>Additional Notes:</strong></p>
-                        <p style="margin: 0;">{{ $order->cart->fbo_additional_notes }}</p>
+                        <p style="margin: 0;">{{ $order->fbo_additional_notes }}</p>
                 </td>
                 @endif
 

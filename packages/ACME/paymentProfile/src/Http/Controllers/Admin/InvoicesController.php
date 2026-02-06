@@ -524,7 +524,7 @@ log::info('token data', ['tokenData' => $tokenData]);
                 $query = "SELECT * FROM Item WHERE Name = '{$itemName}'";
                 $existingItemResponse = Http::withToken($accessToken)
                     ->withHeaders(['Content-Type' => 'text/plain'])
-                    ->get("https://sandbox-quickbooks.api.intuit.com/v3/company/{$configData['company_id']}/query?query=" . urlencode($query) . "&minorversion=73");
+                    ->get("https://quickbooks.api.intuit.com/v3/company/{$configData['company_id']}/query?query=" . urlencode($query) . "&minorversion=73");
             
                 if (!$existingItemResponse->successful()) {
                     $responseBody = $existingItemResponse->body();
@@ -545,7 +545,7 @@ log::info('token data', ['tokenData' => $tokenData]);
                 }
 
                 $persons = $additional['persons'] ?? null;    
-
+                $taxCode = ($order->tax_amount > 0) ? "TAX" : "NON";
                 if (count($existingItems) > 0) {
                     log::info('item exist in quickbook');
                     $lines[] = [
@@ -560,7 +560,7 @@ log::info('token data', ['tokenData' => $tokenData]);
                             "Qty" => $item->qty_ordered ?? null, 
                             "UnitPrice" => $item->price ?? null,
                             "TaxCodeRef" => [
-                            "value" => "TAX" 
+                                "value" => $taxCode
                             ],
                         ]
                     ];
@@ -576,7 +576,7 @@ log::info('token data', ['tokenData' => $tokenData]);
                         ];
                         $createItemResponse = Http::withToken($accessToken)
                             ->withHeaders(['Content-Type' => 'application/json'])
-                            ->post("https://sandbox-quickbooks.api.intuit.com/v3/company/{$configData['company_id']}/item", $newItemData);
+                            ->post("https://quickbooks.api.intuit.com/v3/company/{$configData['company_id']}/item", $newItemData);
 log::info('create item response', ['response' => $createItemResponse->body()]);
                             $responseData = json_decode(json_encode(simplexml_load_string($createItemResponse->body())), true);
                             $existingItems = $responseData['Item'] ?? [];
@@ -593,8 +593,8 @@ log::info('create item response', ['response' => $createItemResponse->body()]);
                                     "Qty" => $item->qty_ordered ?? null, 
                                     "UnitPrice" => $item->price ?? null,
                                     "TaxCodeRef" => [
-                                        "value" => "TAX"
-                                ],
+                                        "value" => $taxCode
+                                    ],
                                 ]
                             ];
                         } else {
@@ -613,12 +613,12 @@ Log::info('tax amount', [
 
             $invoiceData = [
                 "Line" => $lines, 
-                "TxnTaxDetail"=> [
-                    "TxnTaxCodeRef"=> [
-                    "value"=> "2"
-                    ],
-                    "TotalTax"=> $order->tax_amount
-                ],
+                // "TxnTaxDetail"=> [
+                //     "TxnTaxCodeRef"=> [
+                //     "value"=> "2"
+                //     ],
+                //     "TotalTax"=> $order->tax_amount
+                // ],
                 "DocNumber" => "INV-" . $invoiceNumber->id,
                 "CustomerRef" => [
                     "value" => $quickbookCustomerId
@@ -643,23 +643,13 @@ Log::info('tax amount', [
                     "PostalCode" => $order->shipping_address->postcode    
                 ],
                 "CustomField" => [
-                    // [
-                    //     "DefinitionId" => "1",
-                    //     "Type" => "StringType",
-                    //     "StringValue" => $order->fbo_tail_number 
-                    // ],
-                    // [
-                    //     "DefinitionId" => "3",
-                    //     "Type" => "StringType",
-                    //     "StringValue" => $order->delivery_time
-                    // ]
                     [
-                        "DefinitionId" => "2",
+                        "DefinitionId" => "1",
                         "Type" => "StringType",
                         "StringValue" => $order->fbo_tail_number 
                     ],
                     [
-                        "DefinitionId" => "1",
+                        "DefinitionId" => "3",
                         "Type" => "StringType",
                         "StringValue" => $order->delivery_time
                     ]
@@ -669,6 +659,16 @@ Log::info('tax amount', [
                     "AllowOnlineACHPayment" => true
 
         ];
+
+
+            if ($order->tax_amount > 0) {
+                $invoiceData["TxnTaxDetail"] = [
+                    "TxnTaxCodeRef" => [
+                        "value" => "2"
+                    ],
+                    "TotalTax" => $order->tax_amount
+                ];
+            }
 
         log::info('invoice data prepared', ['invoiceData' => $invoiceData]);
 
@@ -720,7 +720,7 @@ Log::info('tax amount', [
                 if (!empty($invoiceId)) {
                     $existingInvoiceResponse = Http::withToken($accessToken)
                         ->withHeaders(['Content-Type' => 'application/json'])
-                        ->get("https://sandbox-quickbooks.api.intuit.com/v3/company/{$companyId}/invoice/{$invoiceId}?minorversion=73");
+                        ->get("https://quickbooks.api.intuit.com/v3/company/{$companyId}/invoice/{$invoiceId}?minorversion=73");
     
                 $existingInvoice = json_decode(json_encode(simplexml_load_string($existingInvoiceResponse->body())), true);
 
@@ -732,7 +732,7 @@ Log::info('tax amount', [
                 
                 $updateResponse = Http::withToken($accessToken)
                     ->withHeaders(['Content-Type' => 'application/json'])
-                    ->post("https://sandbox-quickbooks.api.intuit.com/v3/company/{$companyId}/invoice?minorversion=73", $invoiceData);
+                    ->post("https://quickbooks.api.intuit.com/v3/company/{$companyId}/invoice?minorversion=73", $invoiceData);
     
                     $updatedInvoice = json_decode(json_encode(simplexml_load_string($updateResponse->body())), true);
 
@@ -746,7 +746,7 @@ Log::info('tax amount', [
                 }else{
                     // not found invoice in quickbooks then create new
                         $response = Http::withToken($accessToken)
-                        ->post("https://sandbox-quickbooks.api.intuit.com/v3/company/$companyId/invoice?minorversion=73", $invoiceData);
+                        ->post("https://quickbooks.api.intuit.com/v3/company/$companyId/invoice?minorversion=73", $invoiceData);
 
                         if ($response->successful()) {
 
@@ -764,7 +764,7 @@ Log::info('tax amount', [
 
                         //    not found in database table then create new
                             $response = Http::withToken($accessToken)
-                                        ->post("https://sandbox-quickbooks.api.intuit.com/v3/company/$companyId/invoice?minorversion=73", $invoiceData);
+                                        ->post("https://quickbooks.api.intuit.com/v3/company/$companyId/invoice?minorversion=73", $invoiceData);
     
                             if ($response->successful()) {
                                 $decodedResponse = json_decode(json_encode(simplexml_load_string($response->body())), true);
@@ -865,7 +865,7 @@ Log::info('tax amount', [
                 // Query to check if the customer already exists by email
                     $response = Http::withToken($accessToken)
                         ->withHeaders(['Content-Type' => 'text/plain'])
-                        ->get("https://sandbox-quickbooks.api.intuit.com/v3/company/{$companyId}/query", [
+                        ->get("https://quickbooks.api.intuit.com/v3/company/{$companyId}/query", [
                             'query' => $query,
                         ]);
     log::info($response);
@@ -889,20 +889,20 @@ Log::info('tax amount', [
                                 'customerId' => $existingCustomerId,
                             ];
                     } else {
-    log::info('3');
+ 
 
                         // Customer does not exist, so we create a new one
                         $createResponse = Http::withToken($accessToken)
                             ->withHeaders(['Content-Type' => 'application/json'])
-                            ->post("https://sandbox-quickbooks.api.intuit.com/v3/company/{$companyId}/customer", $customerData);
+                            ->post("https://quickbooks.api.intuit.com/v3/company/{$companyId}/customer", $customerData);
                         
                         if ($createResponse->successful()) {
                             $createResponseData = json_decode(json_encode(simplexml_load_string($createResponse->body())), true);
                             $customerId = $createResponseData['Customer']['Id'] ?? null;
-    log::info('4');
+
         
                             if ($customerId) {
-    log::info('5');
+
 
                                 // Update the local database
                                 DB::table('customers')

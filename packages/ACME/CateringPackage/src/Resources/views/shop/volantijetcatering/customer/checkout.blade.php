@@ -275,7 +275,7 @@
                                             <option value="0" selected>No</option>
 
                                             <option value="1"
-                                                {{ isset($cart->include_cutlery) && $cart->include_cutlery == 1 ? 'selected' : '' }}>
+                                                {{ isset($fboDetails->include_cutlery) && $fboDetails->include_cutlery == 1 ? 'selected' : '' }}>
                                                 Yes
                                             </option>
                                         </select>
@@ -296,7 +296,7 @@
                                                 id="additional_notes"
                                                 rows="4"
                                                 placeholder="Enter additional notes (optional)"
-                                            >{{ old('additional_notes', $oldAdditionalNotes ?? '') }}</textarea>
+                                            >{{ old('additional_notes', $fboDetails->fbo_additional_notes ?? '') }}</textarea>
                                         </div>
 
                                     </div>
@@ -581,7 +581,7 @@
                                                         <option value="0" selected>No</option>
 
                                                         <option value="1"
-                                                            {{ isset($cart->include_cutlery) && $cart->include_cutlery == 1 ? 'selected' : '' }}>
+                                                            {{ isset($fboDetails->include_cutlery) && $fboDetails->include_cutlery == 1 ? 'selected' : '' }}>
                                                             Yes
                                                         </option>
                                                     </select>
@@ -604,7 +604,7 @@
                                                         id="additional_notes"
                                                         rows="4"
                                                         placeholder="Enter additional notes (optional)"
-                                                    >{!! old('additional_notes', $cart->fbo_additional_notes ?? '') !!}</textarea>
+                                                    >{!! old('additional_notes', $fboDetails->fbo_additional_notes ?? '') !!}</textarea>
                                                 </div>
 
                                             </div>
@@ -788,7 +788,7 @@
                                 Cutlery Included:
                             </span>
                             <span style="font-weight: 400;">
-                                {{ $cart->include_cutlery == 1 ? 'Yes' : 'No' }}
+                                {{ $fboDetails->include_cutlery == 1 ? 'Yes' : 'No' }}
                             </span>
                         </div>
 
@@ -797,7 +797,7 @@
                     </div>
                 </div>
                 {{-- @dd($cart); --}}
-                @if(!empty($cart->fbo_additional_notes))
+                @if(!empty($fboDetails->fbo_additional_notes))
                     <div style="padding: 0 20px;">
                         <h4 class="card-title order-summary fw6">Additional Notes</h4>
 
@@ -806,7 +806,7 @@
                                 overflow-wrap: break-word;
                                 white-space: normal;
                             ">
-                                {{ $cart->fbo_additional_notes }}
+                                {{ $fboDetails->fbo_additional_notes }}
                             </p>
                         </div>
                     </div>

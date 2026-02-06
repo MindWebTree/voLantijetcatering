@@ -182,7 +182,7 @@ class Helper
         // Create the controller and get the response
         $controller = new AnetController\CreateCustomerProfileController($request);
         log::info('controller', ['controller' => $controller]);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
         // dd($response);
         log::info('response', ['response' => $response]);
 
@@ -460,7 +460,7 @@ class Helper
             // $request->setRefId($this->refId);
             // $request->setTransactionRequest($transactionRequestType);
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             $profileToCharge = new AnetAPI\CustomerProfilePaymentType();
             $profileToCharge->setCustomerProfileId($decodeUpdatedToken->customerResponse->customerProfileId);
@@ -470,7 +470,10 @@ class Helper
 
             $transactionRequestType = new AnetAPI\TransactionRequestType();
             $transactionRequestType->setTransactionType("authCaptureTransaction");
-            $transactionRequestType->setAmount($order->base_grand_total);
+            $handlingAgent = $order->handlingAgent->Handling_charges ?? 0;
+            $totalAmount = $order->base_grand_total + $handlingAgent;
+            
+            $transactionRequestType->setAmount($totalAmount);
             $transactionRequestType->setProfile($profileToCharge);
 
             $request = new AnetAPI\CreateTransactionRequest();
@@ -478,7 +481,7 @@ class Helper
             $request->setRefId($this->refId);
             $request->setTransactionRequest($transactionRequestType);
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             Log::info('Request:', ['response' => json_encode($response)]);
             $transactionResponse = $response->getTransactionResponse();
@@ -522,9 +525,9 @@ log::info("transaction_details",['transactionId'=>$transactionId, 'accountNumber
                     'invoice_id' => $invoice->id,
                     'data' => json_encode([
                         ["paidAmount", "accountNumber","accountType"],
-                        [$order->base_grand_total, $accountNumber,$transactionResponse->getAccountType()]
+                        [$totalAmount, $accountNumber,$transactionResponse->getAccountType()]
                     ]),
-                    'amount' => $order->base_grand_total
+                    'amount' => $totalAmount
                 ]);
 
                 $customerEmail = $order->customer_email ?? $order->fbo_email_address;
@@ -637,7 +640,7 @@ log::info("transaction_details",['transactionId'=>$transactionId, 'accountNumber
 
             // // Create the controller and get the response
             // $controller = new AnetController\CreateTransactionController($request);
-            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             // return $response;
             $order_id = request()->input('order_id');
@@ -710,11 +713,12 @@ log::info("transaction_details",['transactionId'=>$transactionId, 'accountNumber
 
             log::info('orderType',['orderType'=>$orderType]);
 
-
+            $handlingAgent = $order->handlingAgent->Handling_charges ?? 0;
+            $totalAmount = $order->base_grand_total + $handlingAgent;
             // Create a TransactionRequestType object and add the previous objects to it
             $transactionRequestType = new AnetAPI\TransactionRequestType();
             $transactionRequestType->setTransactionType("authCaptureTransaction");
-            $transactionRequestType->setAmount($order->base_grand_total);
+            $transactionRequestType->setAmount($totalAmount);
             $transactionRequestType->setPayment($paymentOne);
             $transactionRequestType->setBillTo($customerAddress);
             $transactionRequestType->setCustomer($customerData);
@@ -733,7 +737,7 @@ log::info("transaction_details",['transactionId'=>$transactionId, 'accountNumber
             Log::info('Response123:', ['response' => json_encode($request)]);
             // Create the controller and get the response
             $controller = new AnetController\CreateTransactionController($request);
-            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+            $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
             log::info('response',['response'=>$response]);
 
@@ -781,9 +785,9 @@ log::info("transaction_details22222",['transactionId'=>$transactionId, 'accountN
                     'invoice_id' => $invoice->id,
                     'data' => json_encode([
                         ["paidAmount", "accountNumber","accountType"],
-                        [$order->base_grand_total, $accountNumber,$transactionResponse->getAccountType()]
+                        [$totalAmount, $accountNumber,$transactionResponse->getAccountType()]
                     ]),
-                    'amount' => $order->base_grand_total
+                    'amount' => $totalAmount
                 ]);
 
                 $customerEmail = $order->customer_email ?? $order->fbo_email_address;
@@ -880,7 +884,7 @@ log::info("transaction_details22222",['transactionId'=>$transactionId, 'accountN
     //     $request->setRefId($this->refId);
     //     $request->setTransactionRequest($transactionRequestType);
     //     $controller = new AnetController\CreateTransactionController($request);
-    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+    //     $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
     //     return $response;
     // }
