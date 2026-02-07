@@ -6,7 +6,7 @@
 
     RewriteEngine On
     RewriteCond %{HTTP_HOST} ^18\.217\.191\.42$
-    RewriteRule ^(.*)$ https://www.volantijetcatering.com/$1 [R=301,L]
+    RewriteRule ^(.*)$ https://order.volantijetcatering.com/$1 [R=301,L]
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
