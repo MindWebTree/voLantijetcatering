@@ -263,6 +263,32 @@ if (Auth::check()) {
                         </span>
                         </p>
 
+                        
+                    @php
+                    $hasWineProduct = false;
+
+                    if($results){
+                        foreach($results as $item){
+
+                            if(
+                                isset($item->product)
+                                && isset($item->product->category_names)
+                                && str_contains(strtolower($item->product->category_names),'wine')
+                            ){
+                                $hasWineProduct = true;
+                                break;
+                            }
+
+                        }
+                    }
+                    @endphp
+
+                    @if($hasWineProduct)
+                    <p class="wine-simple-note pl-4 pr-4 pl-lg-3 pr-lg-3">
+                    Alcohol delivery is only available for customers aged 21+. Valid photo ID required at delivery.
+                    </p>
+                    @endif
+
                     <div id="search-item-list" class="search-item col-12">
 
                          

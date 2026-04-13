@@ -617,7 +617,7 @@
                             </p>
                             {{-- version 2 show fbo fee and delivery fee if order not pending --}}
                             <p>Fbo Fee: <strong>{{ core()->formatBasePrice($order->fbo_fee) }}</strong></p>
-                            <p>Delivery Charge: <strong>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</strong></p>
+                            <p>Delivery Charge: <strong>{{ core()->formatBasePrice($order->delivery_fee) }}</strong></p>
 
 
                             <p style="font-size: 15px; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">

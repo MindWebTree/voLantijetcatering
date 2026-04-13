@@ -11,6 +11,15 @@
 
 
 
+
+.wine-simple-note{
+    font-size: 14px;
+    color: #C30000;
+    margin-top:6px;
+    margin-bottom:10px;
+}
+
+
 .note-text {
   font-size: 14px;
   color: #C30000;
@@ -267,7 +276,9 @@ input[type=checkbox]{
 
 .account-content .account-layout .account-table-content .image-wrapper .image-item .remove-image {
     bottom: -50px !important;
-    background-color: #f84661 !important;
+    background-color: #FFB6C1 !important;
+    color: black !important;
+    background-image: none !important;
 }
 
 .nav-container .wrapper ul li {
@@ -551,8 +562,8 @@ body .modal-content textarea {
     height: 30px;
     width: 100px;
     border-radius: 5px;
-    background: #f75c74;
-    color: white;
+    background: #FFB6C1;
+    color: black;
     font-size: 15px;
     display: flex;
     justify-content: center;
@@ -1412,10 +1423,10 @@ body .close:focus {
     height: 35px;
     font-size: 18px;
     font-weight: 500;
-    color: #ffffff;
+    color: black;
     /*border: 1px solid #000000;
     */border: none;
-    background: #f75c74;
+    background: #FFB6C1 ;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     -ms-border-radius: 5px;
@@ -1424,9 +1435,9 @@ body .close:focus {
 
 .pay_disable {
     cursor: not-allowed;
-    color: #fff !important;
-    border: 1px solid #f75c74 !important;
-    background: #f75c74 !important;
+    color: black !important;
+    border: 1px solid #FFB6C1  !important;
+    background: #FFB6C1  !important;
 }
 
 .existing_card #saved-cards {
@@ -1434,7 +1445,7 @@ body .close:focus {
 }
 
 .modal-content .fbo-btn {
-    color: white;
+    color: black;
     border: none;
 }
 
@@ -1469,8 +1480,8 @@ body .close:focus {
 }
 
 .fbo-detail .thank__create button:hover {
-    background: #f75c74 !important;
-    color: white;
+    background: #FFB6C1 !important;
+    color: black;
     border:0;
 }
 
@@ -1703,7 +1714,8 @@ body .mini-cart-instruction {
 body button:focus {
     /* background: #f84661 !important; */
     border: none;
-   outline: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .fbo-close:focus {
@@ -1749,14 +1761,15 @@ body #app {
 
 #payment_model .modal-body .row .accept,
 #payment_delete_model .modal-body .row .accept {
-    background-color: #f84661 !important;
+    background-color: #FFB6C1 !important;
     border-color: transparent !important;
+    color: black !important;
 }
 
 #payment_model .modal-body .row .cancel,
 #payment_delete_model .modal-body .row .cancel {
     background-color: transparent !important;
-    border-color: #f84661 !important;
+    border-color: #FFB6C1 !important;
     color: #f84661 !important;
 }
 
@@ -1767,16 +1780,16 @@ body #app {
 
 #payment_model .modal-body .row .cancel:hover,
 #payment_delete_model .modal-body .row .cancel:hover {
-    background-color: #f84661 !important;
+    background-color: #FFB6C1 !important;
     border-color: transparent;
-    color: #FFF !important;
+    color: black !important;
 }
 
 #payment_model .modal-body .row .accept:hover,
 #payment_delete_model .modal-body .row .accept:hover {
-    background-color: transparent !important;
-    border-color: #f84661 !important;
-    color: #f84661 !important;
+    /* background-color: transparent !important; */
+    border-color: #FFB6C1 !important;
+    /* color: #f84661 !important; */
 }
 
 .customer-sidebar li[title="Saved Card"] {
@@ -2280,9 +2293,10 @@ button.close.fbo-close span {
 }
 
 .image-container .btn-primary {
-    background-color: #f75c74 !important;
+    background-color: #FFB6C1 !important;
     border: none;
     margin: -26px 0 8px 0;
+    color: black !important;
 }
 
 .edit-profile input,
@@ -2838,20 +2852,20 @@ button.btn-rate {
 
 .account-action .profile-edit,
 .profile-delete {
-    color: white !important;
+    /* color: white !important; */
     width: 150px;
     border-radius: 3px;
 }
 
 body .theme-btn.light:hover {
-    background: #f75c74 !important;
-    color: white !important;
+    background: #FFB6C1 !important;
+    color: black !important;
 }
 
 button.theme-btn,
 a.theme-btn {
-    background: #f75c74 !important;
-    color: white !important;
+    background: #FFB6C1 !important;
+    color: black !important;
     font-size: 22px !important;
     font-weight: 500 !important;
     border-radius: 3px !important;
@@ -2863,13 +2877,13 @@ button.theme-btn:hover,
 button.theme-btn.light:focus,
 .theme-btn:hover,
 .theme-btn.light:hover {
-    background-color: #f75c74 !important;
+    background-color: #FFB6C1 !important;
     border: 1px solid transparent !important;
-    color: white !important;
+    color: black !important;
 }
 
 a.theme-btn:hover {
-    background-color: #f75c74 !important;
+    background-color: #FFB6C1 !important;
     border: 1px solid transparent !important;
 }
 
@@ -2888,7 +2902,7 @@ a.theme-btn:hover {
     bottom: 21px;
     right: 40%;
     display: block;
-    background: #f75c74;
+    background: #FFB6C1;
     font-size: 22px !important;
     border-radius: 3px;
     font-weight: 500 !important;
@@ -2909,8 +2923,8 @@ a.theme-btn:hover {
 }
 
 .address-btn {
-    background-color: #f75c74 !important;
-    color: white !important;
+    background-color: #FFB6C1 !important;
+    color: black !important;
     border: 0 !important;
     height: 32px;
     width: 88px;
@@ -2965,8 +2979,8 @@ a.theme-btn:hover {
 .form-container .container .signIn-btn,
 .form-container .container .register-btn {
     width: 200px;
-    color: white !important;
-    background-color: #f75c74 !important;
+    color: black !important;
+    background-color: #FFB6C1 !important;
     font-family: "Poppins";
     font-weight: 500;
     font-size: 22px;
@@ -2989,8 +3003,8 @@ a.theme-btn:hover {
 
 .fbo-details .fbo-btn {
     width: 20rem;
-    color: white !important;
-    background-color: #f75c74 !important;
+    color: black !important;
+    background-color: #FFB6C1 !important;
     font-family: "Poppins";
     font-weight: 500;
     font-size: 20px;
@@ -2999,7 +3013,7 @@ a.theme-btn:hover {
 }
 
 .fbo-details .fbo-btn:hover {
-    background: #f75c74 !important;
+    background: #FFB6C1 !important;
 }
 
 /* 10-06-2024 z-index for headers */
@@ -7665,7 +7679,7 @@ ul.footer-links {
 .add_button,
 .OptionsAddButton {
     background-color: white !important;
-    border: 1px solid #f75c74 !important;
+    border: 1px solid #f75c74;
     margin-top: 6px;
     width: 100%;
     height: 40px;
@@ -7675,9 +7689,9 @@ ul.footer-links {
 
 .AddButton .add_button:hover,
 .OptionsAddButton:hover {
-    background-color: #f75c74 !important;
-    color: white;
-    border: 1px solid #f75c74;
+    background-color: #FFB6C1 !important;
+    color: black;
+    border: 1px solid #FFB6C1 !important;
 }
 
 
@@ -8424,8 +8438,8 @@ margin-top: 5px !important;
 
 .container .customization-card .form-group .sendbutton{
     width: 20rem;
-    color: white !important;
-    background-color: #f75c74 !important;
+    color: black !important;
+    background-color: #FFB6C1 !important;
     font-family: "Poppins";
     font-weight: 500;
     font-size: 20px;
@@ -8737,12 +8751,12 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 #checkout_airport-fbo-list .add_fbo_detail{
-    background: #f84661 !important;
+    background: #FFB6C1 !important;
     height: 34px;
     justify-content: center !important;
     align-items: center;
     font-size: 13px !important;
-    color: white !important;
+    color: black !important;
     font-weight: 500 !important;
     cursor: pointer !important;
 }
@@ -8835,8 +8849,8 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .enquiry-button .custom-enquiry-button {
     display: inline-block;
-    background-color: #f75c74;
-    color: white;
+    background-color: #FFB6C1;
+    color: black;
     padding: 15px 40px;
     border: none;
     /* border-radius: 30px;  */
@@ -8849,7 +8863,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .enquiry-button .custom-enquiry-button:hover {
     text-decoration: none;
-   color: white;
+   color: black;
 }
 
 .enquiry-button .custom-enquiry-button:focus {

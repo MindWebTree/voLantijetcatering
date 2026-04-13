@@ -619,6 +619,7 @@ class OrdersController extends Controller
 
     public function create_address(Request $request)
     {
+
         if ($request->selected_fbo_id != null) {
             Order::where('id', $request->order_id)->update(['airport_fbo_id' => $request->selected_fbo_id]);
         }
@@ -674,16 +675,18 @@ class OrdersController extends Controller
         $order->base_tax_amount_invoiced = Tax::getTaxTotal($order, true);
         
         // version 2 add & update fbo fee and delivery fee 
-        $newFboFee = 0;
+        $service = app(\App\Services\CustomChargesService::class);
+        $newFboFee = $service->getFboFee($order);
 
-        if ($request->selected_fbo_id) {
-            $newFboFee = DB::table('airport_fbo_details')
-                ->where('id', $request->selected_fbo_id)
-                ->value('fbo_fee') ?? 0;
-        }
+        // if ($request->selected_fbo_id) {
+        //     $newFboFee = DB::table('airport_fbo_details')
+        //         ->where('id', $request->selected_fbo_id)
+        //         ->value('fbo_fee') ?? 0;
+        // }
 
         $order->fbo_fee = $newFboFee ?? 0;
-        $deliveryFee = round(($order->sub_total * 10) / 100, 2);
+        $deliveryFee = $service->getDeliveryFee($order);
+        $order->delivery_fee = $deliveryFee;
 
         $grandTotal = $order->sub_total + $order->tax_amount + $newFboFee + $deliveryFee;
         $order->grand_total = $grandTotal;
@@ -932,12 +935,10 @@ class OrdersController extends Controller
         // dd($totalPrice);
 
         // version 2 get fbo fee and delivery fee and recalculate order total
-        $fbo_fee = DB::table('orders')
-                ->where('increment_id', $request->order_id)
-                ->value('fbo_fee');
+        // $fbo_fee = DB::table('orders')
+        //         ->where('increment_id', $request->order_id)
+        //         ->value('fbo_fee');
 
-        $deliveryFee = round(($totalPrice * 10) / 100, 2);
-        $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
 
         DB::table('orders')
             ->where('increment_id', $request->order_id)
@@ -955,8 +956,18 @@ class OrdersController extends Controller
         $cartInstance = app(Cart::class);
         $cartInstance->calculateItemsTax($request->order_id);
 
+        // version 3 get fbo fee and delivery fee and recalculate order total
         // get tax total and update to orders table
         $order = Order::where('id', $request->order_id)->first();
+
+        $service = app(\App\Services\CustomChargesService::class);
+        $fbo_fee = $service->getFboFee($order);
+        $order->fbo_fee = $fbo_fee ?? 0;
+        
+        $deliveryFee = $order->delivery_fee ?? 0;
+        $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
+
+
         $order->tax_amount = Tax::getTaxTotal($order, false);
         $order->base_tax_amount = Tax::getTaxTotal($order, true);
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);
@@ -1306,15 +1317,7 @@ class OrdersController extends Controller
             ->where('order_id', $request['orderID'])
             ->count();
 
-        // version 2 get fbo fee and delivery fee and recalculate order total
-        $fbo_fee = DB::table('orders')
-                ->where('increment_id', $request['orderID'])
-                ->value('fbo_fee');
 
-        $deliveryFee = round(($totalPrice * 10) / 100, 2);
-        $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
-
-        // dd($totalPrice);
         DB::table('orders')
             ->where('increment_id', $request['orderID'])
             ->update([
@@ -1327,6 +1330,17 @@ class OrdersController extends Controller
             ]);
 
 
+        // version 3 get fbo fee and delivery fee and recalculate order total
+        $order = Order::where('id', $request['orderID'])->first();
+
+        $service = app(\App\Services\CustomChargesService::class);
+        $fbo_fee = $service->getFboFee($order);
+        $order->fbo_fee = $fbo_fee ?? 0;
+        // $deliveryFee = $service->getDeliveryFee($order);
+
+
+        $deliveryFee = $order->delivery_fee ?? 0;
+        $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
 
 
         // sandeep add code for tax add 
@@ -1334,7 +1348,6 @@ class OrdersController extends Controller
         $cartInstance->calculateItemsTax($request['orderID']);
 
         // get tax total and update to orders table
-        $order = Order::where('id', $request['orderID'])->first();
         $order->tax_amount = Tax::getTaxTotal($order, false);
         $order->base_tax_amount = Tax::getTaxTotal($order, true);
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);
@@ -1424,12 +1437,10 @@ class OrdersController extends Controller
                 ->count();
 
             // version 2 get fbo fee and delivery fee and recalculate order total
-            $fbo_fee = DB::table('orders')
-                ->where('increment_id', $order_id)
-                ->value('fbo_fee');
+            // $fbo_fee = DB::table('orders')
+            //     ->where('increment_id', $order_id)
+            //     ->value('fbo_fee');
 
-            $deliveryFee = round(($totalPrice * 10) / 100, 2);
-            $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
 
             DB::table('orders')
                 ->where('increment_id', $order_id)
@@ -1458,8 +1469,19 @@ class OrdersController extends Controller
         $cartInstance = app(Cart::class);
         $cartInstance->calculateItemsTax($order_id);
 
+        // version 3 get fbo fee and delivery fee and recalculate order total
         // get tax total and update to orders table
         $order = Order::where('id', $order_id)->first();
+
+        $service = app(\App\Services\CustomChargesService::class);
+        $fbo_fee = $service->getFboFee($order);
+        $order->fbo_fee = $fbo_fee ?? 0;
+
+        $deliveryFee = $order->delivery_fee ?? 0;
+        $orderTotal = $totalPrice + $fbo_fee + $deliveryFee;
+
+
+
         $order->tax_amount = Tax::getTaxTotal($order, false);
         $order->base_tax_amount = Tax::getTaxTotal($order, true);
         $order->tax_amount_invoiced = Tax::getTaxTotal($order, true);

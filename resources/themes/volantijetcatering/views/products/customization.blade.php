@@ -14,7 +14,7 @@ Customization Services | Volanti Jet Catering
 @section('content-wrapper')
 <div class="container mt-5 d-flex justify-content-center">
     <div class="card p-4 customization-card">
-        <h1 class="text-center my-5">Custom Order Enquiry</h1>
+        <h1 class="text-center my-5">Custom request</h1>
 
         <div class="body">
             <form action="{{ route('store.inquery') }}" method="POST" enctype="multipart/form-data" id="customizationForm">

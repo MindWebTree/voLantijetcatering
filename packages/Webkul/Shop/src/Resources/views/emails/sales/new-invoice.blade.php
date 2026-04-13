@@ -623,8 +623,8 @@
 
                     <p style="margin-bottom: 10px; text-align: right">
                         Delivery Charge :
-                        @if (isset($order->tax_amount))
-                            <strong>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</strong>
+                        @if (isset($order))
+                            <strong>{{ core()->formatBasePrice($order->delivery_fee) }}</strong>
                         @endif
                     </p>
 

@@ -93,6 +93,7 @@ class CateringPackageController extends Controller
             'latitude' => 'required|integer|numeric|between:0,99.99',
             'longitude' => 'required|integer|numeric|between:0,99.99',
             'display_order' => 'required',
+            'delivery_fee'=> 'nullable|numeric',     // version 3 add delivery fee
             // 'active' => 'required',
         ]);
 
@@ -145,6 +146,7 @@ class CateringPackageController extends Controller
             'latitude' => 'required',
             'longitude' => 'required',
             'display_order' => 'required',
+            'delivery_fee'=> 'nullable|numeric',     // version 3 add delivery fee
             // 'active' => 'required',
         ]);
         $requestData = request()->all();

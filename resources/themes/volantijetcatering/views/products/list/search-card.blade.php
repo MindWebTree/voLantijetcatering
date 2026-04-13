@@ -228,7 +228,6 @@
                     :quantity-id="'quantity_' + {{ $product['id'] }}"
                     quantity-text="{{ __('shop::app.products.quantity') }}">
                 </quantity-changer>
-                
                     <span id="quantityError_{{ $product['id'] }}_{{$product['category_id']}}" class="text-danger" style="color: red"></span>
 
                         <div class="AddButton text-center mt-2 d-flex">

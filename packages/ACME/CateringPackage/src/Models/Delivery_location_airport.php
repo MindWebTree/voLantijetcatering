@@ -21,6 +21,7 @@ class Delivery_location_airport extends Model implements Delivery_location_airpo
         'latitude',
         'longitude', 
         'display_order',
+        'delivery_fee',
         'active',
     ];
 

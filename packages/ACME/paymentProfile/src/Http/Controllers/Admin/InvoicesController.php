@@ -494,7 +494,7 @@ log::info('token data', ['tokenData' => $tokenData]);
                 }
 
                 $totalPrice = $order->sub_total ?? 0;
-                $deliveryFee = round(($totalPrice * 10) / 100, 2);
+                $deliveryFee = $order->delivery_fee ?? 0;
                 if ($deliveryFee > 0) {
                     $deliveryCharge = (object)[
                         'name' => 'Delivery Charge',

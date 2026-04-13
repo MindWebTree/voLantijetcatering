@@ -318,8 +318,8 @@ use Carbon\Carbon;
         .button-pay {
             width: auto;
             padding: 9px 10px;
-            background-color: #f84661 ;
-            color: #fff;
+            background-color: #FFB6C1  ;
+            color: black;
             text-decoration: unset;
             text-transform: capitalize;
         }
@@ -723,7 +723,7 @@ use Carbon\Carbon;
             </tr>
             <tr>
                 <td colspan="3">Delivery Charge</td>
-                <td>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</td>
+                <td>{{ core()->formatBasePrice($order->delivery_fee) }}</td>
                 <td>{{ $order->order_currency_code }}</td>
             </tr>
 

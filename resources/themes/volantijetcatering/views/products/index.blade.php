@@ -244,6 +244,13 @@ null,
                         </span>
                         </p>
 
+
+@if($category->id == 22)
+    <p class="wine-simple-note">
+        Alcohol delivery is only available for customers aged 21+. A valid photo ID will be required at the time of delivery.
+    </p>
+@endif
+
                         <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
                         <div class="search_not_found_message"></div>
 
@@ -511,6 +518,12 @@ null,
                             </div>
                         </span>
                         </p>
+
+@if($category->id == 22)
+    <p class="wine-simple-note">
+        Alcohol delivery is only available for customers aged 21+. A valid photo ID will be required at the time of delivery.
+    </p>
+@endif
 
                         <h1  id="categoryheading" class="mt-4"> {{ $category->name }}</h1>  
                         <div class="search_not_found_message"></div>

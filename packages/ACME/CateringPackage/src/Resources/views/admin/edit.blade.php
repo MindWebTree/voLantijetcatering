@@ -116,6 +116,17 @@
                         <span class="control-error" v-if="errors.has('display_order')">@{{ errors.first('display_order') }}</span>
                     </div>
 
+
+                    {{-- version 3 add delivery fee field --}}
+                    <div class="control-group" :class="[errors.has('delivery_fee') ? 'has-error' : '']">
+                        {{-- <label for="sort_order">{{ __('admin::app.settings.cateringpackages.name') }}</label> --}}
+                        <label for="sort_order">Delivery Fee</label>
+                        <input type="text" class="control" id="delivery_fee" name="delivery_fee"
+                            value="{{ $airport->delivery_fee }}" />
+                        <span class="control-error" v-if="errors.has('delivery_fee')">@{{ errors.first('delivery_fee') }}</span>
+
+                    </div>
+
                     {{-- <div class="control-group" :class="[errors.has('active') ? 'has-error' : '']"> 
                         <label for="sort_order">{{ __('admin::app.settings.cateringpackages.active') }}</label>
                         <input type="text" class="control" id="sort_order" name="active" value="{{$airport->active}}" v-validate="'required'"/>

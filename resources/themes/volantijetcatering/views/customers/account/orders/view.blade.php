@@ -652,7 +652,7 @@ $today = new DateTime('today');
                         <tr>
                             @if ($order->status != 'pending')
                             <td colspan="3">Delivery Charge
-                           {{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</td>
+                           {{ core()->formatBasePrice($order->delivery_fee) }}</td>
                             @else
                                 <td>Delivery Charge: N/A</td>
                             @endif

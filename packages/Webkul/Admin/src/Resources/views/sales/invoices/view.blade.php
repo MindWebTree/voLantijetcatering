@@ -407,7 +407,7 @@
                                     <tr>
                                         <td>Delivery Charge</td>
                                         <td>-</td>
-                                        <td>{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</td>
+                                        <td>{{ core()->formatBasePrice($order->delivery_fee) }}</td>
                                     </tr>
 
                                     <tr class="bold">

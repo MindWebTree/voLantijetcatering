@@ -183,7 +183,7 @@
                         });
 
                     function sendToken() {
-
+console.log("send token");
                         _token = "{{ csrf_token() }}";
                         $.ajax({
                             type: "POST",
@@ -281,7 +281,7 @@
             //  $('.modal-backdrop').remove();
             let hasClicked = false;
             $('body').on('click', '#payment_model .accept', function() {
-                 $('#payment_model').removeClass('show');
+                $('#payment_model').removeClass('show');
                 console.log('accept payment');
                 hasClicked = true;
                 result = true;
@@ -289,7 +289,7 @@
                 // $('.payment-model-btn').click();
             })
             $('body').on('click', '#payment_model .cancel', function() {
-                 $('#payment_model').removeClass('show');
+                $('#payment_model').removeClass('show');
                 console.log('cancel payment');
                 hasClicked = true;
                 result = false;

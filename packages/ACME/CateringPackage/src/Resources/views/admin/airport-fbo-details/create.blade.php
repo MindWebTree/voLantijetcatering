@@ -70,11 +70,22 @@
                     {{-- version 2 add fbo fee field --}}
                     <div class="control-group" :class="[errors.has('fbo_fee') ? 'has-error' : '']">
                         <label for="sort_order">Fbo Fee</label>
-                        <input type="number" class="control" id="sort_order" name="fbo_fee" v-validate="'required'"
+                        <input type="text" class="control" id="sort_order" name="fbo_fee" v-validate="'required'"
                             value="" />
                         <span class="control-error" v-if="errors.has('fbo_fee')">@{{ errors.first('fbo_fee') }}</span>
 
                     </div>
+
+                    {{-- version 3 add delivery fee field --}}
+                    <div class="control-group" :class="[errors.has('delivery_fee') ? 'has-error' : '']">
+                        <label for="sort_order">Delivery Fee</label>
+                        <input type="text" class="control" id="sort_order" name="delivery_fee"
+                            value="" />
+                        <span class="control-error" v-if="errors.has('delivery_fee')">@{{ errors.first('delivery_fee') }}</span>
+
+                    </div>
+
+
                     
 
 

@@ -115,40 +115,29 @@
                 </div>
             </div>
 
-            <div class="custom-enquiry-banner py-5">
-                <div class="decorative-circle"></div>
-                <div class="container text-center">
-                    <h2>Need Assistance?</h2>
-            
-                    <p>
-                        Our dedicated team is here to help with your aviation catering needs. Whether you have questions about our services, special dietary requirements, or need to make a custom order, we're just a click away.
-                    </p>
-                    
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <div>24/7 Support</div>
-                            <div>Always available for you</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div>Custom Solutions</div>
-                            <div>Tailored to your needs</div>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <div>Quick Response</div>
-                            <div>Fast and efficient service</div>
-                        </div>
-                    </div>
-                    
-                   <div class="enquiry-button">
-                    <a href="{{ route('show.inquery') }}" class="custom-enquiry-button custom-link">
-                        Custom Enquiry
-                    </a>
-                </div>
-                </div>
-                
-            </div>
+<div class="custom-enquiry-banner py-3">
+    <div class="container text-center">
+
+        <h2 class="mb-1">Have questions about</h2>
+
+        <p class="mb-1">
+            our services, dietary needs, or custom orders
+        </p>
+
+        <p class="mb-3">
+            Submit an enquiry below
+        </p>
+
+        <div class="enquiry-button">
+            <a href="{{ route('show.inquery') }}" class="custom-enquiry-button custom-link">
+                Submit Enquiry
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
             <div class="custom-enquiry-banner-botom"></div>
             
         @else

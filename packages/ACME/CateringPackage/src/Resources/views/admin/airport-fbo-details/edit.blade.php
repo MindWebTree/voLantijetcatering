@@ -132,9 +132,20 @@
                     <div class="control-group" :class="[errors.has('fbo_fee') ? 'has-error' : '']">
                         {{-- <label for="sort_order">{{ __('admin::app.settings.cateringpackages.name') }}</label> --}}
                         <label for="sort_order">Fbo Fee</label>
-                        <input type="number" class="control" id="fbo_fee" name="fbo_fee" v-validate="'required'"
+                        <input type="text" class="control" id="fbo_fee" name="fbo_fee" v-validate="'required'"
                             value="{{ $airportfbo->fbo_fee }}" />
                         <span class="control-error" v-if="errors.has('fbo_fee')">@{{ errors.first('fbo_fee') }}</span>
+
+                    </div>
+
+
+                    {{-- version 3 add delivery fee field --}}
+                    <div class="control-group" :class="[errors.has('delivery_fee') ? 'has-error' : '']">
+                        {{-- <label for="sort_order">{{ __('admin::app.settings.cateringpackages.name') }}</label> --}}
+                        <label for="sort_order">Delivery Fee</label>
+                        <input type="text" class="control" id="delivery_fee" name="delivery_fee"
+                            value="{{ $airportfbo->delivery_fee }}" />
+                        <span class="control-error" v-if="errors.has('delivery_fee')">@{{ errors.first('delivery_fee') }}</span>
 
                     </div>
 

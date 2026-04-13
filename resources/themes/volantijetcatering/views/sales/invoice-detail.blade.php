@@ -280,8 +280,8 @@
                                     Delivery Charge
                                 </p>
 
-                                @if (isset($order->sub_total))
-                                    <p class="col-5 tax m-0">${{ round(($order->sub_total * 10) / 100, 2) }}</p>
+                                @if (isset($order))
+                                    <p class="col-5 tax m-0">${{ $order->delivery_fee }}</p>
                                 @else
                                     <p class="col-5 total m-0">{{ core()->formatBasePrice(0.0) }} </p>
                                 @endif

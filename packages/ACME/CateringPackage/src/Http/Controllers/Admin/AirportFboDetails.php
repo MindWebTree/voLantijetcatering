@@ -78,12 +78,14 @@ class AirportFboDetails extends Controller
             'name' => 'required',
             'address' => 'required',
             'fbo_fee' => 'required', //version 2 add validation for fbo fee
+            'delivery_fee'=> 'nullable|numeric',     // version 3 add delivery fee
         ]);
         // dd($validatedData);
     
         $inserted = DB::table('airport_fbo_details')->insert([
             'name' => $validatedData['name'],
             'fbo_fee' => $validatedData['fbo_fee'],  //version 2 store fbo fee
+            'delivery_fee' => $validatedData['delivery_fee'], //version 3 store delivery fee
             'address' => $validatedData['address'],
             'airport_id' => request()->input('airport_id'),
             'notes' => request()->input('notes')
@@ -131,6 +133,7 @@ class AirportFboDetails extends Controller
             'name' => 'required',
             'address' => 'required',
             'fbo_fee' => 'required', //version 2 add validation for fbo fee
+            'delivery_fee'=> 'nullable|numeric',     // version 3 add delivery fee
 
         ]);
         // dd($validatedData);
@@ -141,8 +144,10 @@ class AirportFboDetails extends Controller
             'name' => $validatedData['name'],
             'address' => $validatedData['address'],
             'fbo_fee' => $validatedData['fbo_fee'], //version 2 update fbo fee
+            'delivery_fee' => $validatedData['delivery_fee'], //version 3 store delivery fee
             'notes' => request()->input('notes')
         ]);
+
         // dd($updated);
         if ($updated) {
             

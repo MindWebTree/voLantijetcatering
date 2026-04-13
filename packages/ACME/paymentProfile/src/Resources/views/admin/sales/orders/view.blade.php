@@ -1701,10 +1701,9 @@
                     
 
                     <p class="col-7 tax_text">Delivery Charge</p>
-                    @if (isset($order) && $order->sub_total != null)
-                    <p class="col-5 tax">{{ core()->formatBasePrice(round(($order->sub_total * 10) / 100, 2)) }}</p>
+                    @if (isset($order) && $order->delivery_fee != null)
+                    <p class="col-5 tax">{{ core()->formatBasePrice($order->delivery_fee ) }}</p>
                     @endif
-
 
                     <p class="col-7 cart_text">Order Total</p>
 

@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 use Webkul\Sales\Models\OrderItem;
 use Webkul\Sales\Models\Order;
 
+
 class Cart
 {
     use CartCoupons, CartTools, CartValidators;
@@ -580,18 +581,12 @@ class Cart
             $cart->base_discount_amount += $shipping->base_discount_amount;
         }
 
-        // version 2 add fbo fee and delivery charges
-        $fboFee = 0;
-
-        if ($cart->shipping_address && $cart->shipping_address->airport_fbo_id) {
-            $fboFee = DB::table('airport_fbo_details')
-                ->where('id', $cart->shipping_address->airport_fbo_id)
-                ->value('fbo_fee') ?? 0;
-        }
+        // version 3 add fbo fee and delivery charges and calculate from services
+        $service = app(\App\Services\CustomChargesService::class);
+        $fboFee = $service->getFboFee($cart);
+        $deliveryFee = $service->getDeliveryFee($cart);
 
         $cart->fbo_fee = $fboFee;
-
-        $deliveryFee = round(($cart->sub_total * 10) / 100, 2);
 
         $cart->grand_total += ($fboFee + $deliveryFee);
         $cart->base_grand_total += ($fboFee + $deliveryFee);

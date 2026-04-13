@@ -532,6 +532,12 @@ class CheckoutController extends Controller
                 ]);
         }
 
+        // sandeep get shipping address data 
+        $order = Order::find($orderId);
+
+        $service = app(\App\Services\CustomChargesService::class);
+        $deliveryFee = $service->getDeliveryFee($order);
+
         if ($customerId != '') {
             CustomerProfileLog::where('customer_id', auth()->user()->id)
                 ->orderBy('id', 'DESC')
@@ -556,6 +562,7 @@ class CheckoutController extends Controller
                     'fbo_additional_notes' => $fboDetails->fbo_additional_notes,            
                     'delivery_date' => $fboDetails->delivery_date,
                     'delivery_time' => $fboDetails->delivery_time,
+                    'delivery_fee' => $deliveryFee,
                     'airport_fbo_id' => $airport_fbo_id->airport_fbo_id,
                     'status' => 'pending',
                     'status_id' => 1,
@@ -585,6 +592,7 @@ class CheckoutController extends Controller
                     'customer_id' => $customer->id,
                     'delivery_date' => $fboDetails->delivery_date,
                     'delivery_time' => $fboDetails->delivery_time,
+                    'delivery_fee' => $deliveryFee,
                     'airport_fbo_id' => $airport_fbo_id->airport_fbo_id,
                 ]);
             DB::table('airport_fbo_details')
@@ -592,7 +600,7 @@ class CheckoutController extends Controller
                 ->update([
                     'customer_id' => $customer->id,
                 ]);
-             
+            
             DB::table('order_status_log')->insert([
                 'order_id' => $orderId,
                 'user_id' => $customer->id,
@@ -600,7 +608,7 @@ class CheckoutController extends Controller
                 'status_id' => 1,
                 'email' => $fboDetails->email_address,
             ]);
-         
+        
             CustomerProfileLog::where('customer_id', $customer->id)
                 ->orderBy('id', 'DESC')
                 ->first()
@@ -656,8 +664,6 @@ class CheckoutController extends Controller
             log::info($orderId);
             log::info($order['id']);
 
-        // sandeep get shipping address data 
-        $order = Order::find($orderId);
 
         $extraData = [
             'fbo_airport_name' => $orderDetails[0]->fbo_airport_name,
@@ -674,7 +680,7 @@ class CheckoutController extends Controller
         // dd($orderDetails);
         $fullName = $fboDetails->full_name;
         $order['fbo_phone_number'] = $fboDetails->phone_number;
-  
+
         // sandeep || send guest user order confirmation mail
         if (!Auth::check()) {
             log::info('16');
@@ -713,7 +719,7 @@ class CheckoutController extends Controller
         // sandeep ||send admin order confirmation mail
             try {
                 // log::info('21' ,$fboAdditionalNotes);
-               
+            
                 OrderConfirmationAdminEmailJob::dispatch($order,$fboDetails, $extraData,$fboAdditionalNotes);
                 log::info('22');
                 Log::info('Email sent successfully to: ');
