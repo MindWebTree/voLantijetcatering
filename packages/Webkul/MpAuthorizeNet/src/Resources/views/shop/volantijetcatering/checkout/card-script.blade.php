@@ -280,38 +280,38 @@ console.log("send token");
 
             //  $('.modal-backdrop').remove();
             let hasClicked = false;
-            // $('body').off('click', '#payment_model .accept')
-            // .one('click', '#payment_model .accept', function () {
-            //     $('#payment_model').removeClass('show');
-            //     hasClicked = true;
-            //     result = true;
-            //     save_card(result);
-            // });
-
-            // $('body').off('click', '#payment_model .cancel')
-            // .one('click', '#payment_model .cancel', function () {
-            //     $('#payment_model').removeClass('show');
-            //     hasClicked = true;
-            //     result = false;
-            //     save_card(result);
-            // });
-
-            $('body').on('click', '#payment_model .accept', function() {
+            $('body').off('click', '#payment_model .accept')
+            .one('click', '#payment_model .accept', function () {
                 $('#payment_model').removeClass('show');
-                console.log('accept payment');
                 hasClicked = true;
                 result = true;
                 save_card(result);
-                // $('.payment-model-btn').click();
-            })
-            $('body').on('click', '#payment_model .cancel', function() {
+            });
+
+            $('body').off('click', '#payment_model .cancel')
+            .one('click', '#payment_model .cancel', function () {
                 $('#payment_model').removeClass('show');
-                console.log('cancel payment');
                 hasClicked = true;
                 result = false;
                 save_card(result);
-                // $('.payment-model-btn').click();
-            })
+            });
+
+            // $('body').on('click', '#payment_model .accept', function() {
+            //     $('#payment_model').removeClass('show');
+            //     console.log('accept payment');
+            //     hasClicked = true;
+            //     result = true;
+            //     save_card(result);
+            //     // $('.payment-model-btn').click();
+            // })
+            // $('body').on('click', '#payment_model .cancel', function() {
+            //     $('#payment_model').removeClass('show');
+            //     console.log('cancel payment');
+            //     hasClicked = true;
+            //     result = false;
+            //     save_card(result);
+            //     // $('.payment-model-btn').click();
+            // })
 
             console.log('hasClicked', hasClicked);
             // sandeep add code for click save payment close button and body  
